@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/tmenu_about"
+        android:title="@string/tmenu_about"
+        />
+
+
+    <item
+    android:id="@+id/tmenu_settings"
+    android:title="@string/tmenu_settings"
+    />
+
+
+    <item
+        android:id="@+id/tmenu_search"
+        android:title="@string/tmenu_searchable"
+        android:icon="@drawable/ic_searchable"
+
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+
+        />
+
+
+
+</menu>
