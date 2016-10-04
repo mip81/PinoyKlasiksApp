@@ -1,0 +1,336 @@
+PRAGMA foreign_keys = "0";
+PRAGMA encoding
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+CREATE TABLE `tb_status` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	`status_name`	INTEGER NOT NULL
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_category` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+ALTER TABLE `tb_category` ADD COLUMN 	`Field2`	INTEGER
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`cat_name`	INTEGER
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`Field2` FROM `tb_category`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_category`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_category`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`cat_name`	TEXT
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`cat_name` FROM `tb_category`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_category`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_category`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT COUNT(`_rowid_`) FROM `tb_category` WHERE `cat_name` IS NULL);
+SELECT COUNT(`_rowid_`) FROM `tb_category` WHERE `cat_name` IS NULL LIMIT 0, 50000;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`cat_name`	TEXT NOT NULL
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`cat_name` FROM `tb_category`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_category`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_category`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT COUNT(`cat_name`) FROM `tb_category`);
+SELECT COUNT(`cat_name`) FROM `tb_category` LIMIT 0, 50000;
+SELECT COUNT(*) FROM (SELECT COUNT(DISTINCT `cat_name`) FROM `tb_category`);
+SELECT COUNT(DISTINCT `cat_name`) FROM `tb_category` LIMIT 0, 50000;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`cat_name`	TEXT NOT NULL UNIQUE
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`cat_name` FROM `tb_category`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_category`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_category`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_dish` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`cat_name`	TEXT NOT NULL UNIQUE,
+	`dish_name`	TEXT NOT NULL UNIQUE,
+	`dish_desc`	TEXT NOT NULL,
+	`dish_price`	REAL NOT NULL,
+	`dish_pic`	TEXT
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_customer` (
+	`_id`	INTEGER NOT NULL UNIQUE,
+	`customer_name`	TEXT NOT NULL,
+	`phone_number`	TEXT NOT NULL,
+	`email`	INTEGER,
+	PRIMARY KEY(`_id`)
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_order` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tbSubOrder` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`dish_id`	INTEGER NOT NULL,
+	`quantity`	INTEGER NOT NULL,
+	`price`	REAL NOT NULL
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_comment` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`dish_id`	INTEGER NOT NULL,
+	`comment_text`	TEXT NOT NULL,
+	`rate`	INTEGER NOT NULL
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_order_catering` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`orcat_date_now`	TEXT NOT NULL,
+	`order_date_for`	TEXT NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_cat_id`	INTEGER NOT NULL,
+	`num_persons`	INTEGER NOT NULL,
+	`location`	TEXT NOT NULL,
+	`status_id`	INTEGER NOT NULL
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+DROP TABLE `tb_order_catering`;
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+ALTER TABLE `tbSubOrder` RENAME TO `tb_suborder`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+ALTER TABLE `tb_order` ADD COLUMN 	`Field7`	INTEGER
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER,
+	`type_order_id`	INTEGER
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`order_datetime_now`,`order_datetime_for`,`customer_id`,`sub_order_id`,`status_id`,`Field7` FROM `tb_order`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_order`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_order`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `status_id` IS NULL);
+SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `status_id` IS NULL LIMIT 0, 50000;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER NOT NULL,
+	`type_order_id`	INTEGER
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`order_datetime_now`,`order_datetime_for`,`customer_id`,`sub_order_id`,`status_id`,`type_order_id` FROM `tb_order`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_order`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_order`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `type_order_id` IS NULL);
+SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `type_order_id` IS NULL LIMIT 0, 50000;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER NOT NULL,
+	`type_order_id`	INTEGER NOT NULL
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`order_datetime_now`,`order_datetime_for`,`customer_id`,`sub_order_id`,`status_id`,`type_order_id` FROM `tb_order`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_order`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_order`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+ALTER TABLE `tb_order` ADD COLUMN 	`Field8`	INTEGER
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER NOT NULL,
+	`type_order_id`	INTEGER NOT NULL,
+	`num_persons`	INTEGER
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`order_datetime_now`,`order_datetime_for`,`customer_id`,`sub_order_id`,`status_id`,`type_order_id`,`Field8` FROM `tb_order`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_order`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_order`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `num_persons` IS NULL);
+SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `num_persons` IS NULL LIMIT 0, 50000;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER NOT NULL,
+	`type_order_id`	INTEGER NOT NULL,
+	`num_persons`	INTEGER NOT NULL
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`order_datetime_now`,`order_datetime_for`,`customer_id`,`sub_order_id`,`status_id`,`type_order_id`,`num_persons` FROM `tb_order`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_order`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_order`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+ALTER TABLE `tb_order` ADD COLUMN 	`Field9`	INTEGER
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER NOT NULL,
+	`type_order_id`	INTEGER NOT NULL,
+	`num_persons`	INTEGER NOT NULL,
+	`location`	INTEGER
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`order_datetime_now`,`order_datetime_for`,`customer_id`,`sub_order_id`,`status_id`,`type_order_id`,`num_persons`,`Field9` FROM `tb_order`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_order`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_order`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `location` IS NULL);
+SELECT COUNT(`_rowid_`) FROM `tb_order` WHERE `location` IS NULL LIMIT 0, 50000;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`order_datetime_now`	TEXT NOT NULL,
+	`order_datetime_for`	INTEGER NOT NULL,
+	`customer_id`	INTEGER NOT NULL,
+	`sub_order_id`	INTEGER NOT NULL,
+	`status_id`	INTEGER NOT NULL,
+	`type_order_id`	INTEGER NOT NULL,
+	`num_persons`	INTEGER NOT NULL,
+	`location`	INTEGER NOT NULL
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`order_datetime_now`,`order_datetime_for`,`customer_id`,`sub_order_id`,`status_id`,`type_order_id`,`num_persons`,`location` FROM `tb_order`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_order`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_order`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_typeorder` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`type_order`	TEXT NOT NULL
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+SELECT COUNT(*) FROM (SELECT COUNT(`type_order`) FROM `tb_typeorder`);
+SELECT COUNT(`type_order`) FROM `tb_typeorder` LIMIT 0, 50000;
+SELECT COUNT(*) FROM (SELECT COUNT(DISTINCT `type_order`) FROM `tb_typeorder`);
+SELECT COUNT(DISTINCT `type_order`) FROM `tb_typeorder` LIMIT 0, 50000;
+CREATE TABLE `sqlitebrowser_rename_column_new_table` (
+	`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`type_order`	TEXT NOT NULL UNIQUE
+);
+INSERT INTO sqlitebrowser_rename_column_new_table SELECT `_id`,`type_order` FROM `tb_typeorder`;
+PRAGMA foreign_keys
+PRAGMA foreign_keys = "0";
+DROP TABLE `tb_typeorder`;
+ALTER TABLE `sqlitebrowser_rename_column_new_table` RENAME TO `tb_typeorder`
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+PRAGMA foreign_keys = "0";
+
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+CREATE TABLE `tb_version` (
+	`version`	TEXT NOT NULL,
+	`last_changes_datetime`	TEXT NOT NULL
+);
+SELECT type,name,sql,tbl_name FROM sqlite_master UNION SELECT type,name,sql,tbl_name FROM sqlite_temp_master;
+SELECT COUNT(*) FROM (SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC);
+SELECT `_rowid_`,* FROM `sqlite_sequence` ORDER BY `_rowid_` ASC LIMIT 0, 50000;
+

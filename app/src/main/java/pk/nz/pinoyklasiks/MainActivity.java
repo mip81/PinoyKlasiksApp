@@ -4,11 +4,21 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
+
+/**
+ * The Main Activity of APP
+ * @Author Mikhail PASTUSHKOV
+ * @Author Melchor RELATADO
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,20 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         // Install toolbar and settings for it
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.title);
         getSupportActionBar().setIcon(R.drawable.ic_toolbal);
         getSupportActionBar().setSubtitle(R.string.subTitle);
-
-        // Check if the action search then searching
-        Intent searchIntent = getIntent();
-        if(Intent.ACTION_SEARCH.equals(searchIntent.getAction())){
-            String query = searchIntent.getStringExtra(SearchManager.QUERY);
-            Toast.makeText(this, " QUERY IS "+query, Toast.LENGTH_LONG ).show();
-        }
-
 
 
     }
@@ -55,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
          SearchManager seacrhManager = (SearchManager)getSystemService(SEARCH_SERVICE);
         //bind those methods to pass data
          searchView.setSearchableInfo(seacrhManager.getSearchableInfo(getComponentName()));
-
 
 
         return super.onCreateOptionsMenu(menu);

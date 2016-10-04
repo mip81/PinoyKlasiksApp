@@ -12,24 +12,35 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Add this so that the app can find searchable resourse -->
-            <meta-data android:name="android.app.searchable"
-                    android:resource="@xml/searchable"
-                />
+            <!-- Activity where we goint to search -->
 
-            <!-- Add this for searching for Activity -->
-            <intent-filter>
-             <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-         <meta-data
-             android:name="anddroid.app.default_searchable"
-             android:value=".MainActivity" />
+            <meta-data android:name="android.app.default_searchable"
+                android:value=".activities.SearchResultsActivity"/>
 
         </activity>
+
+        <!-- Search Activity -->
+        <activity android:name=".activities.SearchResultsActivity">
+
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <!-- Add this so that the app can find sea rchable resourse -->
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <!-- End of Search Activity -->
+
+
+
     </application>
 
 </manifest>
