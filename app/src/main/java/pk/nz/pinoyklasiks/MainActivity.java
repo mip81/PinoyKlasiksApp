@@ -7,28 +7,57 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import pk.nz.pinoyklasiks.db.DBManager;
+import pk.nz.pinoyklasiks.db.IDBManager;
+import pk.nz.pinoyklasiks.db.IDBInfo;
+
 
 
 /**
- * The Main Activity of APP
+ * The Main Activity of APP shows the main categories
+ * of APP and other information
  * @Author Mikhail PASTUSHKOV
  * @Author Melchor RELATADO
  */
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private ListView lvCategories ;   // ListView of categories
+    private SimpleCursorAdapter scAdapter;  // Adapter for populating data
+
+    // Data for binding the fields from cursor in the lvCategories
+    private String[] from = {IDBInfo.TB_CATEGORY_CAT_NAME, IDBInfo.TB_CATEGORY_DESCRIPTION};
+    private int[] to = {R.id.tvCatName, R.id.tvDesc};
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // db manager that has all db functions
+        IDBManager db = new DBManager(this);
 
+        // Get and fill the ListView categories
+        lvCategories  = (ListView)findViewById(R.id.lvCategories);
+        scAdapter = new SimpleCursorAdapter(this ,R.layout.activity_lv_categories, db.getCategories(), from, to, 0);
+        lvCategories.setAdapter(scAdapter);
 
+        db.getCategories();
 
         // Install toolbar and settings for it
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
