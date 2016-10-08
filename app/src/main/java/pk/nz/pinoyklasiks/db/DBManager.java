@@ -47,6 +47,20 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS "+TB_ADDRESS);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_CATEGORY);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_COMMENT);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_CUSTOMER);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_DISTRICT);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_ORDER);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_PRODUCT);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_STATUS);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_SUBORDER);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_SUBURB);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_TYPEORDER);
+        db.execSQL("DROP TABLE IF EXISTS "+TB_VERSION);
+
+        onCreate(db);
 
     }
 
@@ -61,7 +75,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager{
 
         Cursor cursor = db.rawQuery(
                 "SELECT "+TB_CATEGORY_ID+","+TB_CATEGORY_CAT_NAME+","+TB_CATEGORY_DESCRIPTION+
-                 " FROM "+TB_CATEGORY , null);
+                 " FROM "+TB_CATEGORY+" ORDER BY  "+TB_CATEGORY_ORDER_ID , null);
         return cursor;
     }
 
@@ -97,4 +111,16 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager{
 
     }
 
+    /**
+     * Return cursor of products with provided ID
+     * @param idCat id category
+     * @return
+     */
+    @Override
+    public Cursor getProducts(int idCat) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] id = {String.valueOf(idCat)};
+         Cursor cursor = db.query(TB_PRODUCT,null,TB_PRODUCT_CAT_ID+"=?", id ,null, null, null);
+        return cursor;
+    }
 }

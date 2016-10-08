@@ -1,0 +1,48 @@
+REQUIREMENTS
+
+Task 1 (UI)
+    1. Four widgets
+    2. Four activities
+    3. Four layout managers
+    4. Friendly UI vertiacal and landscape
+    5. Four activity life cycle events
+    6. Use exception handling
+    7. Five different events onClick, onLongClick, onFocusChange, onKey, onTouch, onMenuClick
+    8. Androic ActionBar
+    9. Snapshot of all activities
+    11. List of all controls
+
+Task 2 (DB Design)
+    1. ERD diagram
+    2. Third norm of tables
+    3. Primary keys
+    4. All tables begins with "tb" prefix
+    5. Provide SQL script that implemets database design
+    6. SQL scriipt that would implements the tables is match with design
+
+Task 3 (DAO)
+    1. Three-tier architecture is implemented
+        Middle layer accept user input from GUI layer and process it before passing to the back-end layer
+    2. UML class diagram shows DAO design including abstract classes
+       ( Diagram includess access modifiers, fields, data type. methods )
+
+Task 4 (Access and Resolve security Issues)
+    1. Perform input validation
+    2. Use cryptography algorithm to protect the data.
+    3. Provide restrict access to system features and data
+    4. Use application defines permissions to control application
+
+Task 5
+    1. Code is frequently commented
+    2. Well orginised Java documentation is using javadoc tool
+    3. Project complete all aspects (coding, design and testing ) and have enough scope for the sudents
+    4. Project is error free
+    5. App run on different sizes of the screens 3.5 to 10.1
+    6 Published to Google Play Store
+    7 Complexity of application (efficient algorythm and programm logyc) Design in proffesional way
+      using Fragments, Google Map, Loader Class code neat and clean
+
+
+
+
+

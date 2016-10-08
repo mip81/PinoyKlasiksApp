@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
     <item
         android:id="@+id/tmenu_about"
         android:title="@string/tmenu_about"
@@ -24,6 +26,12 @@
 
         />
 
+    <item
+        android:id="@+id/tmenu_cart"
+        android:title="Cart"
+        android:icon="@drawable/ic_cart"
+        app:showAsAction="ifRoom"
+        />
 
 
 </menu>

@@ -13,6 +13,7 @@ public interface IDBManager {
 
     public Cursor getCategories();
 
+    public Cursor getProducts(int idCat);
 
 
 
