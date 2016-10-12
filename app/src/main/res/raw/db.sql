@@ -420,16 +420,16 @@ CREATE TABLE tb_address (_id INTEGER PRIMARY KEY NOT NULL UNIQUE, district_id IN
 -- Table keeps information about an order
 CREATE TABLE tb_order (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, order_datetime_now DATETIME NOT NULL, order_datetime_for DATETIME NOT NULL, customer_id INTEGER NOT NULL REFERENCES tb_customer (_id), sub_order_id INTEGER NOT NULL REFERENCES tb_suborder (_id), status_id INTEGER NOT NULL REFERENCES tb_status (_id), type_order_id INTEGER NOT NULL REFERENCES tb_typeorder (_id), num_persons INTEGER NOT NULL, location TEXT NOT NULL, global_id INTEGER, comment TEXT);
 -- Table keeps information about categories
-CREATE TABLE tb_category (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, cat_name TEXT NOT NULL UNIQUE, description TEXT (60), order_id INT REFERENCES tb_order (_id));
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (1, 'All day breakfast', 'Comes with garlic fried rice and fried egg. Combbied into one meal.', 1);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (2, 'Pork', NULL, 2);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (3, 'Vegetables', NULL, 3);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (4, 'Extra rice', NULL, 8);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (5, 'Extras', NULL, 9);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (6, 'Noodles', NULL, 4);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (7, 'Beef', NULL, 5);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (8, 'Seafoods', NULL, 6);
-INSERT INTO tb_category (_id, cat_name, description, order_id) VALUES (9, 'Chicken', NULL, 7);
+CREATE TABLE tb_category (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, cat_name TEXT NOT NULL UNIQUE, description TEXT (60), order_id INT REFERENCES tb_order (_id), pic TEXT);
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (1, 'All day breakfast', 'Comes with garlic fried rice and fried egg. Combbied into one meal.', 1, 'cat_breakfast');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (2, 'Pork', 'Delicious Filipino dishes cooked with beef.', 2, 'cat_pork');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (3, 'Vegetables', 'Fresh prepared salads for you.', 3, 'cat_vegetables');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (4, 'Extra rice', 'More rice?', 8, 'cat_extra_rice');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (5, 'Extras', 'Would you like some exrtas?', 9, 'cat_extras');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (6, 'Noodles', 'Peerless dishes cooked with noodles.', 4, 'cat_noodles');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (7, 'Beef', 'Delicious Filipino dishes cooked with beef.', 5, 'cat_beef');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (8, 'Seafoods', 'We offer a variety of dishes made with seafood.', 6, 'cat_seafoods');
+INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (9, 'Chicken', 'Taste our delicious dishes prepared with chicken.', 7, 'cat_chicken');
 -- Table keeps information about customer
 CREATE TABLE tb_customer (_id INTEGER NOT NULL UNIQUE, customer_name TEXT NOT NULL, phone_number TEXT NOT NULL, email INTEGER, address TEXT (150), PRIMARY KEY (_id));
 -- Table keeps information about districtes in the Auckland

@@ -1,28 +1,31 @@
 package pk.nz.pinoyklasiks.db;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.ListView;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import pk.nz.pinoyklasiks.MainActivity;
+import pk.nz.pinoyklasiks.beans.AbstractCategory;
+import pk.nz.pinoyklasiks.beans.AbstractProduct;
+import pk.nz.pinoyklasiks.beans.Category;
+import pk.nz.pinoyklasiks.beans.Product;
 
 /**
  * Class help to work with DB SQLite
  * has all CRUD methods
  *
- * @Author Mikhail PASTUSHKOV
- * @Author Melchor RELATADO
+ * @author  Mikhail PASTUSHKOV
+ * @author  Melchor RELATADO
  */
-public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager{
+public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, IDAOManager {
 
     private final boolean DEBUG = true;
     private final String DEBUG_TXT = "*** DEBUG  *** ::: ";
@@ -70,7 +73,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager{
      *  the data (will be used for ListView)
      * @return Cursor
      */
-    public Cursor getCategories(){
+    public Cursor getCategoriesCursor(){
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
@@ -79,9 +82,97 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager{
         return cursor;
     }
 
+    /**
+     *  Get cursor to populate
+     *  the data (will be used for ListView)
+     * @return Cursor
+     */
+    public  List<AbstractCategory> getCategories(){
+        SQLiteDatabase db = getReadableDatabase();
+         List listCategories = new ArrayList();
+                    if (DEBUG) Log.d("DEBUG ::: ", "getCategories() called : ");
+
+
+        Cursor cursor = db.rawQuery(
+                "SELECT "+TB_CATEGORY_ID+","
+                        +TB_CATEGORY_CAT_NAME+","
+                        +TB_CATEGORY_DESCRIPTION+","
+                        +TB_CATEGORY_PIC+","
+                        +TB_CATEGORY_ORDER_ID+
+                 " FROM "+TB_CATEGORY+" ORDER BY  "+TB_CATEGORY_ORDER_ID , null);
+
+        if (cursor != null) {
+            if(cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    AbstractCategory abstractCategory = new Category();
+                        abstractCategory.set_id( cursor.getInt(cursor.getColumnIndexOrThrow(TB_CATEGORY_ID)) );
+                        abstractCategory.setCat_name( cursor.getString(cursor.getColumnIndex(TB_CATEGORY_CAT_NAME)) );
+                        abstractCategory.setDescription( cursor.getString(cursor.getColumnIndex(TB_CATEGORY_DESCRIPTION)) );
+                        abstractCategory.setOrder_id( cursor.getInt(cursor.getColumnIndex(TB_CATEGORY_ORDER_ID)) );
+                        abstractCategory.setPic( cursor.getString(cursor.getColumnIndex(TB_CATEGORY_PIC)) );
+
+
+                    listCategories.add(abstractCategory);
+                    if (DEBUG) Log.d("DEBUG ::: ", "Get abstractCategory : abstractCategory : "+ abstractCategory);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+        }
+
+        return listCategories;
+
+    }
+
+
+    /**
+     * The methog return the List of Product objects
+     * tha having the appropriate id of catgory
+     *
+     * @param idCat id Category , 0 return all project in DB
+     * @return
+     */
+    @Override
+    public List<AbstractProduct> getProductByIdCat(int idCat) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor;
+        List<AbstractProduct> list = new ArrayList<>();
+
+        String[] id = {String.valueOf(idCat)};
+
+        if(idCat == 0){  // if 0 return all products
+            cursor = db.query(TB_PRODUCT,null,null, null ,null, null, null);
+        }else{
+            cursor = db.query(TB_PRODUCT,null,TB_PRODUCT_CAT_ID+"=?", id ,null, null, null);
+        }
+        if(cursor!=null){
+
+            if(cursor.moveToFirst()){
+
+                while(!cursor.isAfterLast()){
+                    AbstractProduct product = new Product();
+
+                    // Fill object with data
+                      product.set_id(cursor.getInt( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_ID)) );
+                      product.setCat_id(cursor.getInt( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_CAT_ID)) );
+                      product.setProduct_name( cursor.getString(cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_NAME)) );
+                      product.setProduct_desc( cursor.getString( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_DESC)) );
+                      product.setProduct_price( cursor.getDouble( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_PRICE)) );
+                      product.setProduct_pic( cursor.getString( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_PIC)) );
+
+                    list.add(product);
+                    cursor.moveToNext();
+                }
+            }
+        }
+        return list;
+    }
+
+
 
     /**
      * Create and load default data to DB
+     * from assets file db.sql
      * @param db
      */
     private void loadDefaultData(SQLiteDatabase db){
@@ -123,4 +214,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager{
          Cursor cursor = db.query(TB_PRODUCT,null,TB_PRODUCT_CAT_ID+"=?", id ,null, null, null);
         return cursor;
     }
+
+
+
 }

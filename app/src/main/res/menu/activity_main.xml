@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainCtivity">
+
+
+    <item
+        android:id="@+id/tmenu_search"
+        android:title="@string/tmenu_searchable"
+        android:icon="@drawable/ic_searchable"
+
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+
+        />
+
+    <item
+        android:id="@+id/tmenu_cart"
+        android:title="Cart"
+        android:icon="@drawable/ic_cart"
+        app:showAsAction="ifRoom"
+        />
+
+
+</menu>

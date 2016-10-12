@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
@@ -11,6 +11,17 @@
     tools:context="pk.nz.pinoyklasiks.MainActivity"
     android:weightSum="1">
 
+    <!-- SHOW TOOLBAR -->
+
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar">
+    </include>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
     <LinearLayout
@@ -18,12 +29,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- SHOW TOOLBAR -->
-        <include
-            layout="@layout/toolbar"
-            android:id="@+id/toolbar">
-        </include>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+
+        <FrameLayout
+            android:layout_height="match_parent"
+            android:id="@+id/flLeftMenu"
+            android:layout_width="250dp"
+            android:visibility="gone">
+
+
+        </FrameLayout>
 
         <fragment
 
@@ -35,17 +56,23 @@
 
 
 
+        </LinearLayout>
     </LinearLayout>
 
     <!-- NAVIGATION MENU -->
     <android.support.design.widget.NavigationView
+        android:id="@+id/navViewMenu"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        app:itemBackground="@drawable/nav_menu_colors"
+        android:background="#8f0303"
         app:menu="@menu/nav_menu"
-        app:headerLayout="@layout/nav_menu_header"
-        android:layout_gravity="start">
+        app:headerLayout="@layout/header_nav_menu"
+        android:layout_gravity="start"
+        app:itemTextColor="#ffffff">
 
     </android.support.design.widget.NavigationView>
 
-</android.support.v4.widget.DrawerLayout>
+
+    </android.support.v4.widget.DrawerLayout>
+
+</LinearLayout>

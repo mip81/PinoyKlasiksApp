@@ -11,7 +11,7 @@ import android.database.Cursor;
  */
 public interface IDBManager {
 
-    public Cursor getCategories();
+    public Cursor getCategoriesCursor();
 
     public Cursor getProducts(int idCat);
 

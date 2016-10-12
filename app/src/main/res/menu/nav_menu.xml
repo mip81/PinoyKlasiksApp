@@ -2,18 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_menu_categories"
-        android:title="Main menu"
+        android:icon="@drawable/ic_menu"
+        android:title="Menu"
         />
     <item
         android:id="@+id/nav_menu_orders"
+        android:icon="@drawable/ic_cart"
         android:title="Orders"
         />
     <item
         android:id="@+id/nav_menu_location"
+        android:icon="@drawable/ic_location"
         android:title="Location"
         />
     <item
-        android:id="@+id/nav_menu_about"
+        android:id="@+id/nav_menu_about_us"
+        android:icon="@drawable/ic_about_us"
         android:title="About us"
         />
+
+    <group android:id="@+id/nav_menu_communication_group"
+        >
+        <item android:title="Mail us" />
+        <item android:title="Call us" />
+        <item android:title="Text us" />
+
+    </group>
 </menu>

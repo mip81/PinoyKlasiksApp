@@ -56,7 +56,7 @@ public class SearchResultsActivity extends AppCompatActivity{
 
 
     /**
-     * Create toolbar menu which was defined in the main_menu.xml
+     * Create toolbar menu which was defined in the activity_mainmain.xml
      * @param menu
      * @return
      */
@@ -64,7 +64,7 @@ public class SearchResultsActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Addin xml with menu
-            getMenuInflater().inflate(R.menu.main_menu, menu);
+            getMenuInflater().inflate(R.menu.activity_main, menu);
 
         // To do for searching
             SearchView searchView  = (SearchView)menu.findItem(R.id.tmenu_search).getActionView();
@@ -77,15 +77,12 @@ public class SearchResultsActivity extends AppCompatActivity{
 
     }
 
-    // DEFINE ACTIONS WHEN CLICKED ON TOP MENU
+    // DEFINE ACTIONS WHEN CLICKED ON THE ACTIONBAR MENU
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.tmenu_about:
+            case R.id.tmenu_cart:
                 Toast.makeText(getApplicationContext(), "The about menu was selected!", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.tmenu_settings:
-                Toast.makeText(getApplicationContext(), "The settings menu was selected!", Toast.LENGTH_LONG).show();
                 break;
         }
         return super.onOptionsItemSelected(item);

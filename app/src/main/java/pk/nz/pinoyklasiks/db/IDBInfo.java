@@ -12,12 +12,13 @@ package pk.nz.pinoyklasiks.db;
 public interface IDBInfo {
     public static String PATH_TO_DB_RES = "res/raw/db.sql";
     public static String DBName = "db_pinoy_klasiks";
-    public static int VER = 5;
+    public static int VER = 6;
 
     public static String TB_CATEGORY = "tb_category";
         public  static String TB_CATEGORY_ID = "_id";
         public  static String TB_CATEGORY_DESCRIPTION= "description";
         public  static String TB_CATEGORY_CAT_NAME= "cat_name";
+        public  static String TB_CATEGORY_PIC = "pic";
         public  static String TB_CATEGORY_ORDER_ID = "order_id";
 
     public static String TB_COMMENT = "tb_comment";
