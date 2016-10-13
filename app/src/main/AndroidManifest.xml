@@ -35,6 +35,12 @@
                 android:value=".MainActivity" />
         </activity>
 
+    <!-- SubOrder Activity -->
+        <activity android:name=".activities.SubOrderActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
 
         <!-- Search Activity -->
         <activity android:name=".activities.SearchResultsActivity">

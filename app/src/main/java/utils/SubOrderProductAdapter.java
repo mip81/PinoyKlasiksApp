@@ -3,7 +3,6 @@ package utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,24 +15,24 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 
 import pk.nz.pinoyklasiks.R;
 import pk.nz.pinoyklasiks.beans.AbstractProduct;
-import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 
 /**
- * Product adater bind the view in layout with data
+ * Product adater for suborder bind the view in layout with data
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
 
-public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
+public class SubOrderProductAdapter extends ArrayAdapter<Map.Entry>{
 
     // Constructor of customer adapter
-    public ProductAdapter(Context context, List<AbstractProduct> products) {
-        super(context, 0, products);
+    public SubOrderProductAdapter(Context context, List entryProducts) {
+        super(context, 0, entryProducts);
     }
 
     /**
@@ -47,21 +46,25 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        // Get the AbstractCategory object for this position
-        final AbstractProduct abstractProduct = getItem(position);
         DecimalFormat df = new DecimalFormat("$##.00");
+
+        // Get the the Entry consist AbstractProduc and quantity
+        Map.Entry<AbstractProduct, Integer> entry = getItem(position);
+         // Get the product
+        final AbstractProduct abstractProduct =entry.getKey();
+        // Calculate the price
+        Double cost = abstractProduct.getProduct_price() * entry.getValue();
 
         // Check if this view null inflate it create another one
         if(convertView == null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.lv_products, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.lv_suborder_products, parent, false);
         }
 
         // Get the view to populate new data
-        TextView tvProductName = (TextView)convertView.findViewById(R.id.tvLVProductName);
-        TextView tvProductDesc = (TextView)convertView.findViewById(R.id.tvLVProductDescription);
-        TextView tvProductPrice = (TextView)convertView.findViewById(R.id.tvLVProductPrice);
-        ImageView ivPic = (ImageView)convertView.findViewById(R.id.ivLVProductPic);
-        Button btnAddToCart = (Button)convertView.findViewById(R.id.btnLVAddToCart);
+        TextView tvProductName = (TextView)convertView.findViewById(R.id.tvLVSubOrderProductName);
+        TextView tvProductPrice = (TextView)convertView.findViewById(R.id.tvLVSubOrderProductPrice);
+        ImageView ivPic = (ImageView)convertView.findViewById(R.id.ivLVSubOrderProductPic);
+       // Button btnAddToCart = (Button)convertView.findViewById(R.id.btnLVAddToCart);
 
 
 
@@ -72,15 +75,13 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
 
         }catch (Exception e){
             e.printStackTrace();
-            ivPic.setImageResource(R.drawable.nopic);
+           // ivPic.setImageResource(R.drawable.nopic);
             Toast.makeText(getContext(), "Error : "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        // Populate our date into the layout views
+            //Populate our date into the layout views
             tvProductName.setText(abstractProduct.getProduct_name());
-            tvProductDesc.setText(abstractProduct.getProduct_desc());
             tvProductPrice.setText(df.format(abstractProduct.getProduct_price()) ) ;
-            btnAddToCart.setOnClickListener(new ClickAddProductListener(abstractProduct));
 
 
         return convertView;
@@ -105,9 +106,7 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
                 @Override
                 public void run() {
 
-                    IDAOManager db = new DBManager(getContext());
-                    db.addProductToOrder(product, 1 , false);
-                    db.close();
+                    // TODO: 10/13/16 Add action for deletion and reduce increase amount
                 }
             }).start();
         }

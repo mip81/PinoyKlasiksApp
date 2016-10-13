@@ -1,8 +1,10 @@
 -- Table keeps information about status_name
-CREATE TABLE `tb_status` (`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,`status_name`	INTEGER NOT NULL);
-INSERT INTO tb_status (_id, status_name) VALUES (1, 'Cancel');
+CREATE TABLE tb_status (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,status_name	INTEGER NOT NULL);
+INSERT INTO tb_status (_id, status_name) VALUES (1, 'Open');
 INSERT INTO tb_status (_id, status_name) VALUES (2, 'Pending');
-INSERT INTO tb_status (_id, status_name) VALUES (3, 'Finished');
+INSERT INTO tb_status (_id, status_name) VALUES (3, 'Approved');
+INSERT INTO tb_status (_id, status_name) VALUES (4, 'Closed');
+INSERT INTO tb_status (_id, status_name) VALUES (5, 'Canceled');
 -- Table: tb_version
 CREATE TABLE `tb_version` (`version`	TEXT NOT NULL,`last_changes_datetime`	TEXT NOT NULL);
 INSERT INTO tb_version (version, last_changes_datetime) VALUES ('1', '');
@@ -418,7 +420,7 @@ INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, 
 -- Table keeps information of address
 CREATE TABLE tb_address (_id INTEGER PRIMARY KEY NOT NULL UNIQUE, district_id INTEGER NOT NULL, suburb_id INTEGER NOT NULL, location TEXT (150) NOT NULL);
 -- Table keeps information about an order
-CREATE TABLE tb_order (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, order_datetime_now DATETIME NOT NULL, order_datetime_for DATETIME NOT NULL, customer_id INTEGER NOT NULL REFERENCES tb_customer (_id), sub_order_id INTEGER NOT NULL REFERENCES tb_suborder (_id), status_id INTEGER NOT NULL REFERENCES tb_status (_id), type_order_id INTEGER NOT NULL REFERENCES tb_typeorder (_id), num_persons INTEGER NOT NULL, location TEXT NOT NULL, global_id INTEGER, comment TEXT);
+CREATE TABLE tb_order (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, order_datetime_now DATETIME NOT NULL, order_datetime_for DATETIME NOT NULL, customer_id INTEGER NOT NULL REFERENCES tb_customer (_id), status_id INTEGER NOT NULL REFERENCES tb_status (_id), type_order_id INTEGER NOT NULL REFERENCES tb_typeorder (_id), num_persons INTEGER NOT NULL, address_id INTEGER NOT NULL REFERENCES tb_address (_id), global_id INTEGER, comment TEXT);
 -- Table keeps information about categories
 CREATE TABLE tb_category (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, cat_name TEXT NOT NULL UNIQUE, description TEXT (60), order_id INT REFERENCES tb_order (_id), pic TEXT);
 INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (1, 'All day breakfast', 'Comes with garlic fried rice and fried egg. Combbied into one meal.', 1, 'cat_breakfast');

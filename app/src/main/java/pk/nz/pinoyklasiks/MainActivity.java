@@ -28,8 +28,10 @@ import java.util.List;
 
 
 import pk.nz.pinoyklasiks.activities.ListOfProductsActivity;
+import pk.nz.pinoyklasiks.activities.SubOrderActivity;
 import pk.nz.pinoyklasiks.activities.fragments.LeftMenuFragment;
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
+import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import utils.CategoryAdapter;
@@ -201,7 +203,10 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.tmenu_cart:
-                Toast.makeText(getApplicationContext(), "The about menu was selected!", Toast.LENGTH_LONG).show();
+
+                Intent intentSubOrder = new Intent(this, SubOrderActivity.class);
+                startActivity(intentSubOrder);
+                Toast.makeText(getApplicationContext(), "The cart menu was selected!", Toast.LENGTH_LONG).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
