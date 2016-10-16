@@ -10,6 +10,12 @@ package pk.nz.pinoyklasiks.db;
  */
 
 public interface IDBInfo {
+
+    // The constant for WebService
+    public static String WSHOST = "http://jenny.kz/ws/pinoy_webservice.php";
+    public static String CREDENTTALS="429599";
+
+    // The constant for SQLite DB
     public static String PATH_TO_DB_RES = "res/raw/db.sql";
     public static String DBName = "db_pinoy_klasiks";
     public static int VER = 9;

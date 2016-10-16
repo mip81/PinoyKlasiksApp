@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.os.SystemClock;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.ListView;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -40,12 +40,16 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
 
     private BufferedReader br = null;
-    private SQLiteDatabase db;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    protected SQLiteDatabase db; // DB connection
+
+    // Format for price output
+    protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+    protected Context context; // Application context
 
     public DBManager(Context ctx) {
         super(ctx, DBName, null, VER);
-
+        context = ctx;
 
     }
 
@@ -164,12 +168,12 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                     AbstractProduct product = new Product();
 
                     // Fill object with data
-                      product.set_id(cursor.getInt( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_ID)) );
-                      product.setCat_id(cursor.getInt( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_CAT_ID)) );
-                      product.setProduct_name( cursor.getString(cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_NAME)) );
-                      product.setProduct_desc( cursor.getString( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_DESC)) );
-                      product.setProduct_price( cursor.getDouble( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_PRICE)) );
-                      product.setProduct_pic( cursor.getString( cursor.getColumnIndex(IDBInfo.TB_PRODUCT_PRODUCT_PIC)) );
+                      product.set_id(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)) );
+                      product.setCat_id(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_CAT_ID)) );
+                      product.setProduct_name( cursor.getString(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_NAME)) );
+                      product.setProduct_desc( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_DESC)) );
+                      product.setProduct_price( cursor.getDouble( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PRICE)) );
+                      product.setProduct_pic( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PIC)) );
 
                     list.add(product);
                     cursor.moveToNext();
@@ -236,10 +240,20 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     public void cleanSubOrder(int orderId) {
         db = getWritableDatabase();
 
-        int rows = db.delete(TB_SUBORDER, TB_SUBORDER_ORDER_ID+"=,", new String[]{""+orderId});
-        if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: cleanSubOrder ::: amount of rows was deleted : "+rows);
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " cleanSubOrder ::: order_id : "+orderId);
+
+        int rows = db.delete(TB_SUBORDER, TB_SUBORDER_ORDER_ID+"=?", new String[]{ String.valueOf(orderId) });
+
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " cleanSubOrder ::: amount of rows was affected : "+rows);
+
     }
 
+    /**
+     *
+     * @param product   the product to add
+     * @param quantity  quantity of product
+     * @param isUpdateQuantity
+     */
     @Override
     public void addProductToOrder(AbstractProduct product, int quantity, boolean isUpdateQuantity) {
         String sql;
@@ -278,7 +292,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
             db.insert(TB_SUBORDER, null , cv); // insert the product
 
-            if(AppConst.DEBUG) Log.d(AppConst.LOGD,"  ::: DBManager ::: AddProductToOrder ::: INSERT NEW PRODUCT ::: Name : "+product.getProduct_name()+"ORDER_ID "+id);
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD,"  ::: DBManager ::: AddProductToOrder ::: INSERT NEW PRODUCT ::: NAME : "+product.getProduct_name()+
+                                    " ::: PRODUCT ID : "+product.get_id()+" ::: ORDER_ID "+id);
 
         }else{ // the open order exist check if the product in the cart update quantity or insert new
 
@@ -304,7 +319,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
                 cv.put(TB_SUBORDER_QUANTITY, productQuantity);
                 db.update(TB_SUBORDER, cv, TB_SUBORDER_ID+"=?", new String[]{""+subOrderId} );
-                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: DBManager ::: AddProductToOrder ::: UPDATED PRODUCT : "+product.getProduct_name()+" quantity : "+productQuantity);
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: DBManager ::: AddProductToOrder ::: UPDATED PRODUCT : "+product.getProduct_name()+
+                                        " ::: PRODUCT_ID : "+product.get_id()+" QUANTITY : "+productQuantity);
 
             }else{ // I there is no product then just insert new
 
@@ -328,7 +344,12 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     }
 
 
-
+    /**
+     *  Method return SubOrder with given orderId
+     *  (ex getting the cart if pass getIdOpenOrder())
+     * @param order_id order's id
+     * @return
+     */
     @Override
     public SubOrder getSubOrderByOrderId(int order_id) {
         db = getReadableDatabase();
@@ -336,6 +357,21 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         Map<AbstractProduct, Integer> hmPoducts = suborder.getMapProducts();
       Cursor cursor;
             if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: getSubOrderByOrderId ::: ");
+
+
+
+
+// TODO: 10/16/16 Define the id product in the query otherwise we get wrong ID in the product
+
+
+        String[] fields = { TB_PRODUCT+"."+TB_PRODUCT_ID,
+                            TB_PRODUCT+"."+TB_PRODUCT_PRODUCT_NAME,
+                            TB_PRODUCT+"."+TB_PRODUCT_PRODUCT_PIC,
+                            TB_PRODUCT+"."+TB_PRODUCT_PRODUCT_DESC,
+                            TB_PRODUCT+"."+TB_PRODUCT_PRODUCT_PRICE,
+                            TB_SUBORDER+"."+TB_SUBORDER_ID,
+                            TB_SUBORDER+"."+TB_SUBORDER_QUANTITY};
+
 
          // get cursor join 2 tables tb_sub_category and tb_product
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
@@ -348,6 +384,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
              if(cursor.moveToFirst()){
                  while (!cursor.isAfterLast()){
                      AbstractProduct product = new Product();
+                        product.set_id( cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)));
                         product.setProduct_name(cursor.getString(cursor.getColumnIndex( TB_PRODUCT_PRODUCT_NAME) ));
                         product.setProduct_desc(cursor.getString(cursor.getColumnIndex( TB_PRODUCT_PRODUCT_DESC) ));
                         product.setProduct_pic(cursor.getString(cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PIC) ));
@@ -367,13 +404,31 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         return null;
     }
 
-    // TODO: 10/13/16 finish the metod that delete product from order rename it
 
     @Override
     public void removeProductFromOrder(int id) {
 
+
     }
 
+    /**
+     * Return true if the app have access to internet
+     * @return boolean (true if has connection)
+     */
+    @Override
+    public boolean isOnline() {
+
+        // Getting connectivity service
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        //check if network is available
+        if( networkInfo != null && networkInfo.isConnectedOrConnecting() ){
+            return true;
+        }
+        return false;
+
+    }
 
     /**
      * Return id of order with status open
@@ -393,6 +448,18 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
             }
         }
         return 0;
+    }
+
+
+    /**
+     * Retrieve the date from tb_version table
+     * represent the last update of
+     * @return date
+     */
+    @Override
+    public Date getVersionDate() {
+
+        return null;
     }
 
     @Override

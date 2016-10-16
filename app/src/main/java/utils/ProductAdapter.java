@@ -2,6 +2,7 @@ package utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ import java.util.List;
 
 import pk.nz.pinoyklasiks.R;
 import pk.nz.pinoyklasiks.beans.AbstractProduct;
+import pk.nz.pinoyklasiks.beans.Product;
 import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
@@ -31,9 +34,11 @@ import pk.nz.pinoyklasiks.db.IDAOManager;
 
 public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
 
+    Handler handler;
     // Constructor of customer adapter
     public ProductAdapter(Context context, List<AbstractProduct> products) {
         super(context, 0, products);
+        handler = new Handler();
     }
 
     /**
@@ -61,7 +66,9 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
         TextView tvProductDesc = (TextView)convertView.findViewById(R.id.tvLVProductDescription);
         TextView tvProductPrice = (TextView)convertView.findViewById(R.id.tvLVProductPrice);
         ImageView ivPic = (ImageView)convertView.findViewById(R.id.ivLVProductPic);
-        Button btnAddToCart = (Button)convertView.findViewById(R.id.btnLVAddToCart);
+        ImageButton btnAddToCart = (ImageButton)convertView.findViewById(R.id.btnLVAddToCart);
+          btnAddToCart.setFocusable(false);
+          btnAddToCart.setFocusableInTouchMode(true);
 
 
 
@@ -108,6 +115,12 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
                     IDAOManager db = new DBManager(getContext());
                     db.addProductToOrder(product, 1 , false);
                     db.close();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), product.getProduct_name()+ " added to the cart", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }).start();
         }

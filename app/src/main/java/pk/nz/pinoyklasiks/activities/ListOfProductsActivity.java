@@ -84,11 +84,12 @@ public class ListOfProductsActivity extends AppCompatActivity {
         //get ListView
         lvProducts = (ListView)findViewById(R.id.lvProducts);
             lvProducts.setAdapter(productAdapter);
+                lvProducts.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                // read the product and pass it ti the ProductView
+                // read the product and pass it to the ProductView
                 AbstractProduct product = listProducts.get(position);
                  if(DEBUG) Log.d(LOG, product.toString());
                     Intent productIntent = new Intent(ListOfProductsActivity.this, ProductActivity.class);

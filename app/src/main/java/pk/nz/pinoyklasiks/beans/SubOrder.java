@@ -34,7 +34,7 @@ public class SubOrder implements Serializable {
         totalPrice = 0;
 
                 for(AbstractProduct p : mapProducts.keySet()){
-                    totalPrice += p.getProduct_price() + mapProducts.get(p);
+                    totalPrice += p.getProduct_price() * mapProducts.get(p);
                 }
         return totalPrice;
     }

@@ -1,5 +1,6 @@
 package pk.nz.pinoyklasiks.activities;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -21,6 +23,7 @@ import java.text.DecimalFormat;
 import pk.nz.pinoyklasiks.R;
 import pk.nz.pinoyklasiks.beans.AbstractProduct;
 import pk.nz.pinoyklasiks.beans.Product;
+import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 
@@ -99,6 +102,7 @@ public class ProductActivity extends AppCompatActivity {
     }
 
 
+
     /**
      * Add menu to the toolbar
      * @param menu
@@ -106,8 +110,18 @@ public class ProductActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
+        getMenuInflater().inflate(R.menu.activity_product, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.tmenu_cart){
+            Intent intentSubOrder = new Intent(this, SubOrderActivity.class);
+            startActivity(intentSubOrder);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**

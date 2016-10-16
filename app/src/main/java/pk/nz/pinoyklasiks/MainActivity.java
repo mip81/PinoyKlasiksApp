@@ -34,6 +34,7 @@ import pk.nz.pinoyklasiks.beans.AbstractCategory;
 import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
+import pk.nz.pinoyklasiks.db.WebService;
 import utils.CategoryAdapter;
 
 
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                              //getSupportActionBar().setSubtitle(R.string.subTitle);
 
 
+
         // WORKING WITH DRAWER LAYOUT AND NAVIGATION VIEW
         flLeftMenu = (FrameLayout)findViewById(R.id.flLeftMenu); // Get the layout for leftMenu
         leftMenuFragment = new LeftMenuFragment();              // Fragment with left menu;
@@ -94,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         // db manager for work with DB
-          db = new DBManager(this);
+          db = new WebService(this);
+
 
 
         ///////////////////////////////////////////////////////////////////////////
