@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,10 +39,13 @@ public class SubOrderActivity extends AppCompatActivity {
     ListView lvSubOrders;                   // Data of order
     TextView tvSubOrderTotal;               // TextView for present the total cost
     SubOrderProductAdapter adapter;         // Populate the data to ListView
-    Handler handler;
+    Handler handler;                        // Work with UI
     SubOrder subOrder;                      // suborder of order
     IDAOManager dbManager;                  // DB helper;
     DecimalFormat df = new DecimalFormat("$##.00"); // Format for price output
+
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +57,16 @@ public class SubOrderActivity extends AppCompatActivity {
 
         //find list view and bind the adapter for popuating data
         lvSubOrders = (ListView)findViewById(R.id.lvSubOrder);
+        lvSubOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(AppConst.LOGD, "CLICKED IN THE ACTIVITY  "+view.getClass());
+            }
+        });
+
+
+
+
         tvSubOrderTotal = (TextView)findViewById(R.id.tvSubOrderTotal);
 
         //Start thread which fetch the data from DB and fill ListView
@@ -59,14 +75,18 @@ public class SubOrderActivity extends AppCompatActivity {
 
         // Add toolbar to activity
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_suborder);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+            setSupportActionBar(toolbar);
+                setTitle(R.string.cartTitle);
+                getSupportActionBar().setHomeButtonEnabled(true);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
     }
+
+
+
+
+
 
     /**
      *  Add menu configuration
@@ -80,6 +100,12 @@ public class SubOrderActivity extends AppCompatActivity {
     }
 
 
+    /**
+     *  Work with ActionBar menu
+     *  procees button "Clear"
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -108,37 +134,57 @@ public class SubOrderActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * Start SubOrderDataThread
+     * (read the data from tb_suborder and populate it to ListView thru custom adapter)
+     */
+    public void updateSubOrder(){
+        new SubOrderDataThread().start();
+    }
+
+
+
+    /**
+     * Thread read the data from tb_suborder and populate it to ListView thru custom adapter
+     */
     class SubOrderDataThread extends Thread{
         @Override
         public void run() {
             // get the id of order
             dbManager = new DBManager(getApplicationContext());
-                int orderId = dbManager.getIdOpenOrder();
+                final int orderId = dbManager.getIdOpenOrder();
 
 
             // get the suborder of order (Cart)
             subOrder = dbManager.getSubOrderByOrderId(orderId);
 
 
+            // If there are no products in the suborder clear the ListView
             if(subOrder == null){
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(), "You cart is empty.", Toast.LENGTH_SHORT).show();
+                        lvSubOrders.setAdapter(null);
+                        tvSubOrderTotal.setText("$0");
+
                     }
                 });
             }else{
-                // Assign the adapter to listview
-
-                final List listProducts = Arrays.asList(subOrder.getMapProducts().entrySet().toArray());
-                adapter = new SubOrderProductAdapter(getApplicationContext(), listProducts);
-
-                // add data to UI
+                // Create and assign the adapter with products and populate the total price
+                // and notify the listView that data was changed
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        lvSubOrders.setAdapter(adapter);
+
+                        List listProducts = Arrays.asList(subOrder.getMapProducts().entrySet().toArray());
+                            adapter = new SubOrderProductAdapter(SubOrderActivity.this, listProducts, orderId);
+                                lvSubOrders.setAdapter(adapter);
+                                    lvSubOrders.deferNotifyDataSetChanged();
+
                         tvSubOrderTotal.setText(df.format( subOrder.getTotalPrice()) );
+
                     }
 
                 });

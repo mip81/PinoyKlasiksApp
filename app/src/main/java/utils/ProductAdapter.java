@@ -34,7 +34,12 @@ import pk.nz.pinoyklasiks.db.IDAOManager;
 
 public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
 
-    Handler handler;
+    private Handler handler;
+    private DecimalFormat df = new DecimalFormat("$##.00");
+
+
+
+
     // Constructor of customer adapter
     public ProductAdapter(Context context, List<AbstractProduct> products) {
         super(context, 0, products);
@@ -53,8 +58,7 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the AbstractCategory object for this position
-        final AbstractProduct abstractProduct = getItem(position);
-        DecimalFormat df = new DecimalFormat("$##.00");
+        AbstractProduct abstractProduct = getItem(position);
 
         // Check if this view null inflate it create another one
         if(convertView == null){
@@ -83,10 +87,10 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
             Toast.makeText(getContext(), "Error : "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        // Populate our date into the layout views
+        // Populate our data into the layout views
             tvProductName.setText(abstractProduct.getProduct_name());
             tvProductDesc.setText(abstractProduct.getProduct_desc());
-            tvProductPrice.setText(df.format(abstractProduct.getProduct_price()) ) ;
+            tvProductPrice.setText( df.format(abstractProduct.getProduct_price()) ) ;
             btnAddToCart.setOnClickListener(new ClickAddProductListener(abstractProduct));
 
 

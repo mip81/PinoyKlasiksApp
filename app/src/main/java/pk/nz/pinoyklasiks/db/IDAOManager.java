@@ -82,6 +82,14 @@ public interface IDAOManager {
      */
     public void cleanSubOrder(int orderId);
 
+
+    /**
+     * Method delete the product from suborder(cart)
+     * @param product need to be deleted (used id of it)
+     * @param orderId of suborder
+     */
+    public void deleteProductfromSubOrder(AbstractProduct product, int orderId);
+
     /**
      * Method close DB
      */

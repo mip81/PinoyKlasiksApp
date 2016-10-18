@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +22,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.InputStream;
 import java.util.List;
 
 
@@ -35,6 +39,7 @@ import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import pk.nz.pinoyklasiks.db.WebService;
+import utils.AppConst;
 import utils.CategoryAdapter;
 
 
@@ -55,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private FragmentTransaction ft;    // for operations with the fragment (ex leftMenu)
     private LeftMenuFragment leftMenuFragment;
 
-
     private ListView lvCategories ;          // ListView of categories
     private CategoryAdapter adapter;        // Adapter for populating data
     private List<AbstractCategory> listAbstractCategory;   // List with categories
@@ -64,12 +68,15 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;           // The main layout in app (will be used to disable NAVIGATION VIEW)
     private ActionBarDrawerToggle drawerToggle; // Need to create humburger menu, to link DrawerLayout and Toolbar
 
+    private ImageView ivAdvert;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Install toolbar and settings for it
             Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -85,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         leftMenuFragment = new LeftMenuFragment();              // Fragment with left menu;
         navView = (NavigationView)findViewById(R.id.navViewMenu);
         navView.setItemIconTintList(null);
-            // Add listener that proceed clicks om menu
+
+        // Add listener that proceed clicks om menu
             navView.setNavigationItemSelectedListener(new ClickNavMenuListener());
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
 
@@ -139,14 +147,31 @@ public class MainActivity extends AppCompatActivity {
         lvCategories  = (ListView)findViewById(R.id.lvCategories);
            listAbstractCategory =  db.getCategories();
                 adapter = new CategoryAdapter(getApplicationContext(), listAbstractCategory);
+
+        // Create View from XML layout and add it to ListView as header
         LayoutInflater inflater = getLayoutInflater();
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.header_categories, lvCategories, false);
                     lvCategories.addHeaderView(header);
                     lvCategories.setAdapter(adapter);
                     // Add click listener
                         lvCategories.setOnItemClickListener(new ClickCategoryListener());
-    }
 
+
+
+        // get the ImageView from header where we gonna show specials
+        ivAdvert = (ImageView) header.findViewById(R.id.ivAdvert);
+
+
+
+        try {
+            InputStream is = getAssets().open("adv1.jpg");
+             ivAdvert.setImageDrawable(Drawable.createFromStream(is, null));
+
+        }catch (Exception e){
+            Log.e(" ::: ERR ::: ", " SET IMAGE  "+e);
+        }
+
+    }
 
 
     /**

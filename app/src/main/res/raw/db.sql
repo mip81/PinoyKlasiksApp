@@ -377,9 +377,9 @@ INSERT INTO tb_suburb (_id, suburb_name, district_id) VALUES (360, 'Woodlands Pa
 -- Table keeps information about products available in resauraunt
 CREATE TABLE tb_product (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, cat_id INT NOT NULL REFERENCES tb_category (_id), product_name TEXT NOT NULL UNIQUE, product_desc TEXT NOT NULL, product_price REAL NOT NULL, product_pic TEXT);
 INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (1, 1, 'Tapsilog', 'Beef strips marinated in soy sauce.', 13.5, 'tapsilog');
-INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (2, 1, 'Longsilog', 'Filipino style pork sausage.', 13.5, 'lonsilog');
+INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (2, 1, 'Longsilog', 'Filipino style pork sausage.', 13.5, 'longsilog');
 INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (3, 1, 'Tocilog', 'Cured pork meat with sugar and salt.', 13.5, 'tocilog');
-INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (4, 1, 'Bangsilog', 'Marinated milkfish in vinegar.', 15, 'bansilog');
+INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (4, 1, 'Bangsilog', 'Marinated milkfish in vinegar.', 15, 'bangsilog');
 INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (5, 3, 'Sizzling Pinakbet', 'All the best vegetables in the Philipines has to offer come together with bagoong in this llocano vegetable medley.', 15, 'sizpin');
 INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (6, 3, 'Laing', 'Taro leaves, slowly simmered in coconut cream and flavoured with pork, ginger and chrimp paste.', 14.5, 'laing');
 INSERT INTO tb_product (_id, cat_id, product_name, product_desc, product_price, product_pic) VALUES (7, 3, 'Ensaladang Talong (Seasonal)', 'A traditional accompaniment pinoy fare: grilled eggplants with freshly chopped onion, tomatoes & vinaigrette.', 14.5, 'enstal');

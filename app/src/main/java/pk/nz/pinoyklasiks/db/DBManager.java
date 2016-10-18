@@ -38,6 +38,7 @@ import utils.AppConst;
  */
 public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, IDAOManager {
 
+    private final String CLASSNAME = DBManager.class.getCanonicalName();
 
     private BufferedReader br = null;
     protected SQLiteDatabase db; // DB connection
@@ -55,7 +56,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
     /**
      * Create and load default data
-     * @param db
+     * @param db Sqlite db
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -180,6 +181,9 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                 }
             }
         }
+            //free resource
+            if( cursor!= null ) cursor.close();
+
         return list;
     }
 
@@ -356,15 +360,11 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         SubOrder suborder = new SubOrder();
         Map<AbstractProduct, Integer> hmPoducts = suborder.getMapProducts();
       Cursor cursor;
-            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: getSubOrderByOrderId ::: ");
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: getSubOrderByOrderId ::: order_id : "+order_id);
 
-
-
-
-// TODO: 10/16/16 Define the id product in the query otherwise we get wrong ID in the product
-
-
+        // Fields need to be return
         String[] fields = { TB_PRODUCT+"."+TB_PRODUCT_ID,
+                            TB_PRODUCT+"."+TB_PRODUCT_CAT_ID,
                             TB_PRODUCT+"."+TB_PRODUCT_PRODUCT_NAME,
                             TB_PRODUCT+"."+TB_PRODUCT_PRODUCT_PIC,
                             TB_PRODUCT+"."+TB_PRODUCT_PRODUCT_DESC,
@@ -375,26 +375,39 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
          // get cursor join 2 tables tb_sub_category and tb_product
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
         queryBuilder.setTables(TB_SUBORDER+","+TB_PRODUCT); // Set tables which will be join
-        queryBuilder.appendWhere(TB_SUBORDER+"."+TB_PRODUCT_ID+"="+TB_PRODUCT+"."+TB_PRODUCT_ID+
+
+        queryBuilder.appendWhere(TB_SUBORDER+"."+TB_SUBORDER_PRODUCT_ID+"="+TB_PRODUCT+"."+TB_PRODUCT_ID+
                                 " AND "+TB_SUBORDER+"."+TB_SUBORDER_ORDER_ID+"="+order_id);
 
         cursor = queryBuilder.query(db, null, null, null, null, null, null);
+
+        // get data about the suborder and build SubOrder object
         if (cursor != null ){
              if(cursor.moveToFirst()){
                  while (!cursor.isAfterLast()){
+
+                     // fill the product object and put it inside suborder
                      AbstractProduct product = new Product();
                         product.set_id( cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)));
-                        product.setProduct_name(cursor.getString(cursor.getColumnIndex( TB_PRODUCT_PRODUCT_NAME) ));
-                        product.setProduct_desc(cursor.getString(cursor.getColumnIndex( TB_PRODUCT_PRODUCT_DESC) ));
-                        product.setProduct_pic(cursor.getString(cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PIC) ));
-                        product.setProduct_price(cursor.getDouble(cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PRICE) ));
+                        product.setCat_id( cursor.getInt( cursor.getColumnIndex(TB_CATEGORY_ID) ));
+                        product.setProduct_name(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_NAME) ));
+                        product.setProduct_desc(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_DESC) ));
+                        product.setProduct_pic(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PIC) ));
+                        product.setProduct_price(cursor.getDouble( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PRICE) ));
+
                      int quantity = cursor.getInt( cursor.getColumnIndex( TB_SUBORDER_QUANTITY));
+
+                     if(AppConst.DEBUG) Log.d(AppConst.LOGD, CLASSNAME+" ::: getSubOrderByOrderId ::: put to suborder product : "+product);
+
+                     // put in map  products and quantity and set it to SubOrder object later will be used in adapter for ListView
                      hmPoducts.put(product, quantity);
 
                      cursor.moveToNext();
 
                  }
+
                     suborder.setOrder_id( order_id );
                     cursor.close();
 
@@ -444,6 +457,9 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         if(cursor != null){
             if(cursor.moveToFirst()) {
                 int id = cursor.getInt(cursor.getColumnIndex(IDBInfo.TB_ORDER_ID));
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " Open order ID : "+id);
+
+                cursor.close();
                 return id;
             }
         }
@@ -452,18 +468,33 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
 
     /**
+     * Method delete the product from suborder(cart)
+    */
+    @Override
+    public void deleteProductfromSubOrder( AbstractProduct product, int orderId ) {
+        int productId = product.get_id();
+
+        db = getWritableDatabase();
+        db.delete(TB_SUBORDER, TB_SUBORDER_PRODUCT_ID+"=? AND "+TB_SUBORDER_ORDER_ID+"=?", new String[]{""+productId, ""+orderId});
+
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, CLASSNAME+" ::: DELETED FROM SUBORDER ::: PRODUCT : "+product.getProduct_name());
+
+    }
+
+    /**
      * Retrieve the date from tb_version table
      * represent the last update of
      * @return date
      */
     @Override
     public Date getVersionDate() {
-
+        // TODO: 10/17/16 get the version date of the DB
         return null;
     }
 
     @Override
     public Order getOrderById(int id) {
+        // TODO: 10/17/16 Get the order from DB
         return null;
     }
 
