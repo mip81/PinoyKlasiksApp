@@ -74,7 +74,7 @@ public class SubOrderProductAdapter extends ArrayAdapter<Map.Entry>{
         int quantity = entry.getValue();
 
         // Calculate the price
-        Double cost = abstractProduct.getProduct_price() * Double.valueOf(entry.getValue());
+        Double cost = abstractProduct.getProductPrice() * Double.valueOf(entry.getValue());
 
         // Check if this view null inflate it create another one
         if(convertView == null){
@@ -102,13 +102,13 @@ public class SubOrderProductAdapter extends ArrayAdapter<Map.Entry>{
         ImageView ivPic = (ImageView)convertView.findViewById(R.id.ivLVSubOrderProductPic);
 
 
-                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " SubOrderProductAdapter : prod. name : "+abstractProduct.getProduct_name()+
-                                                        " price : "+abstractProduct.getProduct_price()+ " quant. : "+quantity);
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " SubOrderProductAdapter : prod. name : "+abstractProduct.getProductName()+
+                                                        " price : "+abstractProduct.getProductPrice()+ " quant. : "+quantity);
 
 
         // Read images from the assets to imageView (names from product object)
         try{
-            InputStream is = getContext().getAssets().open(abstractProduct.getProduct_pic()+".jpg");
+            InputStream is = getContext().getAssets().open(abstractProduct.getProductPic()+".jpg");
             Drawable pic = Drawable.createFromStream(is, null);
             ivPic.setImageDrawable(pic);  // Read the pic of product and assign it to view
 
@@ -119,8 +119,8 @@ public class SubOrderProductAdapter extends ArrayAdapter<Map.Entry>{
 
 
             //Populate our date into the layout lv_suborder
-            tvProductName.setText(abstractProduct.getProduct_name());
-            tvProductPrice.setText(df.format(abstractProduct.getProduct_price()) ) ;
+            tvProductName.setText(abstractProduct.getProductName());
+            tvProductPrice.setText(df.format(abstractProduct.getProductPrice()) ) ;
             tvProductTotalPrice.setText(" x "+quantity+" : "+df.format(cost));
             tvProductQuantity.setText(""+quantity);
 

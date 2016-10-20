@@ -1,11 +1,7 @@
 package pk.nz.pinoyklasiks.beans;
 
-import android.text.method.DateTimeKeyListener;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 
 /**
@@ -16,48 +12,48 @@ import java.util.HashMap;
 
 public class Order implements Serializable{
 
-    private int _id;
-    private int global_id;
-    private Date order_datetime_now;
-    private Date order_datetime_for;
-    private Customer customer;
-    private SubOrder suborder;
-    private Status status;
-    private TypeOrder typeOrder;
-    private int num_persons;
-    private Address address;
-    private String comment;
+    protected int id;
+    protected int global_id;
+    protected Date orderDatetimeNow;
+    protected Date orderDatetimeFor;
+    protected Customer customer;
+    protected SubOrder suborder;
+    protected Status status;
+    protected TypeOrder typeOrder;
+    protected int numPersons =1;
+    protected Address address;
+    protected String comment="";
 
-    public int get_id() {
-        return _id;
+    public int getId() {
+        return id;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setId(int _id) {
+        this.id = _id;
     }
 
-    public int getGlobal_id() {
+    public int getGlobalId() {
         return global_id;
     }
 
-    public void setGlobal_id(int global_id) {
+    public void setGlobalId(int global_id) {
         this.global_id = global_id;
     }
 
-    public Date getOrder_datetime_now() {
-        return order_datetime_now;
+    public Date getOrderDatetimeNow() {
+        return orderDatetimeNow;
     }
 
-    public void setOrder_datetime_now(Date order_datetime_now) {
-        this.order_datetime_now = order_datetime_now;
+    public void setOrderDatetimeNow(Date orderDatetimeNow) {
+        this.orderDatetimeNow = orderDatetimeNow;
     }
 
-    public Date getOrder_datetime_for() {
-        return order_datetime_for;
+    public Date getOrderDatetimeFor() {
+        return orderDatetimeFor;
     }
 
-    public void setOrder_datetime_for(Date order_datetime_for) {
-        this.order_datetime_for = order_datetime_for;
+    public void setOrderDatetimeFor(Date order_datetime_for) {
+        this.orderDatetimeFor = order_datetime_for;
     }
 
     public Customer getCustomer() {
@@ -93,11 +89,11 @@ public class Order implements Serializable{
     }
 
     public int getNum_persons() {
-        return num_persons;
+        return numPersons;
     }
 
     public void setNum_persons(int num_persons) {
-        this.num_persons = num_persons;
+        this.numPersons = num_persons;
     }
 
     public Address getAddress() {

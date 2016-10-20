@@ -61,7 +61,7 @@ public class CategoryAdapter extends ArrayAdapter<AbstractCategory> {
         ImageView ivCatPic = (ImageView)convertView.findViewById(R.id.ivCatPic);
 
         // Populate our date into the layout views
-            tvCatName.setText(abstractCategory.getCat_name());
+            tvCatName.setText(abstractCategory.getCatName());
             tvCatDesc.setText(abstractCategory.getDescription());
 
         try {

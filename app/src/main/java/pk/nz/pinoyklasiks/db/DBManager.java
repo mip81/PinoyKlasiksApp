@@ -16,17 +16,22 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
 import pk.nz.pinoyklasiks.beans.AbstractProduct;
+import pk.nz.pinoyklasiks.beans.Address;
 import pk.nz.pinoyklasiks.beans.Category;
+import pk.nz.pinoyklasiks.beans.Customer;
+import pk.nz.pinoyklasiks.beans.District;
 import pk.nz.pinoyklasiks.beans.Order;
 import pk.nz.pinoyklasiks.beans.Product;
+import pk.nz.pinoyklasiks.beans.Status;
 import pk.nz.pinoyklasiks.beans.SubOrder;
+import pk.nz.pinoyklasiks.beans.Suburb;
+import pk.nz.pinoyklasiks.beans.TypeOrder;
 import utils.AppConst;
 
 /**
@@ -121,10 +126,10 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
             if(cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     AbstractCategory abstractCategory = new Category();
-                        abstractCategory.set_id( cursor.getInt(cursor.getColumnIndexOrThrow(TB_CATEGORY_ID)) );
-                        abstractCategory.setCat_name( cursor.getString(cursor.getColumnIndex(TB_CATEGORY_CAT_NAME)) );
+                        abstractCategory.setId( cursor.getInt(cursor.getColumnIndexOrThrow(TB_CATEGORY_ID)) );
+                        abstractCategory.setCatName( cursor.getString(cursor.getColumnIndex(TB_CATEGORY_CAT_NAME)) );
                         abstractCategory.setDescription( cursor.getString(cursor.getColumnIndex(TB_CATEGORY_DESCRIPTION)) );
-                        abstractCategory.setOrder_id( cursor.getInt(cursor.getColumnIndex(TB_CATEGORY_ORDER_ID)) );
+                        abstractCategory.setOrderId( cursor.getInt(cursor.getColumnIndex(TB_CATEGORY_ORDER_ID)) );
                         abstractCategory.setPic( cursor.getString(cursor.getColumnIndex(TB_CATEGORY_PIC)) );
 
 
@@ -169,12 +174,12 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                     AbstractProduct product = new Product();
 
                     // Fill object with data
-                      product.set_id(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)) );
-                      product.setCat_id(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_CAT_ID)) );
-                      product.setProduct_name( cursor.getString(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_NAME)) );
-                      product.setProduct_desc( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_DESC)) );
-                      product.setProduct_price( cursor.getDouble( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PRICE)) );
-                      product.setProduct_pic( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PIC)) );
+                      product.setId(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)) );
+                      product.setCatId(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_CAT_ID)) );
+                      product.setProductName( cursor.getString(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_NAME)) );
+                      product.setProductDesc( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_DESC)) );
+                      product.setProductPrice( cursor.getDouble( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PRICE)) );
+                      product.setProductPic( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PIC)) );
 
                     list.add(product);
                     cursor.moveToNext();
@@ -244,7 +249,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     public void cleanSubOrder(int orderId) {
         db = getWritableDatabase();
 
-            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " cleanSubOrder ::: order_id : "+orderId);
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " cleanSubOrder ::: orderId : "+orderId);
 
         int rows = db.delete(TB_SUBORDER, TB_SUBORDER_ORDER_ID+"=?", new String[]{ String.valueOf(orderId) });
 
@@ -290,20 +295,20 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
             cv.clear();
                 cv.put(TB_SUBORDER_ORDER_ID, id);
-                cv.put(TB_SUBORDER_PRODUCT_ID, product.get_id());
-                cv.put(TB_SUBORDER_PRICE, product.getProduct_price());
+                cv.put(TB_SUBORDER_PRODUCT_ID, product.getId());
+                cv.put(TB_SUBORDER_PRICE, product.getProductPrice());
                 cv.put(TB_SUBORDER_QUANTITY, quantity);
 
             db.insert(TB_SUBORDER, null , cv); // insert the product
 
-            if(AppConst.DEBUG) Log.d(AppConst.LOGD,"  ::: DBManager ::: AddProductToOrder ::: INSERT NEW PRODUCT ::: NAME : "+product.getProduct_name()+
-                                    " ::: PRODUCT ID : "+product.get_id()+" ::: ORDER_ID "+id);
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD,"  ::: DBManager ::: AddProductToOrder ::: INSERT NEW PRODUCT ::: NAME : "+product.getProductName()+
+                                    " ::: PRODUCT ID : "+product.getId()+" ::: ORDER_ID "+id);
 
         }else{ // the open order exist check if the product in the cart update quantity or insert new
 
            cursor = db.query(TB_SUBORDER, new String[]{TB_SUBORDER_ID, TB_SUBORDER_QUANTITY},
                    TB_SUBORDER_PRODUCT_ID+"=? AND "+TB_SUBORDER_ORDER_ID + "=?",
-                   new String[]{""+product.get_id(), ""+order_id}, null, null,null);
+                   new String[]{""+product.getId(), ""+order_id}, null, null,null);
 
             // if product exists then update only the quantity
             if(cursor.getCount() > 0){
@@ -323,19 +328,19 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
                 cv.put(TB_SUBORDER_QUANTITY, productQuantity);
                 db.update(TB_SUBORDER, cv, TB_SUBORDER_ID+"=?", new String[]{""+subOrderId} );
-                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: DBManager ::: AddProductToOrder ::: UPDATED PRODUCT : "+product.getProduct_name()+
-                                        " ::: PRODUCT_ID : "+product.get_id()+" QUANTITY : "+productQuantity);
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: DBManager ::: AddProductToOrder ::: UPDATED PRODUCT : "+product.getProductName()+
+                                        " ::: PRODUCT_ID : "+product.getId()+" QUANTITY : "+productQuantity);
 
             }else{ // I there is no product then just insert new
 
                 cv.clear();
                     cv.put(TB_SUBORDER_ORDER_ID, order_id);
-                    cv.put(TB_SUBORDER_PRODUCT_ID, product.get_id());
+                    cv.put(TB_SUBORDER_PRODUCT_ID, product.getId());
                     cv.put(TB_SUBORDER_QUANTITY, quantity);
-                    cv.put(TB_SUBORDER_PRICE, product.getProduct_price());
+                    cv.put(TB_SUBORDER_PRICE, product.getProductPrice());
 
                 db.insert(TB_SUBORDER, null, cv);
-                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: DBManager ::: AddProductToOrder ::: INSERTED NEW PRODUCT : "+product.getProduct_name()+" quantity : "+quantity);
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: DBManager ::: AddProductToOrder ::: INSERTED NEW PRODUCT : "+product.getProductName()+" quantity : "+quantity);
             }
         }
     } // END addProductToOrder()
@@ -360,7 +365,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         SubOrder suborder = new SubOrder();
         Map<AbstractProduct, Integer> hmPoducts = suborder.getMapProducts();
       Cursor cursor;
-            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: getSubOrderByOrderId ::: order_id : "+order_id);
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: getSubOrderByOrderId ::: orderId : "+order_id);
 
         // Fields need to be return
         String[] fields = { TB_PRODUCT+"."+TB_PRODUCT_ID,
@@ -390,12 +395,12 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
                      // fill the product object and put it inside suborder
                      AbstractProduct product = new Product();
-                        product.set_id( cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)));
-                        product.setCat_id( cursor.getInt( cursor.getColumnIndex(TB_CATEGORY_ID) ));
-                        product.setProduct_name(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_NAME) ));
-                        product.setProduct_desc(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_DESC) ));
-                        product.setProduct_pic(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PIC) ));
-                        product.setProduct_price(cursor.getDouble( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PRICE) ));
+                        product.setId( cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)));
+                        product.setCatId( cursor.getInt( cursor.getColumnIndex(TB_CATEGORY_ID) ));
+                        product.setProductName(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_NAME) ));
+                        product.setProductDesc(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_DESC) ));
+                        product.setProductPic(cursor.getString( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PIC) ));
+                        product.setProductPrice(cursor.getDouble( cursor.getColumnIndex( TB_PRODUCT_PRODUCT_PRICE) ));
 
                      int quantity = cursor.getInt( cursor.getColumnIndex( TB_SUBORDER_QUANTITY));
 
@@ -408,7 +413,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
                  }
 
-                    suborder.setOrder_id( order_id );
+                    suborder.setOrderId( order_id );
                     cursor.close();
 
                      return suborder;
@@ -417,12 +422,226 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         return null;
     }
 
+    /**
+     * Return Status object by ID
+     *
+     * @param id
+     * @return Status , null if no such ID
+     */
+    @Override
+    public Status getStatusById(int id) {
+        Status status = null;
+        db = getReadableDatabase();
+        Cursor cursor = db.query(TB_STATUS,null,"_id = ?", new String[]{""+id}, null, null, null);
+            if(cursor != null){
+
+                if(cursor.moveToFirst()){
+                        // fill Status object
+                    status = new Status(cursor.getInt( cursor.getColumnIndex(TB_STATUS_ID)) ,
+                                        cursor.getString( cursor.getColumnIndex(TB_STATUS_STATUS_NAME)) );
+                    cursor.close();
+                }
+                return status;
+            }
+
+            return null;
+    }
+
+
+    /**
+     * Return TypeOrder object by ID
+     * @param id
+     * @return TypeOrder
+     */
+    @Override
+    public TypeOrder getTypeOrderById(int id) {
+        TypeOrder typeOrder = null;
+        db = getReadableDatabase();
+        Cursor cursor = db.query( TB_TYPEORDER, null,"_id = ?", new String[]{""+id}, null, null, null);
+        if(cursor != null){
+
+            if(cursor.moveToFirst()){
+                // fill Status object
+                typeOrder = new TypeOrder(cursor.getInt( cursor.getColumnIndex(TB_TYPEORDER_ID)) ,
+                        cursor.getString( cursor.getColumnIndex(TB_TYPEORDER_TYPE_ORDER)) );
+                cursor.close();
+            }
+            return typeOrder;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Return Customer object by ID
+     * @param id
+     * @return Customer if there is no id return null
+     */
+    @Override
+    public Customer getCustomerById(int id) {
+        Customer customer = null;
+        Address address = null;
+
+        db = getReadableDatabase();
+
+        Cursor cursor = db.query( TB_CUSTOMER, null,"_id = ?", new String[]{""+id}, null, null, null);
+        if(cursor != null){
+
+            if(cursor.moveToFirst()){
+                // fill Address and Customer object
+                address = getAddressById(cursor.getInt( cursor.getColumnIndex(TB_CUSTOMER_ADDRESS_ID)) );
+
+                customer = new Customer(cursor.getInt( cursor.getColumnIndex(TB_CUSTOMER_ID)),
+                                        cursor.getString( cursor.getColumnIndex(TB_CUSTOMER_CUSTOMER_NAME)),
+                                        cursor.getString( cursor.getColumnIndex(TB_CUSTOMER_PHONE_NUMBER)),
+                                        cursor.getString( cursor.getColumnIndex(TB_CUSTOMER_EMAIL)),
+                                        address);
+
+                cursor.close();
+            }
+            return customer;
+        }
+
+        return null;
+    }
+
+    /**
+     * Return Category object by ID
+     * @param id
+     * @return Category
+     */
+    @Override
+    public Category getCategoryById(int id) {
+        Category category = null;
+        db = getReadableDatabase();
+        Cursor cursor = db.query(TB_CATEGORY,null,"_id = ?", new String[]{""+id}, null, null, null);
+        if(cursor != null){
+
+            if(cursor.moveToFirst()){
+                // fill Category object
+                category = new Category(cursor.getInt( cursor.getColumnIndex(TB_CATEGORY_ID)) ,
+                            cursor.getString( cursor.getColumnIndex(TB_CATEGORY_CAT_NAME)),
+                            cursor.getString( cursor.getColumnIndex(TB_CATEGORY_DESCRIPTION)),
+                            cursor.getString( cursor.getColumnIndex(TB_CATEGORY_PIC)) );
+                cursor.close();
+            }
+            return category;
+        }
+        return null;
+    }
+
+    /**
+     * Return Disctrict object by ID
+     * @param id
+     * @return District
+     */
 
     @Override
-    public void removeProductFromOrder(int id) {
+    public District getDistrictById(int id) {
+        District district = null;
+        db = getReadableDatabase();
+        Cursor cursor = db.query(TB_CATEGORY,null,"_id = ?", new String[]{""+id}, null, null, null);
+        if(cursor != null){
 
-
+            if(cursor.moveToFirst()){
+                // fill Category object
+                district = new District(cursor.getInt( cursor.getColumnIndex(TB_DISTRICT_ID)) ,
+                        cursor.getString( cursor.getColumnIndex(TB_DISTRICT_DISTRICT_NAME)));
+                cursor.close();
+            }
+            return district;
+        }
+        return null;
     }
+
+    /**
+     * Return Suburb object by ID
+     * @param id
+     * @return Suburb
+     */
+    @Override
+    public Suburb getSuburbById(int id) {
+        Suburb suburb = null;
+        District district = null;
+
+        db = getReadableDatabase();
+        Cursor cursor = db.query(TB_SUBURB,null,"_id = ?", new String[]{""+id}, null, null, null);
+        if(cursor != null){
+
+            if(cursor.moveToFirst()){
+                // fill District object
+                district = getDistrictById(cursor.getInt(cursor.getColumnIndex(TB_SUBURB_DISTRICT_ID)));
+                suburb = new Suburb(cursor.getInt( cursor.getColumnIndex(TB_SUBURB_ID)) ,
+                        cursor.getString( cursor.getColumnIndex(TB_SUBURB_SUBURB_NAME)),
+                        district);
+
+                cursor.close();
+            }
+            return suburb;
+        }
+        return null;
+    }
+
+
+
+    /**
+     * Return Address object by ID
+     * @param id
+     * @return Address if there is no ID returm null
+     */
+    @Override
+    public Address getAddressById(int id) {
+        Address address = null;
+        District district = null;
+        Suburb suburb = null;
+
+        db = getReadableDatabase();
+        Cursor cursor = db.query(TB_ADDRESS,null,"_id = ?", new String[]{""+id}, null, null, null);
+        if(cursor != null){
+
+            if(cursor.moveToFirst()){
+                // fill Address object
+                district = getDistrictById( cursor.getInt(cursor.getColumnIndex(TB_ADDRESS_DISTRICT_ID)) );
+                suburb = getSuburbById( cursor.getInt(cursor.getColumnIndex(TB_ADDRESS_SUBURB_ID)) );
+
+
+                address = new Address(cursor.getInt( cursor.getColumnIndex(TB_ADDRESS_ID)) ,
+                                        suburb,
+                                        district,
+                                        cursor.getString( cursor.getColumnIndex(TB_ADDRESS_LOCATION))
+                        );
+
+                cursor.close();
+            }
+            return address;
+        }
+        return null;
+    }
+
+
+    /**
+     * Get the order by id
+     * @param id of order
+     * @return  Order
+     */
+    @Override
+    public Order getOrderById(int id) {
+        Order order = new Order();
+        Customer customer = new Customer();
+        Address address = new Address();
+        //TODO FINISH IT
+        SQLiteDatabase db = getReadableDatabase();
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        //   queryBuilder.setTables(TB_ORDER+","+TB_CUSTOMER+","+TB_ADDRESS+","+TB_TYPEORDER+","+TB_STATUS,TB);
+
+        return null;
+    }
+
+    //////////////////////////////////////////////////////////
+    // END GET BEANS //////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+
 
     /**
      * Return true if the app have access to internet
@@ -472,12 +691,12 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     */
     @Override
     public void deleteProductfromSubOrder( AbstractProduct product, int orderId ) {
-        int productId = product.get_id();
+        int productId = product.getId();
 
         db = getWritableDatabase();
         db.delete(TB_SUBORDER, TB_SUBORDER_PRODUCT_ID+"=? AND "+TB_SUBORDER_ORDER_ID+"=?", new String[]{""+productId, ""+orderId});
 
-                if(AppConst.DEBUG) Log.d(AppConst.LOGD, CLASSNAME+" ::: DELETED FROM SUBORDER ::: PRODUCT : "+product.getProduct_name());
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, CLASSNAME+" ::: DELETED FROM SUBORDER ::: PRODUCT : "+product.getProductName());
 
     }
 
@@ -492,10 +711,37 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         return null;
     }
 
+
+
+    /**
+     * Return TypeOrder objects from DB
+     * @return List of TypeOrder
+     */
     @Override
-    public Order getOrderById(int id) {
-        // TODO: 10/17/16 Get the order from DB
-        return null;
+    public List<TypeOrder> getTypeOrder() {
+
+        List<TypeOrder> list = new ArrayList<TypeOrder>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TB_STATUS , null, null ,null, null, null, null);
+
+            // Read cursor, fill TypeOrder and put ir in the List then return
+            if(cursor != null){
+                if(cursor.moveToFirst()){
+                    while(!cursor.isAfterLast()){
+                        int id = cursor.getInt(cursor.getColumnIndex(TB_STATUS_ID));
+                        String typeName = cursor.getString(cursor.getColumnIndex(TB_STATUS_STATUS_NAME));
+
+                        TypeOrder typeOrder = new TypeOrder(id, typeName);
+                        list.add(typeOrder);
+
+                        cursor.moveToNext();
+                    }
+
+                }
+                cursor.close();
+            }
+
+        return list;
     }
 
     @Override

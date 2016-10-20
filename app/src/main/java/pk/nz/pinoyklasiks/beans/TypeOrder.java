@@ -10,22 +10,44 @@ import java.io.Serializable;
  */
 
 public class TypeOrder implements Serializable {
-    private int _id;
-    private String type_order;
+    private int id;          // numer id
+    private String typeOrder; // name of type
 
-    public int get_id() {
-        return _id;
+    public TypeOrder(){
+
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    /**
+     * Constructor that get all fields of the class
+     * @param id int  order
+     * @param typeOrder String name of type
+     */
+    public TypeOrder(int id, String typeOrder){
+
     }
 
-    public String getType_order() {
-        return type_order;
+    public int getId() {
+        return id;
     }
 
-    public void setType_order(String type_order) {
-        this.type_order = type_order;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTypeOrder() {
+        return typeOrder;
+    }
+
+    public void setTypeOrder(String typeOrder) {
+        this.typeOrder = typeOrder;
+    }
+
+    /**
+     * Return type name
+     * @return String
+     */
+    @Override
+    public String toString() {
+        return typeOrder;
     }
 }

@@ -1,12 +1,22 @@
 package pk.nz.pinoyklasiks.db;
 
+import android.database.Cursor;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
 import pk.nz.pinoyklasiks.beans.AbstractProduct;
+import pk.nz.pinoyklasiks.beans.Address;
+import pk.nz.pinoyklasiks.beans.Category;
+import pk.nz.pinoyklasiks.beans.Customer;
+import pk.nz.pinoyklasiks.beans.District;
 import pk.nz.pinoyklasiks.beans.Order;
+import pk.nz.pinoyklasiks.beans.Status;
 import pk.nz.pinoyklasiks.beans.SubOrder;
+import pk.nz.pinoyklasiks.beans.Suburb;
+import pk.nz.pinoyklasiks.beans.TypeOrder;
 
 /**
  * Abstract class describe
@@ -18,6 +28,58 @@ import pk.nz.pinoyklasiks.beans.SubOrder;
  */
 
 public interface IDAOManager {
+
+
+    /**
+     * Return Status object by ID
+     * @param id
+     * @return Status
+     */
+    public Status getStatusById(int id);
+
+    /**
+     * Return TypeOrder object by ID
+     * @param id
+     * @return TypeOrder
+     */
+    public TypeOrder getTypeOrderById(int id);
+
+
+    /**
+     * Return Customer object by ID
+     * @param id
+     * @return Customer
+     */
+    public Customer getCustomerById(int id);
+
+    /**
+     * Return Category object by ID
+     * @param id
+     * @return Category
+     */
+    public Category getCategoryById(int id);
+
+    /**
+     * Return Suburb object by ID
+     * @param id
+     * @return Suburb
+     */
+    public Suburb getSuburbById(int id);
+
+    /**
+     * Return Address object by ID
+     * @param id
+     * @return Address
+     */
+    public Address getAddressById(int id);
+
+    /**
+     * Return Disctrict object by ID
+     * @param id
+     * @return District
+     */
+    public District getDistrictById(int id);
+
 
     /**
      * Method return the collection of categories from DB
@@ -42,11 +104,6 @@ public interface IDAOManager {
     public abstract void addProductToOrder(AbstractProduct product, int quantity, boolean isUpdate);
 
     /**
-     * Remove product from order
-      */
-    public abstract void removeProductFromOrder(int id);
-
-    /**
      * Get id of open order
      * return 0 if there is no open order
      */
@@ -69,7 +126,7 @@ public interface IDAOManager {
 
     /**
      * The method return the sub order
-     *  of the order using order_id
+     *  of the order using orderId
      * @param order_id order's id
      * @return  SubOrder object
      */
@@ -89,6 +146,12 @@ public interface IDAOManager {
      * @param orderId of suborder
      */
     public void deleteProductfromSubOrder(AbstractProduct product, int orderId);
+
+    /**
+     * Return List with type orders
+     * @return Cursor
+     */
+    public List<TypeOrder> getTypeOrder();
 
     /**
      * Method close DB

@@ -26,6 +26,7 @@ import pk.nz.pinoyklasiks.beans.Product;
 import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
+import utils.AppConst;
 
 /**
  * Created 10/11/16.
@@ -117,8 +118,10 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.tmenu_cart){
-            Intent intentSubOrder = new Intent(this, SubOrderActivity.class);
-            startActivity(intentSubOrder);
+
+            // open suborder activity (with status OPEN)
+            startActivity(new Intent("pk.nz.pinoyklasiks.open_suborder"));
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " OPEN SUBORDER ACTIVITY WITH STATUS OPEN ::: ");
         }
 
         return super.onOptionsItemSelected(item);
@@ -130,14 +133,14 @@ public class ProductActivity extends AppCompatActivity {
      * @param product the AbstractProduct class
      */
     private void fillTheForm( AbstractProduct product ){
-        tvProductName.setText( product.getProduct_name() );
-        tvProductDesc.setText( product.getProduct_desc() );
-        tvProductPrice.setText( dfPrice.format(product.getProduct_price()) );
+        tvProductName.setText( product.getProductName() );
+        tvProductDesc.setText( product.getProductDesc() );
+        tvProductPrice.setText( dfPrice.format(product.getProductPrice()) );
         tvProductQuantity.setText(""+quantity);
 
         InputStream is = null;
         try{
-            is  = getAssets().open(product.getProduct_pic()+IMG_EXT); // read asset with image
+            is  = getAssets().open(product.getProductPic()+IMG_EXT); // read asset with image
             Drawable d = Drawable.createFromStream(is, null); // create Drawable imamge
             ivProduct.setImageDrawable(d);                    // sssign to the ImageView
 

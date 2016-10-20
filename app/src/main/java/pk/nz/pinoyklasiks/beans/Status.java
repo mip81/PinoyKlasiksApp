@@ -1,29 +1,39 @@
 package pk.nz.pinoyklasiks.beans;
 
 /**
- * Class represent status of order
+ * Class represent the table tb_status
  *
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
 
 public class Status {
-    private int _id;
-    private String status_name;
+    private int id;              // number id
+    private String statusName;   // name for status
 
-    public int get_id() {
-        return _id;
+    /**
+     * Constructor set all fields of class
+     * @param _id int
+     * @param statusName String
+     */
+    public Status(int _id, String statusName){
+        this.id = id;
+        this.statusName = statusName;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public int getId() {
+        return id;
     }
 
-    public String getStatus_name() {
-        return status_name;
+    public void setId(int _id) {
+        this.id = _id;
     }
 
-    public void setStatus_name(String status_name) {
-        this.status_name = status_name;
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String status_name) {
+        this.statusName = status_name;
     }
 }

@@ -42,6 +42,11 @@
 
     <!-- SubOrder Activity -->
         <activity android:name=".activities.SubOrderActivity">
+            <intent-filter android:label="Cart Pinoy Klasiks">
+                <!--action for open suborder -->
+                <action android:name="pk.nz.pinoyklasiks.open_suborder" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>

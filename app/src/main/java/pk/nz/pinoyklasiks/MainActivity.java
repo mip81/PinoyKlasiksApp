@@ -32,11 +32,10 @@ import java.util.List;
 
 
 import pk.nz.pinoyklasiks.activities.ListOfProductsActivity;
-import pk.nz.pinoyklasiks.activities.SubOrderActivity;
 import pk.nz.pinoyklasiks.activities.fragments.LeftMenuFragment;
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
-import pk.nz.pinoyklasiks.beans.SubOrder;
-import pk.nz.pinoyklasiks.db.DBManager;
+import pk.nz.pinoyklasiks.beans.Address;
+import pk.nz.pinoyklasiks.beans.Order;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import pk.nz.pinoyklasiks.db.WebService;
 import utils.AppConst;
@@ -78,13 +77,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        Address address = new Address();
+            address.setId(1);
+            address.setLocation("23 Panmure");
+        Order order = new Order();
+            order.setId(1);
+            order.setComment("comment");
+            order.setAddress(address);
+        new WebService(this).sendOrder(order);
+
         // Install toolbar and settings for it
             Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
                     getSupportActionBar().setTitle(R.string.title);
-                        //getSupportActionBar().setIcon(R.drawable.ic_toolbal);
-                             //getSupportActionBar().setSubtitle(R.string.subTitle);
-
 
 
         // WORKING WITH DRAWER LAYOUT AND NAVIGATION VIEW
@@ -231,10 +236,9 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.tmenu_cart:
-
-                Intent intentSubOrder = new Intent(this, SubOrderActivity.class);
-                startActivity(intentSubOrder);
-                Toast.makeText(getApplicationContext(), "The cart menu was selected!", Toast.LENGTH_LONG).show();
+                // open suborder activity (with status OPEN)
+                startActivity(new Intent("pk.nz.pinoyklasiks.open_suborder"));
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, " OPEN SUBORDER ACTIVITY WITH STATUS OPEN ::: ");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -268,8 +272,8 @@ public class MainActivity extends AppCompatActivity {
             if(position > 0){ // if clicked not on header of listview
                 
                 // get the id of categories and pass it to the ProductActivity
-                int idCategory = listAbstractCategory.get(position-1).get_id();
-                String nameCategory = listAbstractCategory.get(position-1).getCat_name();
+                int idCategory = listAbstractCategory.get(position-1).getId();
+                String nameCategory = listAbstractCategory.get(position-1).getCatName();
                 // position - 1 because of header was attached before
     
                 Intent intentProducts = new Intent(getApplicationContext(), ListOfProductsActivity.class);

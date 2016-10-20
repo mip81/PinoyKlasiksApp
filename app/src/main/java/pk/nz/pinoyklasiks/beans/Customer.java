@@ -4,24 +4,34 @@ import java.io.Serializable;
 
 /**
  *
- * Class represent Customer
+ * Class represent table tb_customer
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
 
 public class Customer implements Serializable{
-    private int _id;
-    private String customerName;
-    private String phoneCustomer;
-    private String email;
-    private Address adrress;
+    private int id;              // id number
+    private String customerName; // name of customer
+    private String phoneCustomer; // phone of customer
+    private String email;         // email of customer
+    private Address adrress;      // Address of customer
 
-    public int get_id() {
-        return _id;
+    public Customer(){}
+
+    public Customer(int id, String customerName, String phoneCustomer, String email, Address address){
+        this.id = id;
+        this.customerName = customerName;
+        this.phoneCustomer = phoneCustomer;
+        this.email = email;
+        this.adrress = address;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int _id) {
+        this.id = _id;
     }
 
     public String getCustomerName() {

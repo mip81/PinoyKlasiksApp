@@ -1,26 +1,33 @@
 package pk.nz.pinoyklasiks.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import pk.nz.pinoyklasiks.MainActivity;
 import pk.nz.pinoyklasiks.R;
 import pk.nz.pinoyklasiks.beans.SubOrder;
+import pk.nz.pinoyklasiks.beans.TypeOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import utils.AppConst;
@@ -36,13 +43,17 @@ import utils.SubOrderProductAdapter;
 
 public class SubOrderActivity extends AppCompatActivity {
 
-    ListView lvSubOrders;                   // Data of order
-    TextView tvSubOrderTotal;               // TextView for present the total cost
-    SubOrderProductAdapter adapter;         // Populate the data to ListView
-    Handler handler;                        // Work with UI
-    SubOrder subOrder;                      // suborder of order
-    IDAOManager dbManager;                  // DB helper;
-    DecimalFormat df = new DecimalFormat("$##.00"); // Format for price output
+    private final int CTX_MENU_CLEAR = 1;
+    private final int CTX_MENU_CHECKOUT = 2;
+
+    private ListView lvSubOrders;                   // Data of order
+    private TextView tvSubOrderTotal;               // TextView for present the total cost
+    private Button btnCheckout;
+    private SubOrderProductAdapter adapter;         // Populate the data to ListView
+    private Handler handler;                        // Work with UI
+    private SubOrder subOrder;                      // suborder of order
+    private IDAOManager dbManager;                  // DB helper;
+    private DecimalFormat df = new DecimalFormat("$##.00"); // Format for price output
 
 
 
@@ -55,19 +66,17 @@ public class SubOrderActivity extends AppCompatActivity {
         // handler to with UI
         handler = new Handler();
 
+        // Checkout button use listener described at the bottom of this activity
+        btnCheckout = (Button)findViewById(R.id.subOrderCheckOut);
+            btnCheckout.setOnClickListener(new CheckoutListener());
+
         //find list view and bind the adapter for popuating data
         lvSubOrders = (ListView)findViewById(R.id.lvSubOrder);
-        lvSubOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(AppConst.LOGD, "CLICKED IN THE ACTIVITY  "+view.getClass());
-            }
-        });
 
+            registerForContextMenu(lvSubOrders); // register context menu for the list view
 
-
-
-        tvSubOrderTotal = (TextView)findViewById(R.id.tvSubOrderTotal);
+                // get the view for the price
+                tvSubOrderTotal = (TextView)findViewById(R.id.tvSubOrderTotal);
 
         //Start thread which fetch the data from DB and fill ListView
         SubOrderDataThread sodt = new SubOrderDataThread();
@@ -84,9 +93,40 @@ public class SubOrderActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Create the context menu for the ListView
+     * will be called using long click
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        if(v.getId() == R.id.lvSubOrder){
+            menu.add(0,CTX_MENU_CLEAR,0,"Clear the order");
+            menu.add(0,CTX_MENU_CHECKOUT,0, "Proceed the order");
+        }
+    }
+
+    /**
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case CTX_MENU_CLEAR:
+                    clearCart();
+                break;
+            case CTX_MENU_CHECKOUT:
+                    new CheckoutListener().onClick(btnCheckout);
+                break;
+        }
 
 
-
+        return super.onContextItemSelected(item);
+    }
 
     /**
      *  Add menu configuration
@@ -100,38 +140,66 @@ public class SubOrderActivity extends AppCompatActivity {
     }
 
 
+
+
+
     /**
      *  Work with ActionBar menu
-     *  procees button "Clear"
+     *  define action for button "Clear"
      * @param item
      * @return
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId() == R.id.tmenu_clear_cart){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (AppConst.DEBUG) Log.d(AppConst.LOGD, "Option 'Clear' was clicked");
+        if(item.getItemId() == R.id.tmenu_clear_cart) {
 
-                    //Get id of order with open status and delete the records in tb_suborder
-                    // with this id (clean cart)
-                    int order_id = dbManager.getIdOpenOrder();
-                    dbManager.cleanSubOrder(order_id);
-
-                    handler.post(
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    lvSubOrders.setAdapter(null); // clear listview with suborders
-                                }
-                            });
-
-                }
-            }).start();
+           clearCart();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Clear cart method
+     */
+    protected void clearCart(){
+
+        //  Ask user to confirm deletion
+        new AlertDialog.Builder(this).setTitle(R.string.dialog_confirm_title)
+                .setMessage(R.string.dialog_confirm_message)
+                .setNegativeButton(R.string.no, null) //Do nothing when answer NO
+                //Otherwise clean the cart in the another thread
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //Get the last order Id and and clean the product in the tb_suborder with this ID
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (AppConst.DEBUG)
+                                    Log.d(AppConst.LOGD, "Option 'Clear' was clicked");
+
+                                //Get id of order with open status and delete the records in tb_suborder
+                                // with this id (clean cart)
+                                int order_id = dbManager.getIdOpenOrder();
+                                dbManager.cleanSubOrder(order_id);
+
+                                handler.post(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                lvSubOrders.setAdapter(null);  // clear listview with suborders
+                                                btnCheckout.setEnabled(false); // disable button checkout
+                                                tvSubOrderTotal.setText("$0"); // set price label to $0
+
+                                            }
+                                        });
+                            }
+                        }).start();
+                    }
+                }).show();
     }
 
 
@@ -144,6 +212,34 @@ public class SubOrderActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * class listener for checkout btn
+     * run Dialog with choice type order
+     * and then change Activity to fill customer form
+     *
+     */
+    class CheckoutListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+
+
+            // TODO: 10/19/16  read types from db and populate in the dialog
+
+            final String strOrderTypes[]  = {"Dine-In", "Takeaway"};
+
+            AlertDialog.Builder dialogChooseType = new AlertDialog.Builder(SubOrderActivity.this);
+            dialogChooseType.setTitle(R.string.suborderTypeOrderTitle)
+                    .setSingleChoiceItems(strOrderTypes, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "Choice type of order: "+strOrderTypes[which], Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    }).show();
+
+        }
+    }
 
     /**
      * Thread read the data from tb_suborder and populate it to ListView thru custom adapter
@@ -168,6 +264,7 @@ public class SubOrderActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "You cart is empty.", Toast.LENGTH_SHORT).show();
                         lvSubOrders.setAdapter(null);
                         tvSubOrderTotal.setText("$0");
+                        btnCheckout.setEnabled(false);
 
                     }
                 });
@@ -184,6 +281,7 @@ public class SubOrderActivity extends AppCompatActivity {
                                     lvSubOrders.deferNotifyDataSetChanged();
 
                         tvSubOrderTotal.setText(df.format( subOrder.getTotalPrice()) );
+                        btnCheckout.setEnabled(true);
 
                     }
 
@@ -193,4 +291,9 @@ public class SubOrderActivity extends AppCompatActivity {
 
         }
     }
+
+
+
+
+
 }

@@ -12,6 +12,8 @@ INSERT INTO tb_version (version, last_changes_datetime) VALUES ('1', '');
 CREATE TABLE tb_suborder (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, product_id INTEGER NOT NULL REFERENCES tb_product (_id), quantity INTEGER NOT NULL, price REAL NOT NULL, order_id INTEGER REFERENCES tb_order (_id));
 -- Table keeps information about types of orders
 CREATE TABLE "tb_typeorder" (`_id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,`type_order`	TEXT NOT NULL UNIQUE);
+INSERT INTO tb_typeorder (_id, type_order) VALUES (1, 'Dine-in');
+INSERT INTO tb_typeorder (_id, type_order) VALUES (2, 'Takeaway');
 -- Table keeps information about suburb in Aucklan
 CREATE TABLE tb_suburb (_id INTEGER PRIMARY KEY UNIQUE NOT NULL, suburb_name TEXT NOT NULL, district_id INTEGER NOT NULL REFERENCES tb_district (_id));
 INSERT INTO tb_suburb (_id, suburb_name, district_id) VALUES (1, 'Arch Hill', 1);
@@ -433,7 +435,7 @@ INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (7, '
 INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (8, 'Seafoods', 'We offer a variety of dishes made with seafood.', 6, 'cat_seafoods');
 INSERT INTO tb_category (_id, cat_name, description, order_id, pic) VALUES (9, 'Chicken', 'Taste our delicious dishes prepared with chicken.', 7, 'cat_chicken');
 -- Table keeps information about customer
-CREATE TABLE tb_customer (_id INTEGER NOT NULL UNIQUE, customer_name TEXT NOT NULL, phone_number TEXT NOT NULL, email INTEGER, address TEXT (150), PRIMARY KEY (_id));
+CREATE TABLE tb_customer (_id INTEGER NOT NULL UNIQUE, customer_name TEXT NOT NULL, phone_number TEXT NOT NULL, email TEXT, address_id INT (150) REFERENCES tb_address (_id), PRIMARY KEY (_id));
 -- Table keeps information about districtes in the Auckland
 CREATE TABLE tb_district (_id INTEGER PRIMARY KEY UNIQUE NOT NULL, district_name TEXT NOT NULL UNIQUE);
 INSERT INTO tb_district (_id, district_name) VALUES (1, 'Auckland City');

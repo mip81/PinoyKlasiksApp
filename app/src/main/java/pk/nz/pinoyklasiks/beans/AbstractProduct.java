@@ -10,37 +10,40 @@ import java.io.Serializable;
  */
 
 public abstract class AbstractProduct implements Serializable{
-    protected int _id;              // id
-    protected int cat_id;           // the id of category
-    protected String product_name;  // the name of the product
-    protected String product_desc;  // the description of the product
-    protected double product_price; // the price
-    protected String product_pic;   // the name of the file withpicture
+    protected int id;              // id
+    protected int catId;           // the id of category
+    protected String productName;  // the name of the product
+    protected String productDesc;  // the description of the product
+    protected double productPrice; // the price
+    protected String productPic;   // the name of the file withpicture
+    protected int quantity=1;       // the quantity of product
 
 
-    public abstract int get_id();
+    public abstract int getId();
 
-    public abstract void set_id(int _id);
+    public abstract void setId(int id);
 
-    public abstract int getCat_id();
+    public abstract int getCatId();
 
-    public abstract void setCat_id(int cat_id);
+    public abstract void setCatId(int cat_id);
 
-    public abstract String getProduct_name();
+    public abstract String getProductName();
 
-    public abstract void setProduct_name(String product_name);
+    public abstract void setProductName(String product_name);
 
-    public abstract String getProduct_desc();
+    public abstract String getProductDesc();
 
-    public abstract void setProduct_desc(String product_desc);
+    public abstract void setProductDesc(String product_desc);
 
-    public abstract double getProduct_price();
+    public abstract double getProductPrice();
 
-    public abstract void setProduct_price(double product_price);
+    public abstract void setProductPrice(double product_price);
 
-    public abstract String getProduct_pic();
+    public abstract String getProductPic();
 
-    public abstract void setProduct_pic(String product_pic) ;
+    public abstract void setProductPic(String product_pic) ;
 
+    public abstract void setQuantity(int quantity);
 
+    public abstract int getQuantity();
 }

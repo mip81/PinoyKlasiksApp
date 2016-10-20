@@ -3,36 +3,37 @@
     <item
         android:id="@+id/nav_menu_categories"
         android:icon="@drawable/ic_menu"
-        android:title="@string/main_menu"
+        android:title="@string/nav_menu_main_menu"
         />
     <item
         android:id="@+id/nav_menu_orders"
         android:icon="@drawable/ic_cart"
-        android:title="@string/Cart"
+        android:title="@string/nav_menu_cart"
         />
 
     <item
         android:id="@+id/nav_menu_history"
-        android:icon="@drawable/ic_cart"
-        android:title="@string/orders_history"
+        android:icon="@drawable/ic_history"
+        android:title="@string/nav_menu_orders_history"
         />
 
     <item
         android:id="@+id/nav_menu_location"
         android:icon="@drawable/ic_location"
-        android:title="Location"
+        android:title="@string/nav_menu_location"
         />
     <item
         android:id="@+id/nav_menu_about_us"
         android:icon="@drawable/ic_about_us"
-        android:title="About us"
+        android:title="@string/nav_menu_about_us"
         />
 
-    <group android:id="@+id/nav_menu_communication_group"
-        >
-        <item android:title="Mail us" />
-        <item android:title="Call us" />
-        <item android:title="Text us" />
+    <group android:id="@+id/nav_menu_communication_group">
+
+        <item android:title="@string/nav_menu_call_us"
+            android:icon="@drawable/ic_call_us"/>
+        <item android:title="@string/nav_menu_share"
+            android:icon="@drawable/ic_share"/>
 
     </group>
 </menu>

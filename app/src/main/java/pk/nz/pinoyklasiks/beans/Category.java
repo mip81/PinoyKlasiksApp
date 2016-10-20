@@ -9,20 +9,37 @@ package pk.nz.pinoyklasiks.beans;
 
 public class Category extends AbstractCategory {
 
-    public int get_id() {
-        return _id;
+    public Category(){}
+
+    /**
+     * Constructor fill all fields the Object
+     * @param id numberb
+     * @param catName String
+     * @param desc  String
+     * @param pic   String
+     */
+    public Category(int id, String catName, String desc, String pic){
+        this.id = id;
+        this.catName = catName;
+        this.description = desc;
+        this.pic = pic;
+
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public int getId() {
+        return id;
     }
 
-    public String getCat_name() {
-        return cat_name;
+    public void setId(int _id) {
+        this.id = _id;
     }
 
-    public void setCat_name(String cat_name) {
-        this.cat_name = cat_name;
+    public String getCatName() {
+        return catName;
+    }
+
+    public void setCatName(String cat_name) {
+        this.catName = cat_name;
     }
 
     public String getDescription() {
@@ -41,11 +58,11 @@ public class Category extends AbstractCategory {
         this.pic = pic;
     }
 
-    public int getOrder_id() {
-        return order_id;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
+    public void setOrderId(int order_id) {
+        this.orderId = order_id;
     }
 }

@@ -77,7 +77,7 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
 
 
         try{
-            InputStream is = getContext().getAssets().open(abstractProduct.getProduct_pic()+".jpg");
+            InputStream is = getContext().getAssets().open(abstractProduct.getProductPic()+".jpg");
             Drawable pic = Drawable.createFromStream(is, null);
             ivPic.setImageDrawable(pic);  // Read the pic of product and assign it to view
 
@@ -88,9 +88,9 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
         }
 
         // Populate our data into the layout views
-            tvProductName.setText(abstractProduct.getProduct_name());
-            tvProductDesc.setText(abstractProduct.getProduct_desc());
-            tvProductPrice.setText( df.format(abstractProduct.getProduct_price()) ) ;
+            tvProductName.setText(abstractProduct.getProductName());
+            tvProductDesc.setText(abstractProduct.getProductDesc());
+            tvProductPrice.setText( df.format(abstractProduct.getProductPrice()) ) ;
             btnAddToCart.setOnClickListener(new ClickAddProductListener(abstractProduct));
 
 
@@ -122,7 +122,7 @@ public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getContext(), product.getProduct_name()+ " added to the cart", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), product.getProductName()+ " added to the cart", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

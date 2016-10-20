@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +18,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import pk.nz.pinoyklasiks.beans.Address;
+import pk.nz.pinoyklasiks.beans.Customer;
+import pk.nz.pinoyklasiks.beans.Order;
+import pk.nz.pinoyklasiks.beans.SubOrder;
 import utils.AppConst;
 
 /**
@@ -85,6 +91,34 @@ public class WebService extends DBManager implements IWebService{
             }
         return sb.toString();
 
+    }
+
+    /**
+     * Method create and send the JSON object of order to the server
+     * and the get the returned global id (later the user will check the status by this id)
+     *
+     * @param order
+     * @return int the global id
+     */
+    public int sendOrder(Order order){
+        //Customer customer =  order.getCustomer();
+       // SubOrder suborder = order.getSuborder();
+        Address address = order.getAddress();
+
+        JSONObject jsonOrder = new JSONObject();
+        try{
+            jsonOrder.put("order", order);
+        }catch (Exception e){
+            Log.d(AppConst.LOGE, " :::  sendOrder :::  "+e);
+        }
+
+        Log.d(AppConst.LOGD, "++++++++++++++++ : "+jsonOrder.toString());
+
+
+
+
+
+        return 0;
     }
 
     /**

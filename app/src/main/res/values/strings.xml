@@ -10,9 +10,26 @@
     <!-- FOR HAMBURGER MENU-->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
     <string name="Cart">Cart</string>
     <string name="cartTitle">Your cart</string>
     <string name="main_menu">Main menu</string>
     <string name="orders_history">Orders history</string>
+
+    <!-- Dialog confirm for clean cart -->
+    <string name="dialog_confirm_title">Confirmation</string>
+    <string name="dialog_confirm_message">Are you sure you want to clean the cart?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="nav_menu_call_us">Call us</string>
+    <string name="nav_menu_share">Share</string>
+    <string name="nav_menu_about_us">About us</string>
+    <string name="nav_menu_location">Location</string>
+    <string name="nav_menu_orders_history">Orders history</string>
+    <string name="nav_menu_cart">Your cart</string>
+    <string name="nav_menu_main_menu">Main menu</string>
+    <string name="suborderTypeOrderTitle">Choose type of order</string>
+
 
 </resources>

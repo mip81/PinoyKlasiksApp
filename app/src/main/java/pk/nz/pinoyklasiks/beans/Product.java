@@ -11,72 +11,82 @@ package pk.nz.pinoyklasiks.beans;
 public class Product extends AbstractProduct {
 
     @Override
-    public int get_id() {
-        return _id;
+    public int getId() {
+        return id;
     }
 
     @Override
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setId(int _id) {
+        this.id = _id;
     }
 
     @Override
-    public int getCat_id() {
-        return cat_id;
+    public int getCatId() {
+        return catId;
     }
 
     @Override
-    public void setCat_id(int cat_id) {
-        this.cat_id = cat_id;
+    public void setCatId(int cat_id) {
+        this.catId = catId;
     }
 
     @Override
-    public String getProduct_name() {
-        return product_name;
+    public String getProductName() {
+        return productName;
     }
 
     @Override
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
+    public void setProductName(String product_name) {
+        this.productName = productName;
     }
 
     @Override
-    public String getProduct_desc() {
-        return product_desc;
+    public String getProductDesc() {
+        return productDesc;
     }
 
     @Override
-    public void setProduct_desc(String product_desc) {
-        this.product_desc = product_desc;
+    public void setProductDesc(String product_desc) {
+        this.productDesc = product_desc;
     }
 
     @Override
-    public double getProduct_price() {
-        return product_price;
+    public double getProductPrice() {
+        return productPrice;
     }
 
     @Override
-    public void setProduct_price(double product_price) {
-        this.product_price = product_price;
+    public void setProductPrice(double product_price) {
+        this.productPrice = product_price;
     }
 
     @Override
-    public String getProduct_pic() {
-        return product_pic;
+    public String getProductPic() {
+        return productPic;
     }
 
     @Override
-    public void setProduct_pic(String product_pic) {
-        this.product_pic = product_pic;
+    public void setProductPic(String product_pic) {
+        this.productPic = product_pic;
+    }
+
+    @Override
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    @Override
+    public int getQuantity() {
+        return quantity;
     }
 
     @Override
     public  String toString(){
-        return  " Id : "+get_id()+
-                " Cat_id : "+getCat_id()+
-                " Name : "+getProduct_name()+
-                " Desc : "+getProduct_desc()+
-                " Price : "+getProduct_price()+
-                " Pic : "+getProduct_pic();
+        return  " Id : "+getId()+
+                " Cat_id : "+getCatId()+
+                " Name : "+getProductName()+
+                " Desc : "+getProductDesc()+
+                " Price : "+getProductPrice()+
+                " Pic : "+getProductPic();
     }
 }

@@ -36,6 +36,7 @@ import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import pk.nz.pinoyklasiks.db.IDBInfo;
 import pk.nz.pinoyklasiks.db.IDBManager;
+import utils.AppConst;
 import utils.ProductAdapter;
 
 /**
@@ -121,8 +122,10 @@ public class ListOfProductsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.tmenu_cart){
-            Intent cartIntent = new Intent(this, SubOrderActivity.class);
-            startActivity(cartIntent);
+
+            // open suborder activity (with status OPEN)
+            startActivity(new Intent("pk.nz.pinoyklasiks.open_suborder"));
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, " OPEN SUBORDER ACTIVITY WITH STATUS OPEN :::" );
         }
         return super.onOptionsItemSelected(item);
     }

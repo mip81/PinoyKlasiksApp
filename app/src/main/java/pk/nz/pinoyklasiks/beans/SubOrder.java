@@ -1,7 +1,6 @@
 package pk.nz.pinoyklasiks.beans;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -14,7 +13,7 @@ import java.util.Map;
 
 public class SubOrder implements Serializable {
 
-    private int order_id;
+    private int orderId;
 
     // Product and quantity
     private Map<AbstractProduct, Integer> mapProducts = new LinkedHashMap<>();
@@ -34,16 +33,16 @@ public class SubOrder implements Serializable {
         totalPrice = 0;
 
                 for(AbstractProduct p : mapProducts.keySet()){
-                    totalPrice += p.getProduct_price() * mapProducts.get(p);
+                    totalPrice += p.getProductPrice() * mapProducts.get(p);
                 }
         return totalPrice;
     }
 
-    public int getOrder_id() {
-        return order_id;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
+    public void setOrderId(int order_id) {
+        this.orderId = order_id;
     }
 }
