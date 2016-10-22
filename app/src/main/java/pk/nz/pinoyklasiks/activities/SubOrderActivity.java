@@ -1,6 +1,7 @@
 package pk.nz.pinoyklasiks.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -233,7 +234,11 @@ public class SubOrderActivity extends AppCompatActivity {
                     .setSingleChoiceItems(strOrderTypes, -1, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "Choice type of order: "+strOrderTypes[which], Toast.LENGTH_SHORT).show();
+                            if(AppConst.DEBUG)  Log.d(AppConst.LOGD , " SubOrder Activity ::: Clicked 'CHECKOUT' choosen type : "+strOrderTypes[which]);
+
+                            Intent coIntent = new Intent(getApplicationContext(), CompleteOrderActivity.class);
+                            coIntent.putExtra("typeOrder", strOrderTypes[which]);
+                            startActivity(coIntent);
                             dialog.dismiss();
                         }
                     }).show();

@@ -1,6 +1,6 @@
 package pk.nz.pinoyklasiks.beans;
 
-/**
+/**select
  * Class represent the table tb_status
  *
  * @author Mikhail PASTUSHKOV

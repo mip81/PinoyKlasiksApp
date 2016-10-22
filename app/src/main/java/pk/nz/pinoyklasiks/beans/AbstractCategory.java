@@ -29,6 +29,7 @@ public abstract class AbstractCategory implements Serializable{
     public abstract int getOrderId();
     public abstract void setOrderId(int order_id);
 
+
     @Override
     public String toString(){
         return "id : "+ getId()+"; name category: "+ getCatName()+"; desc: "+getDescription()+ " picname : "+getPic()+"; order : "+ getOrderId();

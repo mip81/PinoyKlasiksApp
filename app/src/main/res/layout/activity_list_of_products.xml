@@ -17,13 +17,6 @@
             android:layout_height="35dp"
             >
 
-            <TextView
-                android:text="tvNameCategory"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:id="@+id/tvNameCategory"
-                android:textAlignment="center"
-                android:textStyle="normal|bold" />
         </TableRow>
 
         <TableRow

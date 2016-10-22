@@ -12,11 +12,20 @@ package pk.nz.pinoyklasiks.db;
 public interface IDBInfo {
 
     // The constant for WebService
-    public static String WSHOST = "http://jenny.kz/ws/pinoy_webservice.php";
-    public static String CREDENTTALS="429599";
+    public static String WEBSERVICE_SHOST = "http://192.168.56.1/pinoy_webservice.php";
+    //public static String WEBSERVICE_SHOST = "http://jenny.kz/ws/pinoy_webservice.php";
+    public static String USERNAME="PINOYADMIN";
+    public static String PASSWORD="429599";
 
     //The MYSQL settings
-    public static String MYSQL_DATETIME_PATTERN = "DD-MM-YYYY HH:MM:SS";
+    public static String MYSQL_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    // The constatnt for JSON operations
+    public static String JSON_ACTION_NEW_ORDER = "new_order";
+    public static String JSON_ACTION_CHECK_VERSION = "check_version";
+    public static String JSON_ACTION_CHECK_STATUS_ORDER = "check_status_order";
+
+
 
     // The constant for SQLite DB
     public static String PATH_TO_DB_RES = "res/raw/db.sql";
@@ -53,14 +62,15 @@ public interface IDBInfo {
 
     public static String TB_ORDER = "tb_order";
         public static String TB_ORDER_ID = "_id";
-        public static String TB_ORDER_ORDER_DATETIME_NOW = "order_Datetime_Now";
-        public static String TB_ORDER_ORDER_DATETIME_FOR = "order_Datetime_For";
+        public static String TB_ORDER_ORDER_DATETIME_NOW = "order_datetime_now";
+        public static String TB_ORDER_ORDER_DATETIME_FOR = "order_datetime_for";
         public static String TB_ORDER_CUSTOMER_ID = "customer_id";
         public static String TB_ORDER_STATUS_ID = "status_id";
         public static String TB_ORDER_TYPE_ORDER_ID = "type_order_id";
         public static String TB_ORDER_NUM_PERSONS = "num_persons";
         public static String TB_ORDER_ADDRESS_ID = "address_id";
         public static String TB_ORDER_LOCATION = "location";
+        public static String TB_ORDER_COMMENT = "comment";
         public static String TB_ORDER_GLOBAL_ID = "global_id"; // The ID on the server get after sending the order
 
     public static String TB_STATUS = "tb_status";

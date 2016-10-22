@@ -31,5 +31,11 @@
     <string name="nav_menu_main_menu">Main menu</string>
     <string name="suborderTypeOrderTitle">Choose type of order</string>
 
+    <string name="co_name_lbl">Enter your name:</string>
+    <string name="co_phone_number_lbl">Enter your phone number:"</string>
+    <string name="co_datetime">Enter date and time for your order:</string>
+    <string name="co_address_lbl">Enter address of your order:</string>
+    <string name="coAmountPersonLbl">Amount of person:</string>
+
 
 </resources>

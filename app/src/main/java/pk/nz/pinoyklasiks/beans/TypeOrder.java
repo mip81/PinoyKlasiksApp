@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Class represent type of order
+ * teh row in the table tb_typeOrder
  *
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
@@ -18,12 +19,13 @@ public class TypeOrder implements Serializable {
     }
 
     /**
-     * Constructor that get all fields of the class
+     * Constructor that set all fields of the class
      * @param id int  order
      * @param typeOrder String name of type
      */
     public TypeOrder(int id, String typeOrder){
-
+        this.id = id;
+        this.typeOrder = typeOrder;
     }
 
     public int getId() {

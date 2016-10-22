@@ -1,5 +1,7 @@
 package pk.nz.pinoyklasiks.beans;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -46,4 +48,5 @@ public abstract class AbstractProduct implements Serializable{
     public abstract void setQuantity(int quantity);
 
     public abstract int getQuantity();
+
 }

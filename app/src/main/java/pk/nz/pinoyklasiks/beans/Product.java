@@ -16,8 +16,8 @@ public class Product extends AbstractProduct {
     }
 
     @Override
-    public void setId(int _id) {
-        this.id = _id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Product extends AbstractProduct {
     }
 
     @Override
-    public void setProductName(String product_name) {
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
@@ -46,8 +46,8 @@ public class Product extends AbstractProduct {
     }
 
     @Override
-    public void setProductDesc(String product_desc) {
-        this.productDesc = product_desc;
+    public void setProductDesc(String productDesc) {
+        this.productDesc = productDesc;
     }
 
     @Override
@@ -56,8 +56,8 @@ public class Product extends AbstractProduct {
     }
 
     @Override
-    public void setProductPrice(double product_price) {
-        this.productPrice = product_price;
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
     }
 
     @Override
@@ -66,8 +66,8 @@ public class Product extends AbstractProduct {
     }
 
     @Override
-    public void setProductPic(String product_pic) {
-        this.productPic = product_pic;
+    public void setProductPic(String productPic) {
+        this.productPic = productPic;
     }
 
     @Override

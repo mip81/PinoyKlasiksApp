@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +49,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     private BufferedReader br = null;
     protected SQLiteDatabase db; // DB connection
 
-    // Format for price output
+    // Format for SQLite DATETIME output
     protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
     protected Context context; // Application context
@@ -176,7 +177,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                     // Fill object with data
                       product.setId(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_ID)) );
                       product.setCatId(cursor.getInt( cursor.getColumnIndex(TB_PRODUCT_CAT_ID)) );
-                      product.setProductName( cursor.getString(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_NAME)) );
+                      product.setProductName( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_NAME)) );
                       product.setProductDesc( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_DESC)) );
                       product.setProductPrice( cursor.getDouble( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PRICE)) );
                       product.setProductPic( cursor.getString( cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PIC)) );
@@ -233,7 +234,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
      */
     @Override
     public Cursor getProducts(int idCat) {
-        SQLiteDatabase db = getReadableDatabase();
+        db = getReadableDatabase();
+
         String[] id = {String.valueOf(idCat)};
          Cursor cursor = db.query(TB_PRODUCT,null,TB_PRODUCT_CAT_ID+"=?", id ,null, null, null);
         return cursor;
@@ -441,10 +443,9 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                                         cursor.getString( cursor.getColumnIndex(TB_STATUS_STATUS_NAME)) );
                     cursor.close();
                 }
-                return status;
             }
 
-            return null;
+            return status;
     }
 
 
@@ -464,12 +465,11 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                 // fill Status object
                 typeOrder = new TypeOrder(cursor.getInt( cursor.getColumnIndex(TB_TYPEORDER_ID)) ,
                         cursor.getString( cursor.getColumnIndex(TB_TYPEORDER_TYPE_ORDER)) );
-                cursor.close();
             }
-            return typeOrder;
+            cursor.close();
         }
 
-        return null;
+        return typeOrder;
     }
 
 
@@ -482,7 +482,6 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     public Customer getCustomerById(int id) {
         Customer customer = null;
         Address address = null;
-
         db = getReadableDatabase();
 
         Cursor cursor = db.query( TB_CUSTOMER, null,"_id = ?", new String[]{""+id}, null, null, null);
@@ -500,10 +499,9 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
                 cursor.close();
             }
-            return customer;
         }
 
-        return null;
+        return customer;
     }
 
     /**
@@ -526,9 +524,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                             cursor.getString( cursor.getColumnIndex(TB_CATEGORY_PIC)) );
                 cursor.close();
             }
-            return category;
         }
-        return null;
+        return category;
     }
 
     /**
@@ -541,7 +538,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     public District getDistrictById(int id) {
         District district = null;
         db = getReadableDatabase();
-        Cursor cursor = db.query(TB_CATEGORY,null,"_id = ?", new String[]{""+id}, null, null, null);
+        Cursor cursor = db.query( TB_DISTRICT ,null,"_id = ?", new String[]{""+id}, null, null, null);
         if(cursor != null){
 
             if(cursor.moveToFirst()){
@@ -550,9 +547,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
                         cursor.getString( cursor.getColumnIndex(TB_DISTRICT_DISTRICT_NAME)));
                 cursor.close();
             }
-            return district;
         }
-        return null;
+        return district;
     }
 
     /**
@@ -578,9 +574,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
                 cursor.close();
             }
-            return suburb;
         }
-        return null;
+        return suburb;
     }
 
 
@@ -597,6 +592,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         Suburb suburb = null;
 
         db = getReadableDatabase();
+
         Cursor cursor = db.query(TB_ADDRESS,null,"_id = ?", new String[]{""+id}, null, null, null);
         if(cursor != null){
 
@@ -627,19 +623,54 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
      */
     @Override
     public Order getOrderById(int id) {
-        Order order = new Order();
-        Customer customer = new Customer();
-        Address address = new Address();
-        //TODO FINISH IT
-        SQLiteDatabase db = getReadableDatabase();
-        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        //   queryBuilder.setTables(TB_ORDER+","+TB_CUSTOMER+","+TB_ADDRESS+","+TB_TYPEORDER+","+TB_STATUS,TB);
+        if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: getOrderById ::: ID : "+id );
 
-        return null;
+        Order order = new Order();
+        db = getReadableDatabase();
+
+            // getting cursor with data
+        Cursor cursor = db.query(TB_ORDER ,null,"_id = ?", new String[]{""+id}, null, null, null);
+        if(cursor != null){
+
+            if(cursor.moveToFirst()) {
+
+                // Fill the Object Order and return it back
+                order.setId(cursor.getInt(cursor.getColumnIndex(TB_ORDER_ID)));
+                order.setCustomer(
+                        getCustomerById( cursor.getInt(cursor.getColumnIndex(TB_ORDER_CUSTOMER_ID)) ));
+
+                    try { // Catch if there is DATETIME parse exceptions
+                        order.setOrderDatetimeFor(
+                            dateFormat.parse(cursor.getString(cursor.getColumnIndex(TB_ORDER_ORDER_DATETIME_FOR))));
+                        order.setOrderDatetimeNow(
+                                dateFormat.parse(cursor.getString(cursor.getColumnIndex(TB_ORDER_ORDER_DATETIME_FOR))));
+                    }catch(ParseException e){
+                        Log.e(AppConst.LOGE, " ::: getOrderById ::: ParseDateTime Err : "+e);
+
+                    }
+
+                order.setSuborder(
+                        getSubOrderByOrderId( cursor.getInt( cursor.getColumnIndex(TB_ORDER_ID))));
+                order.setTypeOrder(
+                        getTypeOrderById( cursor.getInt(cursor.getColumnIndex(TB_ORDER_TYPE_ORDER_ID))));
+                order.setStatus(
+                        getStatusById(cursor.getInt(cursor.getColumnIndex(TB_ORDER_STATUS_ID))));
+                order.setnumPersons(cursor.getInt( cursor.getColumnIndex(TB_ORDER_NUM_PERSONS)));
+                order.setAddress(
+                        getAddressById(cursor.getInt( cursor.getColumnIndex(TB_ORDER_ADDRESS_ID))) );
+                order.setCustomer(
+                        getCustomerById(cursor.getInt( cursor.getColumnIndex(TB_ORDER_CUSTOMER_ID))));
+                order.setComment( cursor.getString(cursor.getColumnIndex(TB_ORDER_COMMENT)));
+
+            }
+                cursor.close(); // close resource
+            }
+
+        return order;
     }
 
     //////////////////////////////////////////////////////////
-    // END GET BEANS //////////////////////////////////////////
+    // END FOR GETTING BEANS //////////////////////////////////
     ///////////////////////////////////////////////////////////
 
 

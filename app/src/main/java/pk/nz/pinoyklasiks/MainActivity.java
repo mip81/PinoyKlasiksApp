@@ -27,6 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -36,6 +38,7 @@ import pk.nz.pinoyklasiks.activities.fragments.LeftMenuFragment;
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
 import pk.nz.pinoyklasiks.beans.Address;
 import pk.nz.pinoyklasiks.beans.Order;
+import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import pk.nz.pinoyklasiks.db.WebService;
 import utils.AppConst;
@@ -71,20 +74,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //<<<< TEST ZONE >>>>>
 
-        Address address = new Address();
-            address.setId(1);
-            address.setLocation("23 Panmure");
-        Order order = new Order();
-            order.setId(1);
-            order.setComment("comment");
-            order.setAddress(address);
-        new WebService(this).sendOrder(order);
+
+            Order order = new DBManager(this).getOrderById(1);
+            new WebService(this).sendJSONORder(order);
+
+
+        //<<<< TEST ZONE >>>>>
 
         // Install toolbar and settings for it
             Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);

@@ -26,6 +26,6 @@ public interface IWebService {
      * @param order
      * @return int the global id
      */
-    public int sendOrder(Order order);
+    public int sendJSONORder(Order order);
 
 }
