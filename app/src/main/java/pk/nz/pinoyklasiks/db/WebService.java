@@ -2,11 +2,11 @@ package pk.nz.pinoyklasiks.db;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +22,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import pk.nz.pinoyklasiks.beans.Address;
 import pk.nz.pinoyklasiks.beans.Customer;
@@ -39,17 +42,41 @@ import utils.AppConst;
 
 public class WebService extends DBManager implements IWebService{
 
+    private static final int SLEEP_TIME = 3000;  // Time to wait the answer from server
     public final String CHECK_UPDATE = "check_update";
 
+    private JSONObject jsonGlobalId; // JSON Object with global id
+    private JSONObject jsonStatus;   // JSON Obkect with status information
+    private boolean isRetrieveTaskNotFinished = true;  // serve to show that task finished and the method can return result
+    private JSONObject jsonLastDateTimeChange;
 
     public WebService(Context ctx) {
         super(ctx);
     }
 
+    /**
+     * Checking Internet Access
+     * Return true if the app have access to internet
+     * @return boolean (true if has connection)
+     */
+    @Override
+    public boolean isOnline() {
 
+        // Getting connectivity service
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
+        //check if network is available
+        if( networkInfo != null && networkInfo.isConnectedOrConnecting() ){
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< WebService >>> : isOnline : "+ true);
 
+            return true;
+        }
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< WebService >>> : isOnline : "+ false);
 
+        return false;
+
+    }
 
 
     /**
@@ -58,9 +85,106 @@ public class WebService extends DBManager implements IWebService{
      */
     @Override
     public boolean isTheLastVersion() {
-       //new RetrieveJSONTask(null, ).execute();
+        // // TODO: 10/27/16 check version
         return false;
     }
+
+
+    /**
+     * CHECKING the status of ORDERID
+     *
+     * @param globalId
+     * @return int id of status -1 if there is no the order
+     */
+    public int checkStatusOrder(int globalId){
+        int statusId = -1; // return the status ID number
+
+        // the object which will be send to server
+        JSONObject jsonGlobalId = new JSONObject();
+           try {
+
+               jsonGlobalId.put("orderId", globalId);
+
+               // Start task sending the json object with orderId to the server
+               // and get back via CallBack method jsonObject which has statusId
+               RetrieveJSONTask jsonTask = new RetrieveJSONTask("Checking the status of order...", jsonGlobalId, JSON_ACTION_CHECK_STATUS_ORDER, new AsyncJSONResponse() {
+                   @Override
+                   public void getResult(JSONObject jsonResult) {
+                       jsonStatus = jsonResult;
+                   }
+               });
+               jsonTask.execute();
+
+               // Try to stop this thread until result will be ready
+               try{
+                   Thread.sleep(SLEEP_TIME);
+               }catch(Exception e){
+
+               }
+
+           }catch(JSONException e){
+
+               Log.e(AppConst.LOGE, " <<< WebService >>> ::: checkStatusOrder ::: "+ e.getMessage());
+           }
+            // CHECK if returned JSON Object not nul
+            // READ STATUS ID
+            if(jsonStatus != null){
+                try{
+                    statusId = jsonStatus.getInt("status_id");
+                }catch (JSONException e){
+                    Log.e(AppConst.LOGE, " <<< WebService >>  ::: checkStatusOrder ::: "+e.getMessage());
+                }
+            }
+
+        return statusId;
+    }
+
+
+
+
+    /**
+     * GET THE DATETIME LAST VERSION from the server
+     * @return Date of last changes or null
+     */
+    public Date getTheLastVersionDateTime(){
+
+        Date lastChangeDate = null;
+        SimpleDateFormat sdf = new SimpleDateFormat(IDBInfo.MYSQL_DATETIME_PATTERN);
+        jsonLastDateTimeChange = new JSONObject();
+
+
+            // Start task sending the json object with DateTime of LAST CHANGES to the server
+            // and get back via CallBack method jsonObject which has statusId
+            RetrieveJSONTask jsonTask = new RetrieveJSONTask("Checking the status of order...", jsonLastDateTimeChange, JSON_ACTION_CHECK_VERSION, new AsyncJSONResponse() {
+                @Override
+                public void getResult(JSONObject jsonResult) {
+                    jsonLastDateTimeChange = jsonResult;
+                }
+            });
+            jsonTask.execute();
+
+
+        try{
+            Thread.sleep(SLEEP_TIME);
+        }catch (Exception e){
+            Log.e(AppConst.LOGE, "<<< WebService >> ::: getTheLastVersionDateTime ::: "+e.getMessage());
+        }
+
+        // CHECK if returned JSON Object not nul
+        // READ STATUS ID
+        if(jsonLastDateTimeChange != null){
+            try{
+                lastChangeDate = sdf.parse(jsonLastDateTimeChange.getString("last_changes_datetime"));
+            }catch (ParseException e){
+                Log.e(AppConst.LOGE, " <<< WebService >>  ::: getTheLastVersionDateTime ::: "+e.getMessage());
+            }catch (Exception e){
+                Log.e(AppConst.LOGE, " <<< WebService >>  ::: getTheLastVersionDateTime ::: "+e.getMessage());
+            }
+        }
+
+        return lastChangeDate;
+    }
+
 
 
 
@@ -104,8 +228,6 @@ public class WebService extends DBManager implements IWebService{
 
 
 
-
-
     /**
      * Method convert orderto JSON and  send to the server
      * and the get the returned global id
@@ -117,25 +239,61 @@ public class WebService extends DBManager implements IWebService{
     public int sendJSONORder(Order order){
         JSONObject jsonOrder = order.toJSON();
 
+        // Check if the order object not null
+        // otherwise return 0
         if (jsonOrder == null){
             Log.d(AppConst.LOGD, " ::: sendJSONORder ::: jsonOrder ::: is null");
             return 0;
         }
-        new RetrieveJSONTask("Sending the order...", jsonOrder, JSON_ACTION_NEW_ORDER ).execute();
 
+
+        // Start task sending the json object with order to the server
+        // and get back via CallBack method jsonObject which has globalId
+        RetrieveJSONTask jsonTask = new RetrieveJSONTask("Sending the order...", jsonOrder, JSON_ACTION_NEW_ORDER, new AsyncJSONResponse() {
+            @Override
+            public void getResult(JSONObject jsonResult) {
+              //  jsonGlobalId = jsonResult;
+            }
+        });
+
+            // get Result from Server
+            try{
+                jsonGlobalId = jsonTask.execute().get();
+
+            }catch(Exception e){
+
+            }
+
+        // Read returned JSON object with OrderID
+        if(jsonGlobalId != null){
+            try {
+
+                return jsonGlobalId.getInt("orderId");
+
+            }catch (JSONException e){
+
+                Log.e(AppConst.LOGE, "Error when get the globalID "+e.toString());
+                return 0;
+            }
+
+        }
 
         return 0;
     }
+
+
 
 
     /**
      * Proccess of request and recieve the answer from server
      *
      */
-    class RetrieveJSONTask extends AsyncTask<String, String, Void>{
-        String message;
-        JSONObject json;
-        ProgressDialog progressDialog;
+    class RetrieveJSONTask extends AsyncTask<String, Void, JSONObject>{
+        private String message;     // Message which be shown to User
+        private JSONObject json;    // JSON object which we send
+        private ProgressDialog progressDialog; // Progress dialog will be shown to user
+        private  JSONObject jsonResult; // Result from server
+        private AsyncJSONResponse jsonResponse; // Call back method
 
 
         /**
@@ -145,9 +303,12 @@ public class WebService extends DBManager implements IWebService{
          * @param json JSON Object will be sent
          * @param action the constant show what should be done on the server
          */
-        RetrieveJSONTask(String message, JSONObject json, String action){
+        RetrieveJSONTask(String message, JSONObject json, String action, AsyncJSONResponse jsonResponse){
             // Message wil be shown in the ProgressDialog
             this.message = message;
+
+            this.jsonResponse = jsonResponse;
+
             try{
 
                 json.put("action", action);
@@ -170,7 +331,7 @@ public class WebService extends DBManager implements IWebService{
         }
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected JSONObject doInBackground(String... params) {
             try{
                 URL url = new URL(WEBSERVICE_SHOST);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -179,10 +340,7 @@ public class WebService extends DBManager implements IWebService{
                 con.setDoOutput(true);
                 con.setDoInput(true);
 
-                // Fill header fields of request
-                //con.setRequestProperty("Content-Type", "aplication/json");
-                //con.setRequestProperty("Accept" , "application/json");
-
+                // Method of request
                 con.setRequestMethod("POST");
 
 
@@ -198,7 +356,7 @@ public class WebService extends DBManager implements IWebService{
 
                 // add parameter to request
                 Uri.Builder builder  = new Uri.Builder()
-                        .appendQueryParameter("order", json.toString());
+                        .appendQueryParameter("request", json.toString());
                 String query = builder.build().getEncodedQuery();
 
 
@@ -207,35 +365,57 @@ public class WebService extends DBManager implements IWebService{
                 BufferedWriter writer =  new BufferedWriter(new OutputStreamWriter(os));
                 writer.write(query); // add parameters to request
                 writer.flush();
+
+                // close resources
                 writer.close();
                 os.close();
 
 
 
                 // Receive response from server
-                InputStream is = new BufferedInputStream(con.getInputStream());
-                Log.d(AppConst.LOGD, " :::>> WEBSERVICE RESPONSE <<::: Converted Stream from Server : "+convertStreamToString(is));
+                String response = convertStreamToString(con.getInputStream());
+
+                Log.d(AppConst.LOGD, " :::>> WEBSERVICE RESPONSE <<::: Converted Stream from Server |:"+response);
+
+                // convert response from server to JSON object
+                jsonResult = new JSONObject(response);
+
+
+
 
 
             }catch (JSONException e){
                 // Catching errors
-                Log.e(AppConst.LOGE, " ::: isTheLastVersion ::: "+e);
+                Log.e(AppConst.LOGE, " ::: RetrieveJSONTask ::: "+e);
             }catch (Exception e){
 
-                Log.e(AppConst.LOGE, " ::: isTheLastVersion ::: " + e);
+                Log.e(AppConst.LOGE, " ::: RetrieveJSONTask ::: " + e);
             }
 
-            return null;
+            // send the result object to CallBack method;
+            jsonResponse.getResult(jsonResult);
+
+            return jsonResult;
         }
 
+
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
 
             if(progressDialog.isShowing()){
                 progressDialog.dismiss();
             }
-
         }
+    }
+
+    /**
+     *  Used as callBack function to retrieve
+     *  answer from the server
+     */
+    interface AsyncJSONResponse{
+        void getResult(JSONObject jsonResult);
+
     }
 
 }

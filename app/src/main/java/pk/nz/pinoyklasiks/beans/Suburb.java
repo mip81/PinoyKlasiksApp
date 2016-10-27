@@ -1,5 +1,8 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +16,8 @@ public class Suburb implements Serializable{
     private String suburbName;     // Name of suburb
     private District district;      // District of the suburb
 
+    public Suburb(){}
+
     public Suburb(int id, String suburbName, District district){
         this.id = id;
         this.suburbName = suburbName;
@@ -20,6 +25,12 @@ public class Suburb implements Serializable{
 
     }
 
+    // Parceable implementation
+    protected Suburb(Parcel in) {
+        id = in.readInt();
+        suburbName = in.readString();
+        district = in.readParcelable(District.class.getClassLoader());
+    }
 
     public int getId() {
         return id;
@@ -44,4 +55,5 @@ public class Suburb implements Serializable{
     public void setDistrict(District district) {
         this.district = district;
     }
+
 }

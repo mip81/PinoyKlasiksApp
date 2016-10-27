@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +29,7 @@ import java.util.List;
 
 import pk.nz.pinoyklasiks.MainActivity;
 import pk.nz.pinoyklasiks.R;
+import pk.nz.pinoyklasiks.beans.Order;
 import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.beans.TypeOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
@@ -47,6 +50,8 @@ public class SubOrderActivity extends AppCompatActivity {
     private final int CTX_MENU_CLEAR = 1;
     private final int CTX_MENU_CHECKOUT = 2;
 
+    private int orderId;
+
     private ListView lvSubOrders;                   // Data of order
     private TextView tvSubOrderTotal;               // TextView for present the total cost
     private Button btnCheckout;
@@ -55,6 +60,7 @@ public class SubOrderActivity extends AppCompatActivity {
     private SubOrder subOrder;                      // suborder of order
     private IDAOManager dbManager;                  // DB helper;
     private DecimalFormat df = new DecimalFormat("$##.00"); // Format for price output
+    private Order order;                            // Order object
 
 
 
@@ -215,7 +221,7 @@ public class SubOrderActivity extends AppCompatActivity {
 
     /**
      * class listener for checkout btn
-     * run Dialog with choice type order
+     * run Dialog with choice of type order
      * and then change Activity to fill customer form
      *
      */
@@ -227,7 +233,10 @@ public class SubOrderActivity extends AppCompatActivity {
 
             // TODO: 10/19/16  read types from db and populate in the dialog
 
-            final String strOrderTypes[]  = {"Dine-In", "Takeaway"};
+            final String strOrderTypes[]  = {"Dine-in", "Takeaway"};
+
+            //Create and show the dialog with TYPE ORDER choice
+            // then this choice will be pass to CompleteOrderActivity
 
             AlertDialog.Builder dialogChooseType = new AlertDialog.Builder(SubOrderActivity.this);
             dialogChooseType.setTitle(R.string.suborderTypeOrderTitle)
@@ -237,7 +246,9 @@ public class SubOrderActivity extends AppCompatActivity {
                             if(AppConst.DEBUG)  Log.d(AppConst.LOGD , " SubOrder Activity ::: Clicked 'CHECKOUT' choosen type : "+strOrderTypes[which]);
 
                             Intent coIntent = new Intent(getApplicationContext(), CompleteOrderActivity.class);
+
                             coIntent.putExtra("typeOrder", strOrderTypes[which]);
+                            coIntent.putExtra("order", (Serializable) order );
                             startActivity(coIntent);
                             dialog.dismiss();
                         }
@@ -254,7 +265,10 @@ public class SubOrderActivity extends AppCompatActivity {
         public void run() {
             // get the id of order
             dbManager = new DBManager(getApplicationContext());
-                final int orderId = dbManager.getIdOpenOrder();
+                // Get opened order
+                orderId = dbManager.getIdOpenOrder();
+
+                order = dbManager.getOrderById(orderId);
 
 
             // get the suborder of order (Cart)

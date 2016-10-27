@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainCtivity">
+
+
+
+    <item
+        android:id="@+id/tmenu_co_clear_form"
+        android:title="@string/tmenu_co_clear"
+        app:showAsAction="always"
+        />
+
+
+</menu>

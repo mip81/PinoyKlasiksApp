@@ -46,11 +46,34 @@ public interface IDAOManager {
 
 
     /**
+     * Return id of typeOrder by Name
+     * @param name
+     * @return int
+     */
+    public int getTypeOrderIdByName(String name);
+
+
+    /**
      * Return Customer object by ID
      * @param id
      * @return Customer
      */
     public Customer getCustomerById(int id);
+
+    /**
+     * Save Customer object in DB
+     * if exit then update it
+     * @param customer
+     * @return id int
+     */
+    public int saveCustomer(Customer customer);
+
+
+    /**
+     * Retrieve the last registered Customer
+     * @return Customer
+     */
+    public Customer getLastCustomer();
 
     /**
      * Return Category object by ID
@@ -72,6 +95,19 @@ public interface IDAOManager {
      * @return Address
      */
     public Address getAddressById(int id);
+
+
+    /**
+     * Write the Address to database
+     * first check if the address exist then udate it
+     * @param address
+     * @return id int
+     */
+    public int saveAddress(Address address);
+
+
+
+
 
     /**
      * Return Disctrict object by ID
@@ -122,6 +158,14 @@ public interface IDAOManager {
      * @return Order
      */
     public abstract Order getOpenOrder();
+
+    /**
+     * Update order return id order
+     *
+     * @param order
+    * @return int ID
+    */
+    public int saveOrder(Order order);
 
 
     /**

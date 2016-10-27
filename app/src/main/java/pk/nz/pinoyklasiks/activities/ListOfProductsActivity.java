@@ -21,10 +21,6 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.InputStream;
 import java.util.List;
@@ -111,6 +107,7 @@ public class ListOfProductsActivity extends AppCompatActivity {
     }
 
 
+    // Get the ActionBar menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_product, menu);

@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,19 +28,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 
 import pk.nz.pinoyklasiks.activities.ListOfProductsActivity;
 import pk.nz.pinoyklasiks.activities.fragments.LeftMenuFragment;
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
-import pk.nz.pinoyklasiks.beans.Address;
 import pk.nz.pinoyklasiks.beans.Order;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
+import pk.nz.pinoyklasiks.db.IDBInfo;
+import pk.nz.pinoyklasiks.db.IWebService;
 import pk.nz.pinoyklasiks.db.WebService;
 import utils.AppConst;
 import utils.CategoryAdapter;
@@ -83,8 +84,10 @@ public class MainActivity extends AppCompatActivity {
         //<<<< TEST ZONE >>>>>
 
 
-            Order order = new DBManager(this).getOrderById(1);
-            new WebService(this).sendJSONORder(order);
+//            Order order = new DBManager(this).getOrderById(21);
+//            IWebService ws = new WebService(this);
+//                Date date = ws.getTheLastVersionDateTime();
+//
 
 
         //<<<< TEST ZONE >>>>>
@@ -182,8 +185,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
+
+
     /**
-     * Create toolbar menu which was defined in the activity_mainmain.xml
+     * Assign menu of TOOLBAR
      * @param menu
      * @return boolean
      */
@@ -260,6 +267,31 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_menu_about_us:
                     // TODO: 10/9/16 Add code for loading fragments
                     Toast.makeText(getApplicationContext(),"ABOUT US", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case R.id.nav_menu_location:
+                        //Intent intentLocation = new Intent(getApplicationContext(), MapsActivity.class);
+                        //startActivity(intentLocation);
+
+                    break;
+                case R.id.nav_menu_call_us:
+                        Intent intentCall = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+IDBInfo.PHONE_OF_RESTAURANT));
+                        intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                       try{
+                           startActivity(intentCall);
+                       }catch (Exception e){
+                           Toast.makeText(getApplication(), "Sorry this function doesn't work :(", Toast.LENGTH_SHORT).show();
+                       }
+                    break;
+
+                // Share menu prepare info for sharing
+                case R.id.nav_menu_share:
+                         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                         sharingIntent.setType("text/plain");
+                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "PinoyKlasiks PhoneNumber : "+IDBInfo.PHONE_OF_RESTAURANT);
+                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, IDBInfo.PHONE_OF_RESTAURANT);
+
+                        startActivity(Intent.createChooser(sharingIntent, "Share using"));
                     break;
 
             }

@@ -1,5 +1,9 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.app.Dialog;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -9,14 +13,25 @@ import java.io.Serializable;
  * @author Melchor RELATADO
  */
 public class District implements Serializable{
-    private int id;
+    private int id = -1 ;
     private String districtName;
+
+    public District(){}
 
     public District(int id, String districtName){
         this.id = id;
         this.districtName = districtName;
     }
 
+    
+    // Parcebale implementation
+
+    protected District(Parcel in) {
+        id = in.readInt();
+        districtName = in.readString();
+    }
+
+    // Getters and setters for fields
     public int getId() {
         return id;
     }
@@ -32,4 +47,5 @@ public class District implements Serializable{
     public void setDistrictName(String districtName) {
         this.districtName = districtName;
     }
+
 }

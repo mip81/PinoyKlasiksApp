@@ -1,5 +1,8 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -10,7 +13,7 @@ import java.io.Serializable;
  */
 
 public class Customer implements Serializable{
-    private int id;              // id number
+    private int id =-1;              // id number
     private String customerName; // name of customer
     private String phoneCustomer; // phone of customer
     private String email;         // email of customer
@@ -26,6 +29,8 @@ public class Customer implements Serializable{
         this.adrress = address;
     }
 
+
+    // Getters and setters for fields
     public int getId() {
         return id;
     }
@@ -65,4 +70,11 @@ public class Customer implements Serializable{
     public void setAdrress(Address adrress) {
         this.adrress = adrress;
     }
+
+    @Override
+    public String toString() {
+        return "Customer id : "+id+" name: "+getCustomerName()+" phone number: "+getPhoneCustomer()+ " email: "+getEmail()+
+                " addr id: "+getAdrress().getId();
+    }
+
 }

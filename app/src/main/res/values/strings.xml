@@ -31,11 +31,26 @@
     <string name="nav_menu_main_menu">Main menu</string>
     <string name="suborderTypeOrderTitle">Choose type of order</string>
 
-    <string name="co_name_lbl">Enter your name:</string>
-    <string name="co_phone_number_lbl">Enter your phone number:"</string>
-    <string name="co_datetime">Enter date and time for your order:</string>
-    <string name="co_address_lbl">Enter address of your order:</string>
+    <string name="co_name_hint">Enter your name...</string>
+    <string name="co_phone_number_hint">Enter your phone number..."</string>
+    <string name="co_address_hint">Enter address of your order:</string>
     <string name="coAmountPersonLbl">Amount of person:</string>
+    <string name="co_email_hint">Enter your email...</string>
+    <string name="co_location_hint">Enter your exact address...</string>
+    <string name="co_datetime_lbl">Choose date and time:</string>
+    <string name="co_comment_hint">Comments to the order...</string>
+    <string name="tmenu_co_clear">Clear</string>
+    <string name="co_form_message_req_field">Please please fill required field...</string>
+    <string name="title_activity_location">LocationActivity</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="co_title_dialog_msg">Thank you!</string>
+    <string name="co_msg_dialog_msg">Your order has been already sent! Our manager will contact you soon to approve the order. Thank you!</string>
+    <string name="co_ok_btn_dialog_msg">Ok</string>
+    <string name="co_sms_dialog_title">Send order via SMS</string>
+    <string name="co_sms_dialog_msg">You have no internet connection to send the order! Would you like to send it via SMS?</string>
+    <string name="co_sms_dialog_no">No</string>
+    <string name="co_sms_dialog_yes">Yes</string>
+    <string name="oh_date_of_order_lbl">Date of order:</string>
 
 
 </resources>

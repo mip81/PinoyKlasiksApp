@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 
 public class Address implements Serializable {
-    private int id;            // id number
+    private int id = -1;            // id number
     private Suburb suburb;     // Suburb in the city
     private District district; // District in the city
     private String location;   // exact location
@@ -65,5 +65,12 @@ public class Address implements Serializable {
 
     public void setDistrict(District district) {
         this.district = district;
+    }
+
+    @Override
+    public String toString() {
+        return "Address: id : "+getId()+" suburb id "+getSuburb().getId()+" suburb name: "+getSuburb().getSuburbName()+
+                " suburb id "+ getSuburb().getId()+ " ditrict id : "+getDistrict().getId()+" district name : "+getDistrict().getDistrictName()+
+                " location : "+getLocation();
     }
 }

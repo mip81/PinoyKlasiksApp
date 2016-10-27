@@ -11,8 +11,12 @@ package pk.nz.pinoyklasiks.db;
 
 public interface IDBInfo {
 
+    // The phone number of Restuarant
+    public final String PHONE_OF_RESTAURANT = "0211769217";
+
+
     // The constant for WebService
-    public static String WEBSERVICE_SHOST = "http://192.168.56.1/pinoy_webservice.php";
+    public static String WEBSERVICE_SHOST = "http://192.168.56.1/ws/pinoy_webservice.php";
     //public static String WEBSERVICE_SHOST = "http://jenny.kz/ws/pinoy_webservice.php";
     public static String USERNAME="PINOYADMIN";
     public static String PASSWORD="429599";

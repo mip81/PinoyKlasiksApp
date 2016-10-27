@@ -1,5 +1,7 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -36,6 +38,10 @@ public class Order implements Serializable{
     protected Address address;
     protected String comment="";
 
+    public Order(){}
+
+
+    // Getters and setters for fields
     public int getId() {
         return id;
     }
@@ -125,13 +131,25 @@ public class Order implements Serializable{
     }
 
 
+
     /**
      * Prepared text of order for sending it by SMS, Email
      * @return string
      */
     @Override
     public String toString() {
-        return super.toString();
+
+
+        return "Order: \n"+
+                "For Datetime: "+new SimpleDateFormat("dd M yyyy hh:mm").format(getOrderDatetimeFor())+" \n"+
+                "Customer name: "+getCustomer().getCustomerName()+
+                "\nPhone number: "+getCustomer().getPhoneCustomer()+
+                "\nEmail: "+getCustomer().getEmail()+
+                "\nNumber of person: "+getnumPersons()+
+                "\nType: "+getTypeOrder().getTypeOrder()+"\n"+getSuborder();
+
+
+
     }
 
     /**

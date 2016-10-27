@@ -31,8 +31,10 @@
     <group android:id="@+id/nav_menu_communication_group">
 
         <item android:title="@string/nav_menu_call_us"
+            android:id="@+id/nav_menu_call_us"
             android:icon="@drawable/ic_call_us"/>
         <item android:title="@string/nav_menu_share"
+            android:id="@+id/nav_menu_share"
             android:icon="@drawable/ic_share"/>
 
     </group>

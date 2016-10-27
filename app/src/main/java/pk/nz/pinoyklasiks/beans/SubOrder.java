@@ -1,6 +1,10 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,6 +23,16 @@ public class SubOrder implements Serializable {
     private Map<AbstractProduct, Integer> mapProducts = new LinkedHashMap<>();
     // Total price
     private double totalPrice;
+
+    public SubOrder(){}
+
+    protected SubOrder(Parcel in) {
+        orderId = in.readInt();
+        totalPrice = in.readDouble();
+    }
+
+
+    // Getters and setters for fields
 
     public Map<AbstractProduct, Integer> getMapProducts() {
         return mapProducts;
@@ -44,5 +58,22 @@ public class SubOrder implements Serializable {
 
     public void setOrderId(int order_id) {
         this.orderId = order_id;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        if(mapProducts != null){
+            for(AbstractProduct p : mapProducts.keySet()){
+
+                sb.append(p.getProductName()+" "+mapProducts.get(p)+" x  $"+p.getProductPrice()+" \n");
+
+            }
+            sb.append("    TOTAL: $"+getTotalPrice());
+        }
+
+        return sb.toString();
+
     }
 }

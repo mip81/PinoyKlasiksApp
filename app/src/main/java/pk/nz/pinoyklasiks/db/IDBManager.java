@@ -13,11 +13,7 @@ import java.util.Date;
  */
 public interface IDBManager {
 
-    /**
-     * Check if user has connection to Internet
-     * @return boolean
-     */
-    public boolean isOnline();
+
 
 
     /**

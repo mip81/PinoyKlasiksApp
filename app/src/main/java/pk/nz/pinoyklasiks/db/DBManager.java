@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -194,7 +195,6 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     }
 
 
-
     /**
      * Create and load default data to DB
      * from assets file db.sql
@@ -350,7 +350,6 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     @Override
     public Order getOpenOrder() {
         // TODO: 10/13/16 write code to return Order with status open
-
         return null;
     }
 
@@ -425,6 +424,51 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     }
 
     /**
+     * Update order .
+     * Take the order object and update info in DB
+     *
+     * @param order
+     * @return int count of row was affected
+     */
+    public int saveOrder(Order order){
+        int id = -1;
+        db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        if(order != null){
+
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< DBmanager >>> ::: saveOrder ::: id : "+order.getId());
+
+            // Read orders object
+            Address address = order.getAddress();
+            Customer customer = order.getCustomer();
+
+            // save address and set id in the object
+            address.setId(saveAddress(address));
+
+            // save customer and save id in the object
+            customer.setId( saveCustomer(customer));
+
+            // prepare fields for update
+            cv.put(TB_ORDER_NUM_PERSONS, order.getnumPersons());
+            cv.put(TB_ORDER_TYPE_ORDER_ID, order.getTypeOrder().getId());
+            cv.put(TB_ORDER_COMMENT, order.getComment());
+            cv.put(TB_ORDER_ADDRESS_ID, address.getId());
+            cv.put(TB_ORDER_CUSTOMER_ID, order.getCustomer().getId());
+            cv.put(TB_ORDER_ORDER_DATETIME_FOR, dateFormat.format(order.getOrderDatetimeFor()) );
+            cv.put(TB_ORDER_ORDER_DATETIME_NOW, dateFormat.format(order.getOrderDatetimeNow()) );
+            cv.put(TB_ORDER_GLOBAL_ID, order.getGlobalId());
+            cv.put(TB_ORDER_STATUS_ID, order.getStatus().getId());
+
+            // Update ORDER object
+            id = (int)db.update(TB_ORDER, cv, TB_ORDER_ID+"=?", new String[]{""+order.getId()});
+
+        }
+
+        return id;
+    }
+
+    /**
      * Return Status object by ID
      *
      * @param id
@@ -464,7 +508,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
             if(cursor.moveToFirst()){
                 // fill Status object
                 typeOrder = new TypeOrder(cursor.getInt( cursor.getColumnIndex(TB_TYPEORDER_ID)) ,
-                        cursor.getString( cursor.getColumnIndex(TB_TYPEORDER_TYPE_ORDER)) );
+                           cursor.getString( cursor.getColumnIndex(TB_TYPEORDER_TYPE_ORDER)) );
             }
             cursor.close();
         }
@@ -472,6 +516,41 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         return typeOrder;
     }
 
+    /**
+     * Retrieve the last registered Customer
+     * if there is no customer return null;
+     * @return Customer
+     */
+    @Override
+    @Nullable
+    public Customer getLastCustomer() {
+       // get DB connection
+        db = getReadableDatabase();
+        // Object to return
+        Customer customer = null;
+
+        // Query for getting last Customer
+        String sql = "SELECT * FROM  "+TB_CUSTOMER+" ORDER BY "+TB_CUSTOMER_ID+
+                    " DESC LIMIT 1";
+
+        Cursor cursor = db.rawQuery(sql, null);
+        if(cursor != null){
+
+            if(cursor.moveToFirst()){
+
+                customer = new Customer();
+                customer.setId(cursor.getInt(cursor.getColumnIndex( TB_CUSTOMER_ID )));
+                customer.setAdrress(
+                        getAddressById(cursor.getInt(cursor.getColumnIndex( TB_CUSTOMER_ADDRESS_ID ))));
+                customer.setCustomerName(cursor.getString(cursor.getColumnIndex(TB_CUSTOMER_CUSTOMER_NAME)));
+                customer.setEmail(cursor.getString(cursor.getColumnIndex(TB_CUSTOMER_EMAIL)));
+                customer.setPhoneCustomer(cursor.getString(cursor.getColumnIndex(TB_CUSTOMER_PHONE_NUMBER)));
+                cursor.close();
+            }
+        }
+
+        return customer;
+    }
 
     /**
      * Return Customer object by ID
@@ -502,6 +581,46 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         }
 
         return customer;
+    }
+
+
+    @Override
+    public int saveCustomer(Customer customer) {
+        int id = 1;
+        db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        if (customer!= null){
+
+            cv.put(TB_CUSTOMER_CUSTOMER_NAME, customer.getCustomerName());
+            cv.put(TB_CUSTOMER_EMAIL, customer.getEmail());
+            cv.put(TB_CUSTOMER_ADDRESS_ID, customer.getAdrress().getId());
+            cv.put(TB_CUSTOMER_PHONE_NUMBER, customer.getPhoneCustomer());
+
+
+                // if this customer already in DB then update it
+            if(getCustomerById(customer.getId()) != null){
+
+                // Update Customer
+                db.update(TB_CUSTOMER, cv, TB_CUSTOMER_ID+"=?", new String[]{""+customer.getId()});
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< DBManager >>> :: UpdateNewCustomer ID :"+id);
+
+                return customer.getId();
+
+            }else{ // There is no such customer  in DB
+
+                // Insert new Customer
+                if(AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< DBManager >>> :: InsertNewCustomer ID :"+id);
+
+                id = (int)db.insert(TB_CUSTOMER, null, cv);
+                return id;
+            }
+
+        }
+
+
+
+        return id;
     }
 
     /**
@@ -615,6 +734,44 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         return null;
     }
 
+    /**
+     * Save Address object in DB
+     * if exit then update it
+     * @param address
+     * @return id int
+     */
+    @Override
+    public int saveAddress(Address address) {
+
+        int id = -1;
+        db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        if (address != null) {
+
+            cv.put(TB_ADDRESS_SUBURB_ID, address.getSuburb().getId());
+            cv.put(TB_ADDRESS_LOCATION, address.getLocation());
+            cv.put(TB_ADDRESS_DISTRICT_ID, address.getDistrict().getId());
+
+            // check if the object exist then update
+            if (getAddressById(address.getId()) != null) {
+
+                // We have this address UPDATE it
+                id = db.update(TB_ADDRESS, cv, TB_SUBORDER_ID + "=?", new String[]{"" + address.getId()});
+
+            } else {
+                // There is no such address in DB INSERT it
+                id = (int) db.insert(TB_ADDRESS, null, cv);
+            }
+
+        }
+        return id;
+    }
+
+
+
+
+
 
     /**
      * Get the order by id
@@ -674,24 +831,6 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     ///////////////////////////////////////////////////////////
 
 
-    /**
-     * Return true if the app have access to internet
-     * @return boolean (true if has connection)
-     */
-    @Override
-    public boolean isOnline() {
-
-        // Getting connectivity service
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-
-        //check if network is available
-        if( networkInfo != null && networkInfo.isConnectedOrConnecting() ){
-            return true;
-        }
-        return false;
-
-    }
 
     /**
      * Return id of order with status open
@@ -774,6 +913,40 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
         return list;
     }
+
+    /**
+     * Return id of typeOrder by Name
+     * if there is no such type return -1
+     * @param name
+     * @return int id order or -1 (if there is no type)
+     */
+    public int getTypeOrderIdByName(String name){
+        int id = -1;
+        db = getReadableDatabase();
+        Cursor cursor =  db.query(TB_TYPEORDER, new String[]{TB_TYPEORDER_ID}, TB_TYPEORDER_TYPE_ORDER+"=?", new String[]{name},null, null, null, null);
+
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+
+                // get the returned id
+                id = cursor.getInt(cursor.getColumnIndex(TB_ORDER_ID));
+
+                // close resources
+                cursor.close();
+
+
+                return id;
+            }
+
+        }
+
+
+
+
+        return id;
+    }
+
+
 
     @Override
     public synchronized void close() {

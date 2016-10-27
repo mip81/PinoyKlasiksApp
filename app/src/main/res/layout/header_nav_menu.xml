@@ -8,11 +8,10 @@
     android:weightSum="1"
     android:background="#ffffff">
     <ImageView
-        android:layout_width="303dp"
-        android:layout_height="wrap_content"
+        android:layout_width="270dp"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:src="@drawable/logo"
-        android:layout_weight="1.83" />
+        android:src="@drawable/logo" />
 
 
 </LinearLayout>

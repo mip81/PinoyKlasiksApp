@@ -1,5 +1,8 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +21,8 @@ public class TypeOrder implements Serializable {
 
     }
 
+
+
     /**
      * Constructor that set all fields of the class
      * @param id int  order
@@ -26,6 +31,12 @@ public class TypeOrder implements Serializable {
     public TypeOrder(int id, String typeOrder){
         this.id = id;
         this.typeOrder = typeOrder;
+    }
+
+    // Parceable implementation
+    protected TypeOrder(Parcel in) {
+        id = in.readInt();
+        typeOrder = in.readString();
     }
 
     public int getId() {
@@ -52,4 +63,5 @@ public class TypeOrder implements Serializable {
     public String toString() {
         return typeOrder;
     }
+
 }

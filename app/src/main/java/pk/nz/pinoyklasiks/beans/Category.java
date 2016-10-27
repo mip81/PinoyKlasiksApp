@@ -1,5 +1,10 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created 10/10/16.
  *
@@ -7,7 +12,7 @@ package pk.nz.pinoyklasiks.beans;
  * @author Melchor RELATADO
  */
 
-public class Category extends AbstractCategory {
+public class Category extends AbstractCategory implements Serializable {
 
     public Category(){}
 
@@ -25,6 +30,9 @@ public class Category extends AbstractCategory {
         this.pic = pic;
 
     }
+
+
+    // Getters and setters for the fields
 
     public int getId() {
         return id;
@@ -65,4 +73,5 @@ public class Category extends AbstractCategory {
     public void setOrderId(int order_id) {
         this.orderId = order_id;
     }
+
 }

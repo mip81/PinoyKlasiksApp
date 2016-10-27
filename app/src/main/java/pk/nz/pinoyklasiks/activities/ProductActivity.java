@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,7 +22,6 @@ import java.text.DecimalFormat;
 import pk.nz.pinoyklasiks.R;
 import pk.nz.pinoyklasiks.beans.AbstractProduct;
 import pk.nz.pinoyklasiks.beans.Product;
-import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import utils.AppConst;
@@ -47,13 +45,16 @@ public class ProductActivity extends AppCompatActivity {
     private TextView tvProductName;  // Name of the product
     private TextView tvProductPrice; // Price of the product
     private TextView tvProductQuantity; // Quantity of the product
-    private ImageButton btnPlus;
-    private ImageButton btnMinus;
-    private ImageButton btnAddToCart;
+    private ImageButton btnPlus;             // button + quantity
+    private ImageButton btnMinus;            // button - quantity
+    private ImageButton btnProductAddToCart; // Button add the product to the cart
 
     private int quantity = 1;
 
+    // format for the price
     private DecimalFormat dfPrice = new DecimalFormat("$##.00");
+    private Handler handler = new Handler();
+
 
     IDAOManager dbManager; // Class serve operatyions with DB
 
@@ -86,7 +87,13 @@ public class ProductActivity extends AppCompatActivity {
                             btnPlus = (ImageButton) findViewById(R.id.btnPlus);
                             btnPlus.setOnClickListener(new ClickTheQuantityBtn());
 
-                                btnAddToCart = (ImageButton) findViewById(R.id.btnPlus);
+                                btnProductAddToCart = (ImageButton) findViewById(R.id.btnProductAddToCart);
+                                    btnProductAddToCart.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            new AddToCart().start();
+                                        }
+                                    });
 
         //get the product from intent
         product = (AbstractProduct) getIntent().getExtras().get("product");
@@ -186,6 +193,14 @@ public class ProductActivity extends AppCompatActivity {
             dbManager.addProductToOrder(product, quantity, false);
             //close db
             dbManager.close();
+            // Notify user about added the product to the cart
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), product.getProductName()+" was added to the cart", Toast.LENGTH_SHORT).show();
+                }
+            });
+
 
         }
     }

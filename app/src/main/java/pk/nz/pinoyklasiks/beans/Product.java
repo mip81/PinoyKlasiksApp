@@ -1,5 +1,10 @@
 package pk.nz.pinoyklasiks.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Class represent the ordinary
  * product
@@ -8,8 +13,19 @@ package pk.nz.pinoyklasiks.beans;
  * @author Melchor RELATADO
  */
 
-public class Product extends AbstractProduct {
+public class Product extends AbstractProduct implements Serializable {
 
+
+
+    // Default constructor
+    public Product(){}
+
+    // Parceable implementation
+    protected Product(Parcel in) {
+    }
+
+
+    // Getters and setters foer fields
     @Override
     public int getId() {
         return id;
