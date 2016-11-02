@@ -1,23 +1,36 @@
 package pk.nz.pinoyklasiks.db;
 
-/**
- * Interface describes the DB
- * and the all tables and fields
+/**<pre>
  *
- * @Author Mikhail PASTUSHKOV
- * @Author Melchor RELATADO
+ * Title       : IDBInfo interface
+ * Purpose     : Keeper all constants for the App
+ *               related to DB
  *
+ * Date        : 15.10.2016
+ * Input       : none
+ * Proccessing : none
+ * Output      : IDBInfo class
+ *
+ * </pre>
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
  */
-
 public interface IDBInfo {
 
+    // The link to get JSON Weather object
+    public static String WEATHER_LINK = "http://api.openweathermap.org/data/2.5/weather?q=Auckland,nz&appid=c752691507cd475666536fb7b2150b37";
+
     // The phone number of Restuarant
-    public final String PHONE_OF_RESTAURANT = "0211769217";
+    public static String PHONE_OF_RESTAURANT = "0211693229";
 
 
     // The constant for WebService
-    public static String WEBSERVICE_SHOST = "http://192.168.56.1/ws/pinoy_webservice.php";
-    //public static String WEBSERVICE_SHOST = "http://jenny.kz/ws/pinoy_webservice.php";
+    //public static String WEBSERVICE_SHOST = "http://192.168.56.1/ws/pinoy_webservice.php";
+    //public static String DEALS_IMG_URL = "http://192.168.56.1/ws/img/deals/";
+
+    public static String WEBSERVICE_SHOST = "http://jenny.kz/ws/pinoy_webservice.php";
+    public static String DEALS_IMG_URL = "http://jenny.kz/ws/img/deals/";
+
     public static String USERNAME="PINOYADMIN";
     public static String PASSWORD="429599";
 
@@ -28,6 +41,7 @@ public interface IDBInfo {
     public static String JSON_ACTION_NEW_ORDER = "new_order";
     public static String JSON_ACTION_CHECK_VERSION = "check_version";
     public static String JSON_ACTION_CHECK_STATUS_ORDER = "check_status_order";
+    public static String JSON_ACTION_GET_DEALS = "get_deals";
 
 
 
@@ -36,6 +50,7 @@ public interface IDBInfo {
     public static String DBName = "db_pinoy_klasiks";
     public static int VER = 10;
 
+    // The constant desribe all the names of fields and tables in the Database
     public static String TB_CATEGORY = "tb_category";
         public  static String TB_CATEGORY_ID = "_id";
         public  static String TB_CATEGORY_DESCRIPTION= "description";
@@ -75,7 +90,9 @@ public interface IDBInfo {
         public static String TB_ORDER_ADDRESS_ID = "address_id";
         public static String TB_ORDER_LOCATION = "location";
         public static String TB_ORDER_COMMENT = "comment";
-        public static String TB_ORDER_GLOBAL_ID = "global_id"; // The ID on the server get after sending the order
+
+        // The ID on the server get after sending the order
+        public static String TB_ORDER_GLOBAL_ID = "global_id";
 
     public static String TB_STATUS = "tb_status";
         public static String TB_STATUS_ID = "_id";

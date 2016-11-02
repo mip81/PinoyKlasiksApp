@@ -5,9 +5,11 @@ INSERT INTO tb_status (_id, status_name) VALUES (2, 'Pending');
 INSERT INTO tb_status (_id, status_name) VALUES (3, 'Approved');
 INSERT INTO tb_status (_id, status_name) VALUES (4, 'Closed');
 INSERT INTO tb_status (_id, status_name) VALUES (5, 'Canceled');
+INSERT INTO tb_status (_id, status_name) VALUES (6, 'SMS');
+INSERT INTO tb_status (_id, status_name) VALUES (7, 'CALL');
 -- Table: tb_version
 CREATE TABLE `tb_version` (`version`	TEXT NOT NULL,`last_changes_datetime`	TEXT NOT NULL);
-INSERT INTO tb_version (version, last_changes_datetime) VALUES ('1', '');
+INSERT INTO tb_version (version, last_changes_datetime) VALUES ('1', '2016-10-14 22:11:00');
 -- Table keeps information about suborders
 CREATE TABLE tb_suborder (_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, product_id INTEGER NOT NULL REFERENCES tb_product (_id), quantity INTEGER NOT NULL, price REAL NOT NULL, order_id INTEGER REFERENCES tb_order (_id));
 -- Table keeps information about types of orders

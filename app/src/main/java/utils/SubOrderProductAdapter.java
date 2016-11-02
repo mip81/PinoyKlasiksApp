@@ -24,14 +24,22 @@ import pk.nz.pinoyklasiks.beans.AbstractProduct;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 
-/**
- * Product adater for suborder bind the view in layout with data
+/**<pre>
+ * Title       : SubOrderProductAdapter class
+ * Purpose     : Adapter for Orders objects
+ * Date        : 15.10.2016
+ * Input       : Context context, List<Order> order
+ * Proccessing : Get the Orders and organized it content
+ *              in the lv_suborder_products
+ * Output      : Adapter
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class SubOrderProductAdapter extends ArrayAdapter<Map.Entry>{
     private final String CLASSNAME = SubOrderProductAdapter.class.getCanonicalName();
+    private final boolean showControls;
     private IDAOManager dbManager;
     private List listProduct;
     private Context context;
@@ -39,12 +47,13 @@ public class SubOrderProductAdapter extends ArrayAdapter<Map.Entry>{
 
 
     // Constructor of customer adapter
-    public SubOrderProductAdapter(Context context, List entryProducts, int orderId) {
+    public SubOrderProductAdapter(Context context, List entryProducts, int orderId, boolean showControls) {
         super(context, 0, entryProducts);
 
         listProduct = entryProducts;
         this.context = context;
         this.orderId = orderId;
+        this.showControls = showControls;
         dbManager = new DBManager(getContext());
 
     }
@@ -91,13 +100,15 @@ public class SubOrderProductAdapter extends ArrayAdapter<Map.Entry>{
         //Get the buttons from layout +, - . delete
         ImageButton btnPlus = (ImageButton)convertView.findViewById(R.id.btnLVSubOrderPlus);
             btnPlus.setOnClickListener(new ClickPlusMinusQuantityListener(abstractProduct, tvProductQuantity));
+            if(!showControls) btnPlus.setVisibility(View.INVISIBLE);
 
         ImageButton btnMinus = (ImageButton)convertView.findViewById(R.id.btnLVSubOrderMinus);
             btnMinus.setOnClickListener(new ClickPlusMinusQuantityListener(abstractProduct, tvProductQuantity));
+                if(!showControls) btnMinus.setVisibility(View.INVISIBLE);
 
         ImageButton btnDelete = (ImageButton)convertView.findViewById(R.id.btnLVSubOrderDel);
             btnDelete.setOnClickListener(new ClickDeleteProductListener(orderId, abstractProduct));
-
+            if(!showControls) btnDelete.setVisibility(View.INVISIBLE);
 
         ImageView ivPic = (ImageView)convertView.findViewById(R.id.ivLVSubOrderProductPic);
 

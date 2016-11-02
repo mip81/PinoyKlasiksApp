@@ -4,13 +4,20 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-/**
- * The product class represent the
- * item that used in the app
- * @Author Mikhail PASTUSHKOV
- * @Author Melchor RELATADO
+/**<pre>
+ *
+ * Title       : AbstractProduct class
+ * Purpose     : Abstract class for products
+ *
+ * Date        : 01.09.2016
+ * Input       : none
+ * Proccessing : none
+ * Output      : none
+ *
+ * </pre>
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
  */
-
 public abstract class AbstractProduct implements Serializable{
     protected int id;              // id
     protected int catId;           // the id of category

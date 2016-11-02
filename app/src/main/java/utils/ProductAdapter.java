@@ -26,12 +26,21 @@ import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 
-/**
- * Product adater bind the view in layout with data
+
+/**<pre>
+ *
+ * Title       : ProductAdapter class
+ * Purpose     : Adapter for product objects
+ * Date        : 15.10.2016
+ * Input       : Context context, List<Product> order
+ * Proccessing : Get the Products and organized it content
+ *              in the lv_products
+ * Output      : Adapter
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class ProductAdapter extends ArrayAdapter<AbstractProduct>{
 
     private Handler handler;

@@ -5,13 +5,18 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**select
- * Class represent the table tb_status
+/**
+ * Title       : Status class
+ * Purpose     : Represent information related to status
+ *               in the DB
+ * Date        : 15.10.2016
+ * Input       : int id, String statusName
+ * Proccessing : none
+ * Output      : Status class
  *
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class Status implements Serializable{
     private int id = -1;              // number id
     private String statusName;   // name for status

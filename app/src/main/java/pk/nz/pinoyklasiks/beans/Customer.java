@@ -5,13 +5,21 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
+
+/*<pre>
+ * Title       : Customer class
+ * Purpose     : Represent information related to customer
+ *               in the DB
+ * Date        : 10.10.2016
+ * Input       : int id, String customerName, String phoneCustomer, String email, Address address
+ * Proccessing : to work with class has getters and setters and also
+ *              constuctor to fill the fields
+ * Output      : Category class
  *
- * Class represent table tb_customer
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class Customer implements Serializable{
     private int id =-1;              // id number
     private String customerName; // name of customer

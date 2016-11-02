@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+/**
+ * Title       : activity_search_results order
+ * Purpose     : Show results of the search
+
+ * Date        : 15.10.2016
+ * Input       : String query
+
+ * Proccessing : Get data from DB related to query and show it in the ListView
+ *
+ * Output      : Activity
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */
+
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- include toolbar -->
     <include layout="@layout/toolbar"
             android:id="@+id/search_result_toolbar"/>
 
+    <!-- Show found products -->
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lvSearchResults"
+        android:headerDividersEnabled="false"
+        android:footerDividersEnabled="false" />
+
+    <!--  Query string -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,17 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Title       : header_nave_menu
+ * Purpose     : To show the logo in the Navigation menu
+                 and information about weather and date
+
+ * Date        : 15.10.2016
+ * Input       : weather, date, logo of the restaurant
+
+ * Proccessing : none
+ *
+ * Output      : Layout
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="100dp"
     android:layout_marginTop="30dp"
     android:weightSum="1"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:layout_height="150dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="#8f0303"
+        android:id="@+id/llWeather"
+        android:visibility="gone"
+        android:layout_height="25dp">
+
+        <!-- Image of the current weather -->
+        <ImageView
+            app:srcCompat="@android:drawable/btn_star_big_on"
+            android:id="@+id/ivNavMenuTempPic"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:layout_marginLeft="10dp"
+            android:layout_height="35dp"
+            android:layout_width="40dp" />
+
+        <!-- Current temp -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tvNavMenuTempLbl"
+            android:textColor="#FFFFFF"
+            android:textStyle="normal|bold"
+            android:gravity="center_vertical|center"
+            android:drawableLeft="@drawable/ic_temperature" />
+
+        <!-- description of the weather -->
+        <TextView
+            android:text="13.3, broken clouds"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tvNavMenuTemp"
+            android:textColor="#FFFFFF"
+            android:textStyle="normal|bold"
+            android:gravity="center_vertical"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="#8f0303"
+        android:weightSum="1"
+        android:id="@+id/llCityDate"
+        android:visibility="gone"
+        android:layout_height="20dp">
+
+        <!-- Label of the City -->
+        <TextView
+            android:layout_height="match_parent"
+            android:id="@+id/tvCity"
+            android:textColor="#FFFFFF"
+            android:paddingLeft="10dp"
+            android:layout_width="wrap_content"
+            android:text="@string/nav_header_city_lbl"
+            android:textAlignment="textStart"
+            android:gravity="center_vertical|center"
+            android:textStyle="normal|bold" />
+
+        <!-- The current Date -->
+        <TextView
+            android:text=" 10 October, Friday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvAKLDate"
+            android:layout_weight="1"
+            android:textColor="#FFFFFF"
+            android:textStyle="normal|bold|italic"
+            android:layout_marginLeft="5dp"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <!-- Logo of the restaurant -->
     <ImageView
         android:layout_width="270dp"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo"
+        android:id="@+id/ivLogo" />
 
 
 </LinearLayout>

@@ -4,8 +4,11 @@ import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,54 +27,77 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import java.io.InputStream;
-import java.util.Date;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 
+import pk.nz.pinoyklasiks.activities.AboutUs;
 import pk.nz.pinoyklasiks.activities.ListOfProductsActivity;
+import pk.nz.pinoyklasiks.activities.MapsActivity;
+import pk.nz.pinoyklasiks.activities.OrderHistoryActivity;
+import pk.nz.pinoyklasiks.activities.SubOrderActivity;
 import pk.nz.pinoyklasiks.activities.fragments.LeftMenuFragment;
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
-import pk.nz.pinoyklasiks.beans.Order;
-import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import pk.nz.pinoyklasiks.db.IDBInfo;
 import pk.nz.pinoyklasiks.db.IWebService;
 import pk.nz.pinoyklasiks.db.WebService;
+import pk.nz.pinoyklasiks.service.WeatherService;
 import utils.AppConst;
 import utils.CategoryAdapter;
 
 
-/**
- * The Main Activity of APP shows the main categories
- * of APP and other information
- * @Author Mikhail PASTUSHKOV
- * @Author Melchor RELATADO
+/**<pre>
+ *
+ *
+ * Title       : MainActivity class
+ * Purpose     : To show the main screen of an app, that have the
+ *               all features of the app
+ * * Date        : 13.09.2016
+ * Input       : List of Categories, Weather, Search query
+ * Proccessing : Get the List og categories from DB and populate
+ *               it in the ListView using special adapter.
+ *               Create the Navigation menu using DrawerLayout
+ *               and observe orientation of the screen (if it horizontal
+ *               hide Navigation menu and show menu from LeftMenuFragment)
+ *               Add the toolbar with menu, and search feature.
+ *               Using WeatherService show the Weather in NavigationMenu
+ * Output      : Intent with choosen actio
+ *
+ * </pre>
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
  */
-
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tvTest;
 
-    private IDAOManager db;
 
-    private FrameLayout flLeftMenu;     // The layout for menu Fragment
-    private FragmentTransaction ft;    // for operations with the fragment (ex leftMenu)
+    private IDAOManager dbManager;               // Manager to work with objects in DB
+
+    private FrameLayout flLeftMenu;              // The layout for menu Fragment
+    private FragmentTransaction ft;              // for operations with the fragment (ex leftMenu)
     private LeftMenuFragment leftMenuFragment;
 
-    private ListView lvCategories ;          // ListView of categories
-    private CategoryAdapter adapter;        // Adapter for populating data
+    private ViewGroup header;                    // Header for ListView with categories
+    private ListView lvCategories ;               // ListView of categories
+    private CategoryAdapter adapter;             // Adapter for populating data
     private List<AbstractCategory> listAbstractCategory;   // List with categories
 
     private NavigationView navView;               // Left navigation menu
-    private DrawerLayout drawerLayout;           // The main layout in app (will be used to disable NAVIGATION VIEW)
-    private ActionBarDrawerToggle drawerToggle; // Need to create humburger menu, to link DrawerLayout and Toolbar
+    private NavigationView navViewFrame;
+    private DrawerLayout drawerLayout;             // The main layout in app (will be used to disable NAVIGATION VIEW)
+    private ActionBarDrawerToggle drawerToggle;    // Need to create humburger menu, to link DrawerLayout and Toolbar
 
-    private ImageView ivAdvert;
+    private ImageView ivAdvert;                     // To show special deals
+    private Handler handler;                       // To work with UI
 
 
 
@@ -81,17 +107,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //<<<< TEST ZONE >>>>>
 
+        // define handler
+        handler = new Handler();
 
-//            Order order = new DBManager(this).getOrderById(21);
-//            IWebService ws = new WebService(this);
-//                Date date = ws.getTheLastVersionDateTime();
-//
-
-
-        //<<<< TEST ZONE >>>>>
-
+        // TODO: TASK 1. 9) ActionBar
         // Install toolbar and settings for it
             Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
@@ -105,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
         navView.setItemIconTintList(null);
 
         // Add listener that proceed clicks om menu
+
+         // TODO: TASK 1 5) 2. setNavigationItemSelectedListener
+
             navView.setNavigationItemSelectedListener(new ClickNavMenuListener());
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
 
@@ -114,13 +137,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        // db manager for work with DB
-          db = new WebService(this);
+        // dbManager manager for work with DB
+          dbManager = new WebService(this);
 
 
 
         ///////////////////////////////////////////////////////////////////////////
         // Get configuration of application and define the ORIENTATION OF THE SCREEN
+        // if the orientation is horisonal hide DrawerLayout and show the fragment
+        // with menu.
         Configuration config = getResources().getConfiguration();
 
             if(config.orientation == Configuration.ORIENTATION_LANDSCAPE){
@@ -153,48 +178,68 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-        ////////////////////////////////////////
-        // Get and fill the ListView categories
+        /***********************************
+         *  Get the categories from DB
+         *  Create special adapter
+         *  and put it to the ListView
+         * *********************************/
         lvCategories  = (ListView)findViewById(R.id.lvCategories);
-           listAbstractCategory =  db.getCategories();
+           listAbstractCategory =  dbManager.getCategories();
                 adapter = new CategoryAdapter(getApplicationContext(), listAbstractCategory);
 
         // Create View from XML layout and add it to ListView as header
         LayoutInflater inflater = getLayoutInflater();
-        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.header_categories, lvCategories, false);
+
+
+        /****************************************
+         *  Create the LAYOUT for HEADER LISTVIEW
+         *  for the special deals
+         ****************************************/
+         header = (ViewGroup) inflater.inflate(R.layout.header_categories, lvCategories, false);
+
+
                     lvCategories.addHeaderView(header);
                     lvCategories.setAdapter(adapter);
                     // Add click listener
+                        // TODO: TASK1 5) 1. ClickCategoryListener
                         lvCategories.setOnItemClickListener(new ClickCategoryListener());
 
 
+        /* Start thread showing special deals */
+        ShowSpecialDealsThread deals = new ShowSpecialDealsThread();
+        deals.start();
 
-        // get the ImageView from header where we gonna show specials
-        ivAdvert = (ImageView) header.findViewById(R.id.ivAdvert);
 
-
-
-        try {
-            InputStream is = getAssets().open("adv1.jpg");
+        try { // Read the stub picture
+            InputStream is = getAssets().open("stub_deals.jpg");
              ivAdvert.setImageDrawable(Drawable.createFromStream(is, null));
 
         }catch (Exception e){
             Log.e(" ::: ERR ::: ", " SET IMAGE  "+e);
         }
 
-    }
+
+        /**************************
+         *  Get the LayoutInflater
+         *  to create view with NavigationView
+         *  for filling information about the weather
+         ********************************************/
+        View headerLayout = navView.getHeaderView(0);
+
+       new WeatherService(headerLayout, getApplicationContext());
 
 
 
+    }// END ONCREATE
 
 
 
-    /**
-     * Assign menu of TOOLBAR
+    /***************************
+     * Assign menu for toolbar
+     *
      * @param menu
      * @return boolean
-     */
-
+     ****************************/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Adding menu
@@ -210,17 +255,45 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (AppConst.DEBUG) Log.d(AppConst.LOGD, "App onResume");
+    }
 
 
+    // TODO:TASK 1. 6)  3. onDestroy
 
-    // Need to synchronize the state (for hamburger menu)
-    // this this method will start when start ic complete
+    /**
+     *  Will run when activity
+     *  will be destriyed
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< MainActivity >>> :: WAS DESTROYED");
+
+        /* Delete resourse*/
+        dbManager = null;
+
+    }
+
+    /**
+     * Need to synchronize the state (for hamburger menu)
+     * this this method will start when start ic complete
+     */
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
     }
 
+    /**
+     * Checking if configuration was changed
+     * tell to the DrawerLayout
+     * @param newConfig
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -230,12 +303,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-///////////////////////////////////////////////////////
-// LISTENERS /////////////////////////////////////////
-//////////////////////////////////////////////////////
-
-    // DEFINE ACTIONS WHEN CLICKED ON TOP MENU
+    /******************************************
+     *  DEFINE ACTIONS FOR TOP MENU
+     * @param item
+     * @return
+     *****************************************/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -255,25 +327,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // LISTENER FOR NAVIGATION VIEW
-    class ClickNavMenuListener implements NavigationView.OnNavigationItemSelectedListener{
+    /**
+     * Title       : ClickNavMenuListener class
+     * Purpose     : Listener for Navigation Menu
+     * Date        : 04.10.2016
+     * Input       : Cliked menu item
+     * Proccessing : Choose the action for appropriate menu
+     *             : (Create new intent or action)
+     *             :
+     * Output      : Start new Activity or Action
+     *
+     * @author Mikhail PASTUSHKOV
+     * @author Melchor RELATADO
+     */
+    public class ClickNavMenuListener implements NavigationView.OnNavigationItemSelectedListener{
         @Override
         public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+            drawerLayout.closeDrawers();
             switch (menuItem.getItemId()){
+
+                // Proceed click on the Navigation menu - Main Category
                 case R.id.nav_menu_categories:
-                    Toast.makeText(getApplicationContext(),"MENU", Toast.LENGTH_SHORT).show();
+                    Intent intentMain = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intentMain);
                     break;
 
+                // Proceed click on the Navigation menu - Order History
+                case R.id.nav_menu_history:
+                    Intent intentOrderHistory = new Intent(getApplicationContext(), OrderHistoryActivity.class);
+                    startActivity(intentOrderHistory);
+
+                    break;
+
+                // Proceed click in the Navigation menu - Cart
+                case R.id.nav_menu_orders :
+                    Intent intentSubOrder = new Intent(getApplicationContext(), SubOrderActivity.class);
+                    startActivity(intentSubOrder);
+
+                    break;
+
+                // Proceed click on the Navigation menu - AboutUs
                 case R.id.nav_menu_about_us:
-                    // TODO: 10/9/16 Add code for loading fragments
-                    Toast.makeText(getApplicationContext(),"ABOUT US", Toast.LENGTH_SHORT).show();
+                    Intent intentAction = new Intent(getApplicationContext(), AboutUs.class);
+                    startActivity(intentAction);
                     break;
 
                 case R.id.nav_menu_location:
-                        //Intent intentLocation = new Intent(getApplicationContext(), MapsActivity.class);
-                        //startActivity(intentLocation);
+                        Intent intentLocation = new Intent(getApplicationContext(), MapsActivity.class);
+                        startActivity(intentLocation);
 
                     break;
+
+                // Proceed click on the Navigation menu - Call to the Restaurant
                 case R.id.nav_menu_call_us:
                         Intent intentCall = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+IDBInfo.PHONE_OF_RESTAURANT));
                         intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -284,12 +390,11 @@ public class MainActivity extends AppCompatActivity {
                        }
                     break;
 
-                // Share menu prepare info for sharing
+                //Proceed click on the Navigation menu - Share Feature
                 case R.id.nav_menu_share:
                          Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                          sharingIntent.setType("text/plain");
-                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "PinoyKlasiks PhoneNumber : "+IDBInfo.PHONE_OF_RESTAURANT);
-                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, IDBInfo.PHONE_OF_RESTAURANT);
+                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "http://market.android.com/details?id=" + getPackageName());
 
                         startActivity(Intent.createChooser(sharingIntent, "Share using"));
                     break;
@@ -300,7 +405,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //LISTENER FOR CATEGORIES
+    /**
+     * Title       : ClickCategoryListener class
+     * Purpose     : Listener for ListView
+     * Date        : 04.10.2016
+     * Input       : Cliked item
+     * Proccessing : Get the position of clicked item and get the object
+     *               and pass it to ProductActivity
+     *             : (Create new intent or action)
+     *             :
+     * Output      : Start new ProductActivity
+     *
+     * @author Mikhail PASTUSHKOV
+     * @author Melchor RELATADO
+     */
     class ClickCategoryListener implements AdapterView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -317,10 +435,97 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentProducts);
             
             }else{
-
-                // TODO: 10/12/16  Do smth when we clicked on header of  categoryList
-                
+                // do nothing
             }
         }
     }
+
+    // TODO: TASK 1. 8) Thread class
+
+    /**
+     * Title       : ShowSpecialDealsThread class
+     * Purpose     : Class Thread
+     * Date        : 04.10.2016
+     * Input       : List of Deals
+     * Proccessing : Through Webservices recieve the array of picture
+     *               on the server side and show it on the main
+     *               screen, changing them after defined time
+     *             :
+     * Output      : image
+     *
+     * @author Mikhail PASTUSHKOV
+     * @author Melchor RELATADO
+     */
+    class ShowSpecialDealsThread extends Thread{
+        @Override
+        public void run() {
+
+            List<String> listDeals = new ArrayList<>();         // Name of files on the Server with deals
+            final List<Bitmap> listBitmap = new ArrayList<>(); // Have the all images of deals
+
+            IWebService dbManager = new WebService(getApplicationContext());
+            if(dbManager.isOnline()){
+
+                // Getting list of filenames
+                listDeals = dbManager.getDeals();
+
+                // check if there no problem with
+                // getting DATA from SERVER
+                if(listDeals != null && !listDeals.isEmpty()){
+                    for(String imgName : listDeals){
+                        try{
+                            // Load image and put to List
+                            String link = IDBInfo.DEALS_IMG_URL+imgName;
+                            URL url = new URL(link);
+                            InputStream is = (InputStream) url.getContent();
+                            Bitmap img = BitmapFactory.decodeStream(is);
+
+                            listBitmap.add(img);
+
+                        }catch(Exception e){
+                            e.printStackTrace();
+
+                        }
+
+
+                    }
+
+                    // Get the VIEWFLIPPER and put ImageView in it
+                    // TODO: TASK 1. 8 Runnable interface
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            ViewFlipper vf = (ViewFlipper) header.findViewById(R.id.view_flipper_header_deals);
+
+                            // Go through the LIST of BITMAPS
+                            for(Bitmap b: listBitmap){
+                                // Dynamicaly add the ImageView to ViewFlipper
+                                ImageView iv = new ImageView(getApplicationContext());
+                                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.MATCH_PARENT);
+                                iv.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
+                                iv.setLayoutParams(lp);
+                                iv.setImageBitmap(b);
+                                vf.addView(iv);
+
+                            }
+
+                            // start animation (showing the deals)
+                            vf.setAutoStart(true);
+                            vf.setFlipInterval(AppConst.TIME_CHANGE_DEALS);
+                            vf.startFlipping();
+                        }
+                    });
+                }
+
+            }
+        }
+    }
+
+
+
 }

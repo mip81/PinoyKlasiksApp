@@ -7,10 +7,11 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -20,26 +21,29 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import pk.nz.pinoyklasiks.beans.Address;
-import pk.nz.pinoyklasiks.beans.Customer;
 import pk.nz.pinoyklasiks.beans.Order;
-import pk.nz.pinoyklasiks.beans.SubOrder;
 import utils.AppConst;
 
-/**
- * Class has methods to works with
- * webservices
+/**<pre>
  *
+ * Title       : WebService class
+ * Purpose     : Implements all the operation to work with
+ *               WebServices, extends DBManager and implements IWebService
+ * Date        : 15.10.2016
+ * Input       : none
+ * Proccessing : none
+ * Output      : none
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class WebService extends DBManager implements IWebService{
 
     private static final int SLEEP_TIME = 3000;  // Time to wait the answer from server
@@ -80,23 +84,15 @@ public class WebService extends DBManager implements IWebService{
 
 
     /**
-     * Check if server has newer version of DB
-     * @return boolean true is new version on the server
-     */
-    @Override
-    public boolean isTheLastVersion() {
-        // // TODO: 10/27/16 check version
-        return false;
-    }
-
-
-    /**
      * CHECKING the status of ORDERID
+     *  if message is null a progress dialog
+     *  will not be shown
      *
      * @param globalId
+     * @param message String , can be null
      * @return int id of status -1 if there is no the order
      */
-    public int checkStatusOrder(int globalId){
+    public int checkStatusOrder(int globalId, String message){
         int statusId = -1; // return the status ID number
 
         // the object which will be send to server
@@ -107,25 +103,23 @@ public class WebService extends DBManager implements IWebService{
 
                // Start task sending the json object with orderId to the server
                // and get back via CallBack method jsonObject which has statusId
-               RetrieveJSONTask jsonTask = new RetrieveJSONTask("Checking the status of order...", jsonGlobalId, JSON_ACTION_CHECK_STATUS_ORDER, new AsyncJSONResponse() {
-                   @Override
-                   public void getResult(JSONObject jsonResult) {
-                       jsonStatus = jsonResult;
-                   }
-               });
-               jsonTask.execute();
+               RetrieveJSONTask jsonTask = new RetrieveJSONTask( message, jsonGlobalId, JSON_ACTION_CHECK_STATUS_ORDER, null);
 
-               // Try to stop this thread until result will be ready
-               try{
+               jsonStatus = jsonTask.execute().get();
+
+               // Stop this thread until result will be ready
+
                    Thread.sleep(SLEEP_TIME);
-               }catch(Exception e){
 
-               }
 
            }catch(JSONException e){
-
-               Log.e(AppConst.LOGE, " <<< WebService >>> ::: checkStatusOrder ::: "+ e.getMessage());
+               e.printStackTrace();
+           }catch (InterruptedException e){
+               e.printStackTrace();
+           }catch(Exception e){
+               e.printStackTrace();
            }
+
             // CHECK if returned JSON Object not nul
             // READ STATUS ID
             if(jsonStatus != null){
@@ -281,11 +275,47 @@ public class WebService extends DBManager implements IWebService{
         return 0;
     }
 
+    /**
+     * method connect to the server and
+     * return the list of names of pictures
+     * located  on the server.
+     * @return List
+     */
+    public List<String> getDeals(){
+        // List for keeping name of files with advert
+        List<String> list = new ArrayList<>();
+        // Object that will be return from server;
+        JSONObject json = new JSONObject();
+        JSONArray jsonArrImagesName = null; // keep the file names
+
+        RetrieveJSONTask retrieveJSONTask = new RetrieveJSONTask(null, json, JSON_ACTION_GET_DEALS, null);
+
+        // try
+        try{
+            json = retrieveJSONTask.execute().get();
+            jsonArrImagesName = json.getJSONArray("pic");
+
+            // Retrive names from JSON and fill LIST then return it
+            for(int i=0 ; i < jsonArrImagesName.length(); i++){
+
+                JSONObject temp = jsonArrImagesName.getJSONObject(i);
+                list.add(temp.getString("pic"));
+            }
+
+        }catch (Exception e){
+            Log.e(AppConst.LOGE, "<<< WebService >>> ::: getDeals ::: "+e.toString());
+        }
 
 
 
+        return list;
+    }
+
+
+    // TODO: TASK 1. 8) AsyncTask
     /**
      * Proccess of request and recieve the answer from server
+     * (Get the JSON Object and Action as the parameters and return JSON Object as result)
      *
      */
     class RetrieveJSONTask extends AsyncTask<String, Void, JSONObject>{
@@ -302,6 +332,7 @@ public class WebService extends DBManager implements IWebService{
          * @param message will be shown in ProgressDialog if null not be shown
          * @param json JSON Object will be sent
          * @param action the constant show what should be done on the server
+         * @param jsonResponse CallBack interface retrun date
          */
         RetrieveJSONTask(String message, JSONObject json, String action, AsyncJSONResponse jsonResponse){
             // Message wil be shown in the ProgressDialog
@@ -322,10 +353,11 @@ public class WebService extends DBManager implements IWebService{
 
         @Override
         protected void onPreExecute() {
-
             if(message != null){
                 progressDialog = new ProgressDialog(context);
                 progressDialog.setMessage(message);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
                 progressDialog.show();
             }
         }
@@ -393,7 +425,10 @@ public class WebService extends DBManager implements IWebService{
             }
 
             // send the result object to CallBack method;
-            jsonResponse.getResult(jsonResult);
+            // check if CALLBACK not null only then return
+            if (jsonResponse!=null){
+                jsonResponse.getResult(jsonResult);
+            }
 
             return jsonResult;
         }
@@ -403,7 +438,9 @@ public class WebService extends DBManager implements IWebService{
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
 
-            if(progressDialog.isShowing()){
+            // If thereis ProgressDialog works close it
+            // but before check because it can be null because of option
+            if((progressDialog != null) && progressDialog.isShowing()){
                 progressDialog.dismiss();
             }
         }

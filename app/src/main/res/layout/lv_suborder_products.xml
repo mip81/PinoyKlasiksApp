@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Title       : lv_suborder_products
+ * Purpose     : the layout for product adapter
+
+ * Date        : 15.10.2016
+ * Input       : info about order
+
+ * Proccessing : none
+ *
+ * Output      : Layout
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */-->
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,101 +22,107 @@
     android:layout_height="75dp"
     android:descendantFocusability="blocksDescendants">
 
+    <!-- Image of the product -->
     <ImageView
         android:id="@+id/ivLVSubOrderProductPic"
         android:scaleType="fitXY"
         android:src="@drawable/nopic"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        android:layout_width="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btnLVSubOrderDel"
-        android:layout_marginLeft="8dp"
-        android:layout_height="60dp"
-        android:layout_width="90dp" />
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp" />
 
+    <!-- Button to delete product from the Cart -->
     <ImageButton
         android:focusable="false"
         android:src="@drawable/delete"
         android:id="@+id/btnLVSubOrderDel"
         android:scaleType="centerCrop"
         android:background="@null"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Name of the product -->
     <TextView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="29dp"
         android:id="@+id/tvLVSubOrderProductName"
         android:text="Beef"
         android:textStyle="normal|bold"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:textColor="#494949"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btnLVSubOrderMinus"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/ivLVSubOrderProductPic"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintHorizontal_bias="0.18" />
+        app:layout_constraintLeft_toRightOf="@+id/ivLVSubOrderProductPic" />
 
+    <!--Price of the product -->
     <TextView
         android:text="$00.00"
         android:id="@+id/tvLVSubOrderProductPrice"
-        app:layout_constraintLeft_toRightOf="@+id/ivLVSubOrderProductPic"
         android:textColor="#494949"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintVertical_bias="1.0"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvLVSubOrderTotalPrice"
+        android:textSize="12sp"
+        android:layout_width="0dp"
         android:textStyle="normal|bold"
-        android:layout_height="45dp" />
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/ivLVSubOrderProductPic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvLVSubOrderProductName"
+        app:layout_constraintVertical_bias="1.0"
+        android:gravity="center_vertical" />
 
+    <!-- Button for increasing count of the order -->
     <ImageButton
         android:src="@drawable/plus"
         android:id="@+id/btnLVSubOrderPlus"
         android:scaleType="centerInside"
         android:background="@null"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:focusable="false"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:focusable="false" />
+        android:layout_marginEnd="8dp" />
 
+    <!-- Quantity of the product -->
     <TextView
         android:text="1"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="33dp"
         android:id="@+id/tvLVSubOrderQuantity"
         android:textSize="20sp"
         android:textAlignment="center"
         android:textStyle="normal|bold"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintRight_toLeftOf="@+id/btnLVSubOrderPlus"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:textColor="#494949"
         android:gravity="center"
-        tools:text="0" />
+        tools:text="0"
+        app:layout_constraintRight_toLeftOf="@+id/btnLVSubOrderPlus"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Button for decreasing count of the order -->
     <ImageButton
         android:src="@drawable/minus"
         android:id="@+id/btnLVSubOrderMinus"
@@ -108,32 +130,30 @@
         android:background="@null"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
+        android:focusable="false"
         app:layout_constraintRight_toLeftOf="@+id/tvLVSubOrderQuantity"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:focusable="false" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Price of the product -->
     <TextView
         android:text="x 1 : $00.00"
-        android:layout_width="0dp"
-        android:layout_height="34dp"
+        android:layout_width="89dp"
         android:id="@+id/tvLVSubOrderTotalPrice"
-        app:layout_constraintRight_toLeftOf="@+id/btnLVSubOrderMinus"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:textSize="9sp"
         app:layout_constraintLeft_toRightOf="@+id/tvLVSubOrderProductPrice"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintHorizontal_bias="0.33"
-        app:layout_constraintTop_toBottomOf="@+id/tvLVSubOrderProductName"
-        android:layout_marginTop="8dp"
-        android:textSize="10sp"
-        android:layout_marginStart="3dp"
-        android:layout_marginLeft="3dp" />
+        app:layout_constraintVertical_bias="0.52"
+        app:layout_constraintRight_toLeftOf="@+id/btnLVSubOrderMinus"
+        android:layout_marginEnd="8dp"
+        android:layout_height="25dp"
+        android:textAlignment="textStart"
+        android:gravity="center_vertical"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvLVSubOrderProductPrice"
+        android:layout_marginStart="8dp"
+        app:layout_constraintHorizontal_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>

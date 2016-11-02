@@ -2,14 +2,22 @@ package pk.nz.pinoyklasiks.beans;
 
 import java.io.Serializable;
 
-/**
+/**<pre>
  *
- *  The class represent row in the tb_address
  *
+ * Title       : Address class
+ * Purpose     : Represent information related to customer address
+ *               in the DB
+ * Date        : 15.10.2016
+ * Input       : int id, Suburb, District, String location
+ * Proccessing : to work with class has getters and setters and also
+ *              constuctor to fill the fields
+ * Output      : Address class
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class Address implements Serializable {
     private int id = -1;            // id number
     private Suburb suburb;     // Suburb in the city

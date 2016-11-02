@@ -6,9 +6,17 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
- * Class represent tb_district
+/*<pre>
+ * Title       : District class
+ * Purpose     : Represent information related to district
+ *               in the DB
+ * Date        : 10.10.2016
+ * Input       : int id, String districtName
+ * Proccessing : to work with class has getters and setters and also
+ *              constuctor to fill the fields
+ * Output      : Category class
  *
+ *</pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
@@ -23,13 +31,6 @@ public class District implements Serializable{
         this.districtName = districtName;
     }
 
-    
-    // Parcebale implementation
-
-    protected District(Parcel in) {
-        id = in.readInt();
-        districtName = in.readString();
-    }
 
     // Getters and setters for fields
     public int getId() {

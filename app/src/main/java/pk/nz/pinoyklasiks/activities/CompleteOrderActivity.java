@@ -2,7 +2,6 @@ package pk.nz.pinoyklasiks.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
@@ -10,16 +9,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -51,20 +52,31 @@ import pk.nz.pinoyklasiks.db.WebService;
 import pk.nz.pinoyklasiks.service.CheckStatusService;
 import utils.AppConst;
 
+
 /**
- * Activity show the fields the customer need to fill
- * to compltete the order.
+ * <pre>
+ * Title       : CompleteOrderActivity class
+ * Purpose     : To finish the the order with product in the cart
+ * Date        : 15.10.2016
+ * Input       : order with open status
+ * Proccessing : Customer will fill the fields with personal inforemation
+ *               and after complenting the system will send the order to the
+ *               serever and it will turn the service with checking status.
+ *               In case customer has no internet connection will be offered
+ *               to send order by SMS or make a Call to the restaurant.
  *
+ * Output      : order
+ *</pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class CompleteOrderActivity extends AppCompatActivity {
 
     private final int DIALOG_DATE = 1;          // Dialog const. show DateDialog
     private final int DIALOG_TIME = 2;          // Dialog const. show TimeDialog
     private final int DIALOG_MSG  = 3;          // Dialog show the message that order was successfull
     private final int DIALOG_SEND_SMS = 4;      // Dialog offer user to send sms with ORDER
+    private final int DIALOG_PHONE_AND_SMS = 5;      // Dialog offer user to send sms with ORDER or to call
 
     // FOR SENDING SMS
     private final String SENT_SMS = "SENT_SMS";
@@ -75,7 +87,7 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
 
 
-    private Customer customer;           // Object will be recieved from DB to fill the field
+    private Customer customer;          // Object will be recieved from DB to fill the field
     private EditText etCoCustomerName;  // Name of the customer
     private EditText etCoPhoneNumber;   // Phone of the customer
     private EditText etCoEmail;         // Email of the customer
@@ -83,8 +95,8 @@ public class CompleteOrderActivity extends AppCompatActivity {
     private EditText etCoTime;          // Order for this time
     private TextView tvCoQuantityPerson;// Quantity of the persons
     private Button btnCoPlaceOrder;     // Button to submit the order
-    private ImageButton btnCoMinus;          // Button to decrease the number of persons
-    private ImageButton btnCoPlus;           // Button to increase the number of persons
+    private ImageButton btnCoMinus;     // Button to decrease the number of persons
+    private ImageButton btnCoPlus;      // Button to increase the number of persons
     private EditText etCoComment;       // Addirional comments to the order
 
     private Calendar calendar;          // calendar tor work with date and time of order
@@ -93,15 +105,15 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
     private String typeOrder;              // Type of object
     private Order order;                   // Order object passed from SubOrderActivity
-    IDAOManager dbManager;                  // Work with DB
-    IWebService webservice;                  // Methods to use webservice
+    IDAOManager dbManager;                 // Work with DB
+    IWebService webservice;                // Methods to use webservice
 
 
 
 
 
-
-    private SimpleDateFormat sdf = new SimpleDateFormat(IDBInfo.MYSQL_DATETIME_PATTERN); // Formatter fot DATETIME
+    // Formatter for DATETIME
+    private SimpleDateFormat sdf = new SimpleDateFormat(IDBInfo.MYSQL_DATETIME_PATTERN);
 
     /*  This fields will be used in the next versions
     private Spinner spSuburb;
@@ -109,6 +121,8 @@ public class CompleteOrderActivity extends AppCompatActivity {
     private EditText etCoAddress;
     */
 
+
+    // TODO:TASK 1. 6)  4. onCreate
     /**
      *  Start activity CompleteOrderActivity
      * @param savedInstanceState
@@ -129,6 +143,7 @@ public class CompleteOrderActivity extends AppCompatActivity {
     }
 
 
+    // TODO:TASK 1. 6)  3. onResume
     /**
      * Method will define current date variable
      * (special for assignment outline)
@@ -144,11 +159,12 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
         if (AppConst.DEBUG) Log.d(AppConst.LOGD, " <<< onResume >>> :: define calendar");
 
-       // get the current callendar
+       // get the current date
         calendar = Calendar.getInstance();
 
     }
 
+    // TODO:TASK 1. 6)  2. onStop
     @Override
     protected void onStop() {
         super.onStop();
@@ -188,7 +204,10 @@ public class CompleteOrderActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // The title of ActionBar
+            // customize back home button
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
+
+            // The title of ActionBar
             getSupportActionBar().setTitle("Complete the order");
 
         // Get the fiels of activity
@@ -270,36 +289,66 @@ public class CompleteOrderActivity extends AppCompatActivity {
         this.qCounter = 1;
     }
 
-
+    // TODO: TASK 4. 1) Perfom input validation
     /**
      * Check if all required field is not empty
+     * and valid to proceed
      * @return boolean
      */
     private boolean isFormValid(){
        boolean isValid = true;
 
+        // get the messages from res
+        String requredFieldMsg = getResources().getString(R.string.co_valform_required);
+        String lengthLimitNameMsg = getResources().getString(R.string.co_valform_legth_limit_cust_name);
+        String lengthLimitPhoneMsg = getResources().getString(R.string.co_valform_legth_limit_phone);
+        String checkEmailMsg = getResources().getString(R.string.co_valform_check_email);
 
         // Check if the fields are empty show the error and return false
         if(etCoCustomerName.getText().toString().isEmpty()) {
-            etCoCustomerName.setError("This field is required.");
+            etCoCustomerName.setError(requredFieldMsg);
+            isValid = false;
+        }
+
+        // Check the length of customer name
+        if(etCoCustomerName.getText().toString().length() > 25) {
+            etCoPhoneNumber.setError(lengthLimitNameMsg);
             isValid = false;
         }
 
             // checking the CUSTOMER NAME field
         if(etCoPhoneNumber.getText().toString().isEmpty()){
-            etCoPhoneNumber.setError("This field is required.");
+            etCoPhoneNumber.setError(requredFieldMsg);
+            isValid = false;
+        }
+
+        // Check the length of phone number name
+        if(etCoPhoneNumber.getText().toString().length() > 25) {
+            etCoPhoneNumber.setError(lengthLimitPhoneMsg);
             isValid = false;
         }
             // checking the DATE field
         if(etCoDate.getText().toString().isEmpty()){
-            etCoDate.setError("This field is required.");
+            etCoDate.setError(requredFieldMsg);
             isValid = false;
         }
 
+        // check the Time field
         if(etCoTime.getText().toString().isEmpty()){
-            etCoTime.setError("This field is required.");
+            etCoTime.setError(requredFieldMsg);
             isValid = false;
         }
+
+        // check if the email valid
+        // email in not required
+        if(!isValidEmail(etCoEmail.getText())){
+            etCoEmail.setError(checkEmailMsg);
+            isValid = false;
+        }
+
+
+
+
 
         if(AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< CompleteOrderActivity >>> ::: isFormValid() ::: return : "+isValid);
 
@@ -309,6 +358,12 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
     /**
      *  Show dialog
+     *  DIALOG_SEND_SMS        ask send SMS with order
+     *  DIALOG_PHONE_AND_SMS   ask send SMS or make a CALL
+     *  DIALOG_MSG             tell that order was sent
+     *  DIALOG_DATE            ask input date
+     *  DIALOG_TIME            ask  input type
+     *
      * @param idDialog int the type of dialog
      */
     private void openDialog(int idDialog){
@@ -327,7 +382,45 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
                         }
                     }).show();
+        }
 
+        // SHOW DIALOG WITH PHONE AND SMS OFFER
+        if(idDialog == DIALOG_PHONE_AND_SMS){
+
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.co_sms_phone_dialog_title)
+                        .setMessage(R.string.co_sms_phone_dialog_msg)
+                        .setNegativeButton(R.string.co_sms_phone_dialog_call, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                // Set the new status to order and save it
+                                order.setStatus(dbManager.getStatusById(7));
+                                dbManager.saveOrder(order);
+
+                                //close resource
+                                dbManager.close();
+
+                                // CALL TO MANAGER
+                                Intent intentCall = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+IDBInfo.PHONE_OF_RESTAURANT));
+                                intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                try{
+                                    startActivity(intentCall);
+                                }catch (Exception e){
+                                    Toast.makeText(getApplication(), "Sorry this function doesn't work :(", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        })
+                        .setPositiveButton(R.string.co_sms_phone_dialog_sms, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // SEND SMS WITH ORDER
+                                sendOrderViaSMS(order);
+
+                            }
+                        })
+                        .setNeutralButton(R.string.co_sms_phone_dialog_later, null).show();
 
         }
 
@@ -340,7 +433,7 @@ public class CompleteOrderActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
-                            // TODO: 10/27/16 Start service to check th status
+                            // TODO: 10/27/16 Start service to check status
                             Intent mainActivityIntent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(mainActivityIntent);
 
@@ -385,13 +478,26 @@ public class CompleteOrderActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Sending the Order
+     * to SMS of manager resturant (Phonenumber in IDBInfo)
+     * @param order
+     */
     public void sendOrderViaSMS(Order order){
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(IDBInfo.PHONE_OF_RESTAURANT, null, order.toString(), sentPi, deliveredPi);
 
 
+        // Create ArraysList of PenfingIntent to send Multipart SMS
+        // because the order can be long and there are some resctrictions
+        ArrayList<PendingIntent> sendList = new ArrayList<>();
+            sendList.add(sentPi);
+        ArrayList<PendingIntent> deliverList = new ArrayList<>();
+            deliverList.add(deliveredPi);
+        ArrayList parts = sms.divideMessage(order.toString());
 
+        // SEND SMS WITH ORDER
+        sms.sendMultipartTextMessage(IDBInfo.PHONE_OF_RESTAURANT, null, parts,  sendList , deliverList);
     }
 
 
@@ -401,7 +507,23 @@ public class CompleteOrderActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             switch (getResultCode()){
                 case Activity.RESULT_OK:
+
+                    // Show to customer message that sms sending
                     Toast.makeText(getApplicationContext(), "Sending order...", Toast.LENGTH_SHORT).show();
+
+                    // CHANGE STATUS ORDER and save it in DB
+                    order.setStatus(new Status(6, "SMS"));
+                    dbManager.saveOrder(order);
+
+                    // Close resources
+                    dbManager.close();
+
+                    // show dialog with info
+                    // that manager will contact you to approve
+                    // and go to the MainActivity
+                    openDialog(DIALOG_MSG);
+
+
                     break;
                 default:
                     Toast.makeText(getApplicationContext(), "Error when sending order...", Toast.LENGTH_SHORT).show();
@@ -411,7 +533,7 @@ public class CompleteOrderActivity extends AppCompatActivity {
         }
     };
 
-
+    // Check if the SMS was sent
     BroadcastReceiver deliveredReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -431,8 +553,19 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
 
     /**
-     * Class listener procceed the click on the button of the
-     * complete order form (Plus and Minus number of persons and place order )
+     * Title       : ClickListener class
+     * Purpose     : Listener class which proceed severals view on the form
+     * Date        : 15.10.2016
+     * Input       : order with open status
+     * Proccessing : If the button place order was pressed it gather and check and save information
+     *               about order and customer after then send it.
+     *               If it date ot time show appropriate dialog.
+     *               If minus or plus increase or dcrease quantity
+     *
+     * Output      : action
+     *
+     * @author Mikhail PASTUSHKOV
+     * @author Melchor RELATADO
      */
     class ClickListener implements View.OnClickListener{
 
@@ -440,8 +573,9 @@ public class CompleteOrderActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             switch (v.getId()){
+                    /////////////////////////////
+                    // PLACE ORDER WAS CLICKED
                     ///////////////////////////
-                    // Place order was clicked
                 case R.id.btnCoPlaceOrder:
                     if (AppConst.DEBUG){
                         Log.d(AppConst.LOGD,"<<< CompleteOrderActivity> >>> ::: ClickListnerer ::: PlaceOrder ");
@@ -465,14 +599,14 @@ public class CompleteOrderActivity extends AppCompatActivity {
                             address.setId(dbManager.saveAddress(address));
 
 
-
+                        // CREATE CUSTOMER object getting the fields from form
                         Customer customer = new Customer();
                             customer.setCustomerName(etCoCustomerName.getText().toString());
                             customer.setEmail(etCoEmail.getText().toString());
                             customer.setAdrress(address);
                             customer.setPhoneCustomer(etCoPhoneNumber.getText().toString());
 
-                        // save the customer in the local DB and fill the id
+                        // SAVE the CUSTOMER in the local DB and fill the id
                             customer.setId(dbManager.saveCustomer(customer));
 
                         int typeOrderId = dbManager.getTypeOrderIdByName(typeOrder);
@@ -489,7 +623,7 @@ public class CompleteOrderActivity extends AppCompatActivity {
                         order.setComment(etCoComment.getText().toString());
 
 
-                        // Save the object with order in DB
+                        // Save the ORDER in DB
                         dbManager.saveOrder(order);
 
 
@@ -503,27 +637,41 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
                                 // Send the object and recieve the the JSON from Server
                             int globalId  = webservice.sendJSONORder(order);
-                            
+
+                            // CHECK IF ORDER ID WAS RETURNED 0 = SMTH WRONG
+
+                            if (globalId != 0) { // IF SERVER RETURN RESULT DO
+
+
                                 // Refresh object PUT GLOBAL ID and STATUS ID
                                 // and save it in DB
-                            order.setGlobalId(globalId);
-                            order.setStatus(new Status(2, "Pending"));
+                                order.setGlobalId(globalId);
+
+                                order.setStatus(new Status(2, "Pending"));
+
+                                // save Order with new status
+                                dbManager.saveOrder(order);
+
+                                // close resources
+                                dbManager.close();
+
+                                // Start service to check status of order
+                                startService(new Intent(getApplicationContext(), CheckStatusService.class).putExtra("order", order));
+
+                                if (AppConst.DEBUG)
+                                    Log.d(AppConst.LOGD, "<<< CompleteOrderActivity >>> ::: BTN PLACE ORDER ::: GLOBALID : " + globalId);
+
+                                openDialog(DIALOG_MSG);
+
+                            }else{ // SERVER UNREACHABLE OR RETURN SOMETHING WRONG
+
+                                // Offer to make an order
+                                openDialog(DIALOG_PHONE_AND_SMS);
+
+                            }
 
 
-                            dbManager.saveOrder(order);
-
-                            // close resources
-                            dbManager.close();
-
-                            // Start service to check status of order
-                            startService(new Intent(getApplicationContext(), CheckStatusService.class).putExtra("order", order));
-                            
-                            if (AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< CompleteOrderActivity >>> ::: BTN PLACE ORDER ::: GLOBALID : "+globalId);
-
-                            openDialog(DIALOG_MSG);
-
-
-                        }else{
+                        }else{ // NO INTERNET CONNECTION
 
                             if (AppConst.DEBUG) Log.d(AppConst.LOGD, "<<< CompleteOrderActivity >>> ::: BTN PLACE ORDER ::: NO CONNECTION");
 
@@ -532,6 +680,7 @@ public class CompleteOrderActivity extends AppCompatActivity {
                             // Offer to send the order using sms
 
                            openDialog(DIALOG_SEND_SMS);
+
 
                         }
 
@@ -581,7 +730,32 @@ public class CompleteOrderActivity extends AppCompatActivity {
 
 
     /**
-     * get the last customer from DB and fill the form
+     * Check if the string with email
+     * empty return true (because not required)
+     * otherwise check validity of email
+     * and return result as true or false
+     *
+     * @param target String with email
+     * @return boolean
+     */
+    public boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return true;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
+    }
+
+    /**
+     * Title       : TaskFillTheLastCustomer class
+     * Purpose     : Fill fields with existed customer
+     * Date        : 12.10.2016
+     * Input       : none
+     * Proccessing : Check in DB for the last customer in DB
+     * Output      : action
+     *
+     * @author Mikhail PASTUSHKOV
+     * @author Melchor RELATADO
      */
     class TaskFillTheLastCustomer extends AsyncTask<Void, Customer, Void>{
         @Override
@@ -605,9 +779,6 @@ public class CompleteOrderActivity extends AppCompatActivity {
                         etCoPhoneNumber.setText(customer.getPhoneCustomer());
                             etCoEmail.setText(customer.getEmail());
                 dbManager.close();
-
-
-
             }
 
         }

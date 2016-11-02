@@ -5,14 +5,19 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
- * Class represent type of order
- * teh row in the table tb_typeOrder
+/**<pre>
+ * Title       : TypeOrder class
+ * Purpose     : Represent information related to TypeOrder
+ *               in the DB
+ * Date        : 15.10.2016
+ * Input       : int id, String typeOrder
+ * Proccessing : none
+ * Output      : TypeOrder class
  *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class TypeOrder implements Serializable {
     private int id;          // numer id
     private String typeOrder; // name of type
@@ -20,7 +25,6 @@ public class TypeOrder implements Serializable {
     public TypeOrder(){
 
     }
-
 
 
     /**
@@ -33,12 +37,7 @@ public class TypeOrder implements Serializable {
         this.typeOrder = typeOrder;
     }
 
-    // Parceable implementation
-    protected TypeOrder(Parcel in) {
-        id = in.readInt();
-        typeOrder = in.readString();
-    }
-
+    // Getters and Setter to work with fields
     public int getId() {
         return id;
     }

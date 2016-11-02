@@ -2,10 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pk.nz.pinoyklasiks">
 
+    <!-- DEFINE PERMISSIONS -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -13,6 +25,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--
+             MAIN ACTIVITY
+             show categories of products and main menu
+        -->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,64 +37,129 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Activity where we goint to search -->
+            <!--
+               Activity where we goint to search
+               define activity where to pass searhing query
+            -->
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".activities.SearchResultsActivity" />
         </activity>
         <activity android:name=".activities.CompleteOrderActivity">
+            <!-- activity for home button -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.SubOrderActivity" />
         </activity>
+
+        <!--
+             LIST  OF PRODUCT ACTIVITY
+            Show the list of product in definite category
+        -->
         <activity android:name=".activities.ListOfProductsActivity">
+            <!-- activity for home button -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
 
-        <!-- Product Activity -->
+        <!--
+             PRODUCT ACTIVITY
+             show description of product allows to choose
+             quantity and add it to the suborder
+        -->
         <activity android:name=".activities.ProductActivity">
+            <!-- activity for home button -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
 
-        <!-- SubOrder Activity -->
+        <!--
+             SUBORDER ACTIVITY
+             represent the list of choosen products of customer
+             send the order to server or reorder the previus
+        -->
         <activity android:name=".activities.SubOrderActivity">
-            <intent-filter android:label="Cart Pinoy Klasiks">
 
-                <!-- action for open suborder -->
+            <!-- FILTER FOR GETTING SUBORDER FROM ORDER WITH STATUS OPEN -->
+            <intent-filter android:label="Cart Pinoy Klasiks">
                 <action android:name="pk.nz.pinoyklasiks.open_suborder" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
+            <!-- FILTER FOR GETTING SUBORDER FROM HISTORY -->
+            <intent-filter>
+                <action android:name="pk.nz.pinoyklasiks.history_suborder" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- activity for home button -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
 
-        <!-- Search Activity -->
+        <!--
+             SEARCH ACTIVITY
+             Show the results of searhing product
+        -->
         <activity android:name=".activities.SearchResultsActivity">
+            <!-- activity for home button -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
 
+            <!-- filer to get the activity -->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
             <!-- Add this so that the app can find searchable resourse -->
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
 
+        <!--
+             SERVICE CHECK STATUS SERVICE
+             Do checking status after customer sent an order
+        -->
         <service android:name=".service.CheckStatusService" />
 
-        <activity android:name=".activities.OrderHistoryActivity"></activity>
+        <activity android:name=".activities.OrderHistoryActivity">
+            <!-- activity for home button -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+
+        <!-- MapActivity Show the address of restaurant -->
+        <activity
+            android:name=".activities.MapsActivity"
+            android:label="@string/title_activity_maps" />
+
+        <!-- ABOUT US Activity -->
+        <activity android:name=".activities.AboutUs">
+            <!-- activity for home button -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>

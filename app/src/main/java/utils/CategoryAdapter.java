@@ -18,15 +18,21 @@ import java.util.List;
 import pk.nz.pinoyklasiks.R;
 import pk.nz.pinoyklasiks.beans.AbstractCategory;
 
-/**
- * Adapter for categories
- * using the ArrayList of AbstractCategory
- * to fill the ListView
+
+/**<pre>
  *
+ * Title       : CategoryAdapter class
+ * Purpose     : Adapter for Categories objects
+ * Date        : 15.10.2016
+ * Input       : Context context, List<AbstractCategory> categories
+ * Proccessing : Get the Categories and organized it content
+ *              in the lv_categories Layout
+ * Output      : Adapter
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class CategoryAdapter extends ArrayAdapter<AbstractCategory> {
 
     private InputStream is;                        // read assets with images for category

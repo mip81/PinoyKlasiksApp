@@ -9,12 +9,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Class represent sub order
+ * Title       : SubOrder class
+ * Purpose     : Represent information related to SubOrder
+ *               in the DB
+ * Date        : 15.10.2016
+ * Input       : Map<AbstractProduct>, double totalPrice
+ * Proccessing : none
+ * Output      : SubOrder class
  *
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class SubOrder implements Serializable {
 
     private int orderId;

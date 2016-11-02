@@ -5,9 +5,16 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
- * Class represent row in the table tb_suburb
+/**<pre>
+ * Title       : Suburb class
+ * Purpose     : Represent information related to Suburb
+ *               in the DB
+ * Date        : 15.10.2016
+ * Input       : int id, String suburbName, District district
+ * Proccessing : none
+ * Output      : Suburb class
  *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
@@ -24,13 +31,7 @@ public class Suburb implements Serializable{
         this.district = district;
 
     }
-
-    // Parceable implementation
-    protected Suburb(Parcel in) {
-        id = in.readInt();
-        suburbName = in.readString();
-        district = in.readParcelable(District.class.getClassLoader());
-    }
+    // Getters and Setters to work with fields
 
     public int getId() {
         return id;

@@ -9,13 +9,21 @@ import android.view.ViewGroup;
 
 import pk.nz.pinoyklasiks.R;
 
-/**
- * The fragment shows the main categories
- * of APP and other information
- * @Author Mikhail PASTUSHKOV
- * @Author Melchor RELATADO
-*/
-
+/**<pre>
+ * Title       : CategoriesFragment class
+ * Purpose     : Have the ListView of categories
+ *               used in the Main Activity
+ *
+ * * Date        : 24.09.2016
+ * Input       : none
+ * Proccessing : none
+ *
+ * Output      : fragment
+ *
+ * </pre>
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */
 public class CategoriesFragment extends Fragment {
 
     @Nullable

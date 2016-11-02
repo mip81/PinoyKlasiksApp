@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+/**
+ * Title       : activity_about_us
+ * Purpose     : Show information about Restaurant
+ * Date        : 15.10.2016
+ * Input       : none
+ * Proccessing : none
+ *
+ * Output      : Activity
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */
+
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_about_us"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="pk.nz.pinoyklasiks.activities.AboutUs"
+    android:background="#8f0303">
+
+    <!-- Include toolbar layout -->
+
+
+    <!-- Picture with photo of restaurant -->
+
+    <TextView
+        android:text="@string/about_us_restaurant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:id="@+id/NameOfRestaurant"
+        android:textStyle="normal|bold"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:layout_below="@+id/ivRestaurantPhoto"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Keep the email of the restaurant -->
+    <TextView
+        android:text="@string/about_us_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEmail"
+        android:textStyle="normal|bold"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:drawableLeft="@drawable/ic_email_w"
+        android:layout_below="@+id/tvAddress"
+        android:layout_alignStart="@+id/tvAddress"
+        android:gravity="center_vertical" />
+
+    <!-- Keep the Phone number of the restaurant -->
+    <TextView
+        android:text="@string/about_us_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPhoneNumber"
+        android:textStyle="normal|bold"
+        android:textColor="#FFFFFF"
+        android:drawableLeft="@drawable/ic_phone_w"
+        android:layout_below="@+id/tvEmail"
+        android:layout_alignStart="@+id/tvEmail"
+        android:gravity="center_vertical" />
+
+    <!-- Keep the Address of the Restaurant -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvAddress"
+        android:layout_marginStart="12dp"
+        android:text="@string/about_us_address"
+        android:textStyle="normal|bold"
+        android:textColor="#FFFFFF"
+        android:drawableLeft="@drawable/ic_about_us"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/NameOfRestaurant"
+        android:layout_alignParentStart="true" />
+
+    <!-- Show information about developers -->
+    <TextView
+        android:text="Developers: Mikhail PASTUSHKOV, Melchor RELATADO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDevelopers"
+        android:textStyle="normal|bold|italic"
+        android:textColor="@android:color/holo_green_light"
+        android:textSize="10sp"
+        android:layout_marginEnd="11dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/ivLogo" />
+
+    <TextView
+        android:text="@string/tvCompanyDev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDevBy"
+        android:textColor="@android:color/holo_green_light"
+        android:textSize="10sp"
+        android:textStyle="normal|bold|italic"
+        android:textAlignment="textEnd"
+        android:layout_above="@+id/tvDevelopers"
+        android:layout_alignEnd="@+id/tvDevelopers" />
+
+    <ImageView
+        app:srcCompat="@drawable/mmsd"
+        android:id="@+id/ivLogo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/restaurant"
+        android:id="@+id/ivRestaurantPhoto"
+        android:adjustViewBounds="true"
+        android:layout_below="@+id/toolbar_about_us"
+        android:layout_alignParentStart="true" />
+
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar_about_us"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

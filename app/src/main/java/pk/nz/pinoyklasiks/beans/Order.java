@@ -16,13 +16,21 @@ import pk.nz.pinoyklasiks.db.IDBInfo;
 import utils.AppConst;
 
 
-/**
- * The  class described the order
- * and the row in the table tb_order
+/**<pre>
+ * Title       : Order class
+ * Purpose     : Represent information related to order address
+ *               in the DB
+ * Date        : 15.10.2016
+ * Input       : int id, Suburb, District, String location
+ * Proccessing : Keep the all information about order
+ *               have the method toJSON() that convert it to JSON object
+ *               also toString() will be used for sending the in text format
+ * Output      : Order class
+ *
+ *</pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class Order implements Serializable{
 
 

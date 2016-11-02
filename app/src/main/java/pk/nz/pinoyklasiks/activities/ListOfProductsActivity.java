@@ -1,14 +1,9 @@
 package pk.nz.pinoyklasiks.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,33 +11,36 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 
-import java.io.InputStream;
 import java.util.List;
 
 import pk.nz.pinoyklasiks.R;
 import pk.nz.pinoyklasiks.beans.AbstractProduct;
-import pk.nz.pinoyklasiks.beans.Product;
 import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
-import pk.nz.pinoyklasiks.db.IDBInfo;
-import pk.nz.pinoyklasiks.db.IDBManager;
 import utils.AppConst;
 import utils.ProductAdapter;
 
-/**
- * Activity shows the choosen category
- * of products with name, desc and price
+/**<pre>
  *
- * @Author Mikhail PASTUSHKOV
- * @Author Melchor RELATADO
+ * Title       : ListOfProductsActivity class
+ * Purpose     : Show the products in the choosen category
+ * Date        : 16.10.2016
+ * Input       : Name and ID choosen catgory
+ * Proccessing : Get from DB list of Product objects
+ *               and represent in the LisView also add the button
+ *               so that the customer can add the product to the cart.
+ *
+ *
+ *
+ * Output      : order
+ *
+ * </pre>
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
  */
-
 public class ListOfProductsActivity extends AppCompatActivity {
     private final String LOG = "::: DEBUG :::";
     private static final boolean DEBUG = true; // the variable enable all logging in the class
@@ -77,8 +75,10 @@ public class ListOfProductsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_products);
         setSupportActionBar(toolbar);                           // Set toolbar
         getSupportActionBar().setTitle("Menu :: " + nameCategory.toLowerCase());           // Set title for toolbar
-        getSupportActionBar().setHomeButtonEnabled(true);      // Show the "GoBack" button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Process it to Up Level
+            getSupportActionBar().setHomeButtonEnabled(true);      // Show the "GoBack" button
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Process it to Up Level
+        // customize back home button
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
         /** !!! To specify parent activity to put code inside MANIFEST file in this actvity TAG
          *       <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".MainActivity" />
          */
@@ -87,6 +87,7 @@ public class ListOfProductsActivity extends AppCompatActivity {
         //get ListView and define  click action on it
         lvProducts = (ListView) findViewById(R.id.lvProducts);
             lvProducts.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                // TODO: TASK1. 5) 3. setOnItemClickListener
                 lvProducts.setOnItemClickListener(
                         new AdapterView.OnItemClickListener() {
                             @Override
@@ -94,7 +95,10 @@ public class ListOfProductsActivity extends AppCompatActivity {
 
                                 // read the product and pass it to the ProductView
                                 AbstractProduct product = listProducts.get(position);
+
                                 if (DEBUG) Log.d(LOG, product.toString());
+
+                                // Create intent for ProductActivity and go there
                                 Intent productIntent = new Intent(ListOfProductsActivity.this, ProductActivity.class);
                                 productIntent.putExtra("product", product);
                                 startActivity(productIntent);
@@ -102,8 +106,15 @@ public class ListOfProductsActivity extends AppCompatActivity {
                             }
         });
 
-        // get the open order and get adapter for ListView
-        new GetSuborderTask().execute();
+        // get the listview of products
+        listProducts = dbManager.getProductByIdCat(idCategory);
+        // bind the list with layout and assign adapter with List of products to ListView
+        productAdapter = new ProductAdapter(getApplicationContext(), listProducts);
+
+        lvProducts.setAdapter(productAdapter);
+
+        //close resources
+        dbManager.close();
     }
 
 
@@ -116,6 +127,7 @@ public class ListOfProductsActivity extends AppCompatActivity {
     }
 
 
+    // Working with toolbars buttons
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.tmenu_cart){
@@ -126,31 +138,5 @@ public class ListOfProductsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-    /**
-     * Thread get the list of products of category and fill the listview
-     */
-    class GetSuborderTask extends AsyncTask<Void, List<AbstractProduct>, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            listProducts = dbManager.getProductByIdCat(idCategory);
-            publishProgress(listProducts);
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(List... lp) {
-
-            // bind the list with layout and assign adapter with List of products to ListView
-            productAdapter = new ProductAdapter(getApplicationContext(), lp[0]);
-            lvProducts.setAdapter(productAdapter);
-        }
-    }
-
 
 }

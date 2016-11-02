@@ -1,32 +1,32 @@
 package pk.nz.pinoyklasiks.db;
 
 import java.util.Date;
+import java.util.List;
 
 import pk.nz.pinoyklasiks.beans.Order;
 
-/**
- * Describes method for interacting with webservice
+/**<pre>
+ * Title       : IWebService interface
+ * Purpose     : Describe the methods for application
+ *               to work with WebService
+ *               related to DB
  *
+ * Date        : 15.10.2016
+ * Input       : none
+ * Proccessing : none
+ * Output      : none
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public interface IWebService {
-
 
     /**
      * Check if user has connection to Internet
      * @return boolean
      */
     public boolean isOnline();
-
-    /**
-     * Check the version on the server
-     * and return true if it last one
-     *
-     * @return boolean
-     */
-    public boolean isTheLastVersion();
 
     /**
      * Method create and send the JSON object of order to the server
@@ -38,11 +38,12 @@ public interface IWebService {
 
     /**
      * CHECKING the status of ORDERID
-     *
-     * @param globalId
+     * if the message is null the progressdialog will not be shown
+     * @param globalId int order id
+     * @param message String can be null
      * @return int id of status -1 if there is no the order
      */
-    public int checkStatusOrder(int globalId);
+    public int checkStatusOrder(int globalId, String message);
 
     /**
      * GET THE DATETIME LAST VERSION from the server
@@ -50,4 +51,11 @@ public interface IWebService {
      */
     public Date getTheLastVersionDateTime();
 
+    /**
+     * method connect to the server and
+     * return the list of names of pictures
+     * located  on the server.
+     * @return List
+     */
+    public List<String> getDeals();
 }

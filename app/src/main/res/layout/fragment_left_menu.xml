@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+/**
+ * Title       : fragment_left_menu
+ * Purpose     : The menu of app when position in horizontal
+
+ * Date        : 15.10.2016
+ * Input       : none
+
+ * Proccessing : none
+ *
+ * Output      : Fragment
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -7,6 +23,7 @@
     android:layout_width="200dp"
     android:background="#8f0303">
 
+    <!-- Logo of the restaurant -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="97dp"
@@ -14,12 +31,16 @@
         android:src="@drawable/logo"
         android:background="#FFFFFF"
         android:layout_marginTop="10dp" />
+
+    <!-- Menu -->
     <android.support.design.widget.NavigationView
+        android:id="@+id/nav_menu_left_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:menu="@menu/nav_menu"
         android:background="#8f0303"
-        app:itemTextColor="#ffffff">
+        app:itemTextColor="#ffffff"
+        app:itemIconTint="#FFFFFF">
     </android.support.design.widget.NavigationView>
 
 </LinearLayout>

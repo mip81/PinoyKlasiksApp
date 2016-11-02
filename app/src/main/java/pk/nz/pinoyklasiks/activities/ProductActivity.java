@@ -26,17 +26,24 @@ import pk.nz.pinoyklasiks.db.DBManager;
 import pk.nz.pinoyklasiks.db.IDAOManager;
 import utils.AppConst;
 
-/**
- * Created 10/11/16.
+/**<pre>
  *
+ * Title       : ProductActivity class
+ * Purpose     : Show information about product allow to increase quantity
+ *               and add it to the cart
+ * Date        : 10.11.2016
+ * Input       : product id
+ * Proccessing : Get the object product from DB by ID
+ * Output      : ListView with OrderAdapter or Toast message
+ *             : if customer does not have any order
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class ProductActivity extends AppCompatActivity {
 
-    private final boolean DEBUG = true;
-    private final String LOG = "::: DEBUG :::";
+   // extension for the picture in the local assets
     private final String IMG_EXT = ".jpg";
 
     private AbstractProduct product; // product that will shows its details
@@ -49,7 +56,7 @@ public class ProductActivity extends AppCompatActivity {
     private ImageButton btnMinus;            // button - quantity
     private ImageButton btnProductAddToCart; // Button add the product to the cart
 
-    private int quantity = 1;
+    private int quantity = 1; // start point
 
     // format for the price
     private DecimalFormat dfPrice = new DecimalFormat("$##.00");
@@ -71,8 +78,11 @@ public class ProductActivity extends AppCompatActivity {
         // Add custom toolbar for ProductActivity
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar_product_activity);  // read toolbar added in Activity file (using include tag)
             setSupportActionBar(toolbar);                                       // add toolbar
-            getSupportActionBar().setHomeButtonEnabled(true);                   // enable the home button
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);              // return user to one level up
+                getSupportActionBar().setHomeButtonEnabled(true);                   // enable the home button
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            // customize back home button
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);// return user to one level up
 
         // get views of activity
         ivProduct = (ImageView)findViewById(R.id.ivProductPic);
@@ -97,7 +107,7 @@ public class ProductActivity extends AppCompatActivity {
 
         //get the product from intent
         product = (AbstractProduct) getIntent().getExtras().get("product");
-            if(DEBUG) Log.d(LOG, "ProductActivity : product brought intent : "+product.toString() );
+            if(AppConst.DEBUG) Log.d(AppConst.LOGD, "ProductActivity : product brought intent : "+product.toString() );
 
             // check if the object not null
             if(product == null){
@@ -164,9 +174,17 @@ public class ProductActivity extends AppCompatActivity {
         }
     }
 
-
     /**
-     * Listener procceed increase and dercrease quantity of product
+     * Title       : ClickTheQuantityBtn class
+     * Purpose     : Class listener, Increase or reduce quantity of product
+     *
+     * Date        : 10.11.2016
+     * Input       : quantity
+     * Proccessing : increment o decrement the quantity
+     * Output      : Quantity
+     *
+     * @author Mikhail PASTUSHKOV
+     * @author Melchor RELATADO
      */
     class ClickTheQuantityBtn implements View.OnClickListener{
         @Override
@@ -179,10 +197,17 @@ public class ProductActivity extends AppCompatActivity {
             }
         }
     }
-
     /**
-     *  Class connect to DB using Thread
-     *  and the product to the suborder (cart)
+     * Title       : AddToCart class
+     * Purpose     : Class Thread add product to Cart (Save in DB)
+     *
+     * Date        : 10.11.2016
+     * Input       : Product
+     * Proccessing : Insert or Update the product in the open order
+     * Output      : none
+     *
+     * @author Mikhail PASTUSHKOV
+     * @author Melchor RELATADO
      */
     class AddToCart extends Thread{
         @Override

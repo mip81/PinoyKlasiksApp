@@ -2,14 +2,21 @@ package pk.nz.pinoyklasiks.beans;
 
 import java.io.Serializable;
 
-/**
+
+/**<pre>
  *
- * Class represent existed categories
- * of the product
+ * Title       : AbstractCategory class
+ * Purpose     : Abstract class for categories
+ *
+ * Date        : 01.09.2016
+ * Input       : none
+ * Proccessing : none
+ * Output      : none
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public abstract class AbstractCategory implements Serializable{
 
     protected int id;

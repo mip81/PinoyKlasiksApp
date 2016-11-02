@@ -1,148 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+/**
+ * Title       : lv_history_products
+ * Purpose     : the layout for adapter order history
+
+ * Date        : 15.10.2016
+ * Input       :info about order
+
+ * Proccessing : none
+ *
+ * Output      : Layout
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:descendantFocusability="blocksDescendants"
-    android:layout_height="100dp">
+    android:layout_height="110dp"
+    android:orientation="horizontal">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhDateOfOrderLbl"
-        android:text="@string/oh_date_of_order_lbl"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="7dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent" />
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_width="115dp">
 
-    <TextView
-        android:text="01.01.2016 12:30"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhDateOfOrder"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/tvDateForOrderLbl"
-        app:layout_constraintRight_toRightOf="@+id/tvDateForOrder"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/tvDateForOrder"
-        app:layout_constraintHorizontal_bias="1.0"
-        android:layout_marginStart="16dp" />
+        <!-- Label for Date order was made -->
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/tvOhDateOfOrderLbl"
+            android:text="@string/oh_date_of_order_lbl"
+            android:textColor="#666363"
+            android:textSize="10sp"
+            android:layout_height="15dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp" />
 
-    <TextView
-        android:text="Order for date:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvDateForOrderLbl"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_constraintTop_creator="1"
-        app:layout_constraintTop_toBottomOf="@+id/tvOhDateOfOrderLbl" />
+        <!-- Date order was made -->
 
-    <TextView
-        android:text="01.01.2016 20:15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvDateForOrder"
-        tools:layout_constraintTop_creator="1"
-        android:layout_marginStart="1dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvOhDateOfOrder"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toRightOf="@+id/tvDateForOrderLbl" />
+        <!-- Label for Date order -->
+        <TextView
+            android:text="Order for date:"
+            android:layout_width="match_parent"
+            android:id="@+id/tvDateForOrderLbl"
+            android:textColor="#494949"
+            android:textSize="10sp"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/tvOhDateOfOrderLbl"
+            android:layout_height="15dp"
+            android:layout_marginTop="5dp" />
 
-    <TextView
-        android:text="Status:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhStatusLbl"
-        app:layout_constraintRight_toLeftOf="@+id/tvOhStatus"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvOhStatus"
-        tools:layout_constraintBaseline_creator="1" />
+        <TextView
+            android:text="Phone number:"
+            android:layout_width="match_parent"
+            android:id="@+id/tvOhPhoneLbl"
+            android:textColor="#494949"
+            android:textSize="10sp"
+            tools:layout_editor_absoluteX="16dp"
+            android:layout_height="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/tvDateForOrderLbl"
+            android:layout_marginTop="5dp" />
 
-    <TextView
-        android:text="Open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhStatus"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <TextView
+        <TextView
         android:text="Customer:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:id="@+id/tvOhCustomerNameLbl"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/tvOhPhoneLbl"
-        android:layout_marginStart="7dp"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="3dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:textColor="#494949"
+        android:textSize="10sp"
+        android:layout_height="15dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvOhPhoneLbl"
+            android:layout_marginTop="5dp" />
 
-    <TextView
-        android:text="Mikhail Pastushkov"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhCustomerName"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toTopOf="@+id/tvOhPhoneLbl"
-        android:layout_marginStart="32dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toRightOf="@+id/tvOhCustomerNameLbl" />
+    </LinearLayout>
 
-    <TextView
-        android:text="Phone number:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhPhoneLbl"
-        app:layout_constraintRight_toLeftOf="@+id/tvOhPhone"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginEnd="2dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvOhPhone"
-        tools:layout_constraintBaseline_creator="1" />
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_width="123dp">
 
-    <TextView
-        android:text="0211693229"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhPhone"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/tvOhCustomerName"
-        tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintLeft_toLeftOf="@+id/tvDateForOrder" />
+    <!--  Date order -->
+        <TextView
+            android:text="01.01.2016 12:30"
+            android:layout_width="match_parent"
+            android:id="@+id/tvOhDateOfOrder"
+            android:textStyle="normal|bold"
+            android:textColor="#666363"
+            android:textSize="10sp"
+            android:layout_height="15dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline"
+            app:layout_constraintRight_toLeftOf="@+id/tvOhStatusLbl"
+            app:layout_constraintLeft_toRightOf="@+id/tvOhDateOfOrderLbl"
+            app:layout_constraintHorizontal_bias="0.07"
+            android:layout_marginTop="10dp" />
 
-    <TextView
-        android:text="Total price:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvOhTotalPriceLbl"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvOhStatusLbl"
-        app:layout_constraintVertical_bias="0.94"
-        app:layout_constraintRight_toLeftOf="@+id/tvOhTotalPrice"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginEnd="8dp" />
+        <TextView
+        android:text="01.01.2016 20:15"
+        android:layout_width="match_parent"
+        android:id="@+id/tvDateForOrder"
+        android:textStyle="normal|bold"
+        android:textColor="#666363"
+        android:textSize="10sp"
+        android:layout_height="15dp"
+        app:layout_constraintTop_toTopOf="@+id/guideline4"
+            app:layout_constraintRight_toLeftOf="@+id/tvOhStatusLbl"
+            app:layout_constraintLeft_toRightOf="@+id/tvDateForOrderLbl"
+        app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="5dp" />
 
-    <TextView
-        android:text="$30.50"
-        android:layout_width="wrap_content"
+        <TextView
+            android:text="0211693229"
+            android:layout_width="match_parent"
+            android:id="@+id/tvOhPhone"
+            android:textStyle="normal|bold"
+            android:textColor="#666363"
+            android:textSize="10sp"
+            android:layout_height="15dp"
+            app:layout_constraintRight_toLeftOf="@+id/tvOhTotalPrice"
+            app:layout_constraintLeft_toRightOf="@+id/tvOhCustomerNameLbl"
+            app:layout_constraintHorizontal_bias="0.01"
+            app:layout_constraintTop_toBottomOf="@+id/tvOhCustomerName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.33"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:text="Mikhail Pastushkov"
+            android:layout_width="match_parent"
+            android:id="@+id/tvOhCustomerName"
+            android:textStyle="normal|bold"
+            android:textColor="#666363"
+            android:textSize="10sp"
+            app:layout_constraintRight_toLeftOf="@+id/tvOhStatus"
+            app:layout_constraintLeft_toRightOf="@+id/tvOhPhoneLbl"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_height="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/tvDateForOrder"
+            android:layout_marginTop="5dp" />
+
+        <!-- Label current status of order -->
+
+        <!-- Current status of order -->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvOhTotalPrice"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp"
-        android:textSize="18sp" />
-</android.support.constraint.ConstraintLayout>
+        android:orientation="vertical">
+    <!-- Label customer of order -->
+        <TextView
+            android:text="Status:"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:id="@+id/tvOhStatusLbl"
+            android:textColor="#494949"
+            android:textStyle="normal|bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/tvOhDateOfOrderLbl"
+            app:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginTop="5dp"
+            android:gravity="center" />
+
+        <!-- Customer name -->
+        <TextView
+            android:text="Open"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:id="@+id/tvOhStatus"
+            android:textColor="#8f0303"
+            android:textStyle="normal|bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvOhStatusLbl"
+            app:layout_constraintLeft_toRightOf="@+id/tvDateForOrderLbl"
+            app:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginTop="5dp"
+            android:gravity="center" />
+
+        <!-- Label Customer phone number -->
+
+        <!-- Customer phone number -->
+
+        <!-- Label Total price -->
+        <TextView
+            android:text="Total price:"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvOhTotalPriceLbl"
+            android:textColor="#494949"
+            android:textStyle="normal|bold"
+            app:layout_constraintTop_toBottomOf="@+id/tvOhStatus"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/tvOhCustomerName"
+            app:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginTop="10dp"
+            android:gravity="center" />
+
+        <!-- Total price -->
+        <TextView
+            android:text="$30.50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvOhTotalPrice"
+            android:textSize="18sp"
+            android:textColor="#2e8602"
+            android:textStyle="normal|bold"
+            android:textAlignment="center"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvOhTotalPriceLbl"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintLeft_toRightOf="@+id/tvOhCustomerNameLbl"
+            app:layout_constraintHorizontal_bias="0.96"
+            android:layout_marginTop="5dp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -18,15 +18,22 @@ import pk.nz.pinoyklasiks.beans.SubOrder;
 import pk.nz.pinoyklasiks.beans.Suburb;
 import pk.nz.pinoyklasiks.beans.TypeOrder;
 
-/**
- * Abstract class describe
- * DAO class for intecracting
- * with DB using objects
+
+
+/**<pre>
  *
+ * Title       : IDAOManager interface
+ * Purpose     : Have all necessary DAO operations needed to app
+ *
+ * Date        : 15.10.2016
+ * Input       : none
+ * Proccessing : none
+ * Output      : SubOrder class
+ *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public interface IDAOManager {
 
 
@@ -126,9 +133,19 @@ public interface IDAOManager {
 
     /**
      * Method return collection of product from DB
+     * using id of category as a key
      * @return List of products
      */
     public abstract  List<AbstractProduct> getProductByIdCat(int idCat);
+
+
+
+    /**
+     * Method return collection of product from DB
+     * using query
+     * @return List of products
+     */
+    public abstract  List<AbstractProduct> getProductByQuery(String query);
 
     /**
      *  Add the product to Order. Check the existance of open order if no create new
@@ -153,11 +170,12 @@ public interface IDAOManager {
     public abstract Order getOrderById(int id);
 
     /**
-     *  Metho return object Order
-     *  that has status OPEN
-     * @return Order
+     * Get List of all orders
+     * @return List
      */
-    public abstract Order getOpenOrder();
+    public abstract List<Order> getAllOrders();
+
+
 
     /**
      * Update order return id order
@@ -165,7 +183,7 @@ public interface IDAOManager {
      * @param order
     * @return int ID
     */
-    public int saveOrder(Order order);
+    public abstract int saveOrder(Order order);
 
 
     /**
@@ -174,14 +192,14 @@ public interface IDAOManager {
      * @param order_id order's id
      * @return  SubOrder object
      */
-    public SubOrder getSubOrderByOrderId(int order_id);
+    public abstract SubOrder getSubOrderByOrderId(int order_id);
 
     /**
      * Delete all records in the table tb_suborder
      * with given order id
      * @param orderId id of order
      */
-    public void cleanSubOrder(int orderId);
+    public abstract void cleanSubOrder(int orderId);
 
 
     /**
@@ -189,7 +207,7 @@ public interface IDAOManager {
      * @param product need to be deleted (used id of it)
      * @param orderId of suborder
      */
-    public void deleteProductfromSubOrder(AbstractProduct product, int orderId);
+    public abstract void deleteProductfromSubOrder(AbstractProduct product, int orderId);
 
     /**
      * Return List with type orders

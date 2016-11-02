@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Title       : activity_list_of_product
+ * Purpose     : The form to show list of product in the category
+ * Date        : 15.10.2016
+ * Input       : ListView with products
+ * Proccessing : none
+ *
+ * Output      : Activity
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */
+
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -25,6 +40,7 @@
 
     </TableLayout>
 
+    <!-- ListView with products -->
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

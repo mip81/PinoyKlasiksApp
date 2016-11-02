@@ -5,10 +5,11 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
+/**<pre>
  * Class represent the ordinary
  * product
  *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */

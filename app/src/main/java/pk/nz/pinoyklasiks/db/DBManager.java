@@ -36,14 +36,21 @@ import pk.nz.pinoyklasiks.beans.Suburb;
 import pk.nz.pinoyklasiks.beans.TypeOrder;
 import utils.AppConst;
 
-/**
- * Class help to work with DB SQLite
- * has all CRUD methods
+import static android.R.attr.order;
+
+/**<pre>
+ * Title       : DBManager class
+ * Purpose     : To work with all CRUD DB operation
+ * Date        : 15.10.2016
+ * Input       : Context
+ * Proccessing : All CRUD operations with object and DB
+ * Output      : Objects represented the tables in the DB
  *
- * @author  Mikhail PASTUSHKOV
- * @author  Melchor RELATADO
+ * </pre>
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
  */
-public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, IDAOManager {
+public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDAOManager {
 
     private final String CLASSNAME = DBManager.class.getCanonicalName();
 
@@ -70,6 +77,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         loadDefaultData(db);
     }
 
+
+    //
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TB_ADDRESS);
@@ -194,10 +203,56 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         return list;
     }
 
+    /**
+     * Method return collection of product from DB
+     * using query
+     * @return List of products
+     */
+    public List<AbstractProduct> getProductByQuery(String query) {
+        db = getReadableDatabase();
+        Cursor cursor;
+        List<AbstractProduct> list = new ArrayList<>();
+
+        String[] arrQuery = {"%"+query+"%", "%"+query+"%"};
+
+                // prepdare query and recieve cursor with found product
+            cursor = db.query(TB_PRODUCT, null, TB_PRODUCT_PRODUCT_NAME + " like ? or "
+                    +TB_PRODUCT_PRODUCT_DESC+" like ?  ", arrQuery, null, null, null);
+
+
+        if (cursor != null) {
+
+            if (cursor.moveToFirst()) {
+
+                while (!cursor.isAfterLast()) {
+                    AbstractProduct product = new Product();
+
+                    // Fill object with data
+                    product.setId(cursor.getInt(cursor.getColumnIndex(TB_PRODUCT_ID)));
+                    product.setCatId(cursor.getInt(cursor.getColumnIndex(TB_PRODUCT_CAT_ID)));
+                    product.setProductName(cursor.getString(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_NAME)));
+                    product.setProductDesc(cursor.getString(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_DESC)));
+                    product.setProductPrice(cursor.getDouble(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PRICE)));
+                    product.setProductPic(cursor.getString(cursor.getColumnIndex(TB_PRODUCT_PRODUCT_PIC)));
+
+                    // add the product to the the list
+                    // and go to the next row
+                    list.add(product);
+                    cursor.moveToNext();
+                }
+            }
+        }
+        //free resource
+        if (cursor != null) cursor.close();
+
+        return list;
+    }
+
+
 
     /**
      * Create and load default data to DB
-     * from assets file db.sql
+     * from assets (file db.sql)
      * @param db
      */
     private void loadDefaultData(SQLiteDatabase db){
@@ -207,6 +262,7 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
 
             //Access resource as a stream read the initial db queries
+            // TODO TASK 5 . Class loader.
             InputStream is = this.getClass().getClassLoader().getResourceAsStream(PATH_TO_DB_RES);
             br = new BufferedReader( new InputStreamReader(is) );
             String lineSQL;
@@ -232,7 +288,6 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
      * @param idCat id category
      * @return
      */
-    @Override
     public Cursor getProducts(int idCat) {
         db = getReadableDatabase();
 
@@ -346,13 +401,6 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
             }
         }
     } // END addProductToOrder()
-
-    @Override
-    public Order getOpenOrder() {
-        // TODO: 10/13/16 write code to return Order with status open
-        return null;
-    }
-
 
     /**
      *  Method return SubOrder with given orderId
@@ -826,6 +874,79 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
         return order;
     }
 
+
+    /**
+     * Get List of all orders
+     *
+     * @return List
+     */
+    @Override
+    public List<Order> getAllOrders(){
+
+
+        if(AppConst.DEBUG) Log.d(AppConst.LOGD, " ::: getAllOrders :::");
+
+        // List which will be returned
+        List<Order> listOrders = new ArrayList<>();
+
+         // DB connection
+          db = getReadableDatabase();
+
+        // getting cursor with data
+        Cursor cursor = db.query(TB_ORDER ,null, TB_ORDER_STATUS_ID+"<>?", new String[]{"1"}, null, null, TB_ORDER_ID+ " DESC");
+        if(cursor != null){
+
+            if(cursor.moveToFirst()) {
+
+                while (!cursor.isAfterLast()) {
+
+                    // Order for gathering in the list
+                    Order order = new Order();
+
+                    // Fill the Object Order and return it back
+                    order.setId(cursor.getInt(cursor.getColumnIndex(TB_ORDER_ID)));
+                    order.setCustomer(
+                            getCustomerById(cursor.getInt(cursor.getColumnIndex(TB_ORDER_CUSTOMER_ID))));
+
+                    try { // Catch if there is DATETIME parse exceptions
+                        order.setOrderDatetimeFor(
+                                dateFormat.parse(cursor.getString(cursor.getColumnIndex(TB_ORDER_ORDER_DATETIME_FOR))));
+                        order.setOrderDatetimeNow(
+                                dateFormat.parse(cursor.getString(cursor.getColumnIndex(TB_ORDER_ORDER_DATETIME_FOR))));
+                    } catch (ParseException e) {
+                        Log.e(AppConst.LOGE, " ::: getOrderById ::: ParseDateTime Err : " + e);
+
+                    }
+
+                    order.setSuborder(
+                            getSubOrderByOrderId(cursor.getInt(cursor.getColumnIndex(TB_ORDER_ID))));
+                    order.setTypeOrder(
+                            getTypeOrderById(cursor.getInt(cursor.getColumnIndex(TB_ORDER_TYPE_ORDER_ID))));
+                    order.setStatus(
+                            getStatusById(cursor.getInt(cursor.getColumnIndex(TB_ORDER_STATUS_ID))));
+                    order.setnumPersons(cursor.getInt(cursor.getColumnIndex(TB_ORDER_NUM_PERSONS)));
+                    order.setAddress(
+                            getAddressById(cursor.getInt(cursor.getColumnIndex(TB_ORDER_ADDRESS_ID))));
+                    order.setCustomer(
+                            getCustomerById(cursor.getInt(cursor.getColumnIndex(TB_ORDER_CUSTOMER_ID))));
+                    order.setComment(cursor.getString(cursor.getColumnIndex(TB_ORDER_COMMENT)));
+
+                    listOrders.add(order);
+
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close(); // close resource
+        }
+
+        return listOrders;
+
+
+
+
+    }
+
+
     //////////////////////////////////////////////////////////
     // END FOR GETTING BEANS //////////////////////////////////
     ///////////////////////////////////////////////////////////
@@ -856,6 +977,8 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
     }
 
 
+
+
     /**
      * Method delete the product from suborder(cart)
     */
@@ -872,13 +995,32 @@ public class DBManager extends SQLiteOpenHelper implements IDBInfo, IDBManager, 
 
     /**
      * Retrieve the date from tb_version table
-     * represent the last update of
+     * represent the last DateTime that the App was updated
      * @return date
      */
-    @Override
     public Date getVersionDate() {
-        // TODO: 10/17/16 get the version date of the DB
-        return null;
+        // get connection
+        db = getReadableDatabase();
+
+        SimpleDateFormat sdf = new SimpleDateFormat(IDBInfo.MYSQL_DATETIME_PATTERN);
+
+        // The Date that will be returned
+        Date date = null;
+
+        Cursor cursor = db.query(TB_VERSION, null,null, null, null, null, null ,"1");
+            if(cursor!= null){
+                if(cursor.moveToFirst()){
+                    try{
+                        // get the date
+                        date = sdf.parse(cursor.getString(cursor.getColumnIndex(TB_VERSION_LAST_CHANGES_DATETIME)));
+                    }catch (Exception e){
+                        Log.d(AppConst.LOGE, "<<< DBManager >>> ::: getVersionDate : "+ e.toString());
+                    }
+
+                }
+            }
+
+        return date;
     }
 
 

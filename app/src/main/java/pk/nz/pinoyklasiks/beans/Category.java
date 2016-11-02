@@ -5,13 +5,21 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
- * Created 10/10/16.
+/*<pre>
+
+ * Title       : Category class
+ * Purpose     : Represent information related to category of product
+ *               in the DB
+ * Date        : 10.10.2016
+ * Input       : int id, String catName, String desc, String pic
+ * Proccessing : to work with class has getters and setters and also
+ *              constuctor to fill the fields
+ * Output      : Category class
  *
+ * </pre>
  * @author Mikhail PASTUSHKOV
  * @author Melchor RELATADO
  */
-
 public class Category extends AbstractCategory implements Serializable {
 
     public Category(){}

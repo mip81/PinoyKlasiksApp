@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+/**
+ * Title       : lv_categories
+ * Purpose     : the layout for adapter categories
+
+ * Date        : 15.10.2016
+ * Input       : picture, product name, description
+
+ * Proccessing : none
+ *
+ * Output      : Layout
+ *
+ * @author Mikhail PASTUSHKOV
+ * @author Melchor RELATADO
+ */-->
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="100dp">
 
+    <!-- Picture of the product -->
     <ImageView
         android:src="@drawable/nopic"
         android:id="@+id/ivCatPic"
@@ -20,7 +37,7 @@
         android:scaleType="fitCenter"
         android:background="@null" />
 
-
+    <!-- Name of the product -->
     <TextView
         android:text="CATEGORY"
         android:layout_width="0dp"
@@ -37,7 +54,7 @@
         app:layout_constraintLeft_toRightOf="@+id/ivCatPic"
         android:layout_marginLeft="8dp" />
 
-
+    <!-- Description of the product -->
     <TextView
         android:text="DESCRIPTION"
         android:layout_width="0dp"
